@@ -16,14 +16,17 @@ public class ReverseOperator<T> implements Operator<T, T> {
     @Override
     public Capsule<T> next(Tube<T> upstream) {
         if (!drained) {
-            var list = new ArrayList<T>();
+            ArrayList<T> list = new ArrayList<>();
             for (boolean go = true; go; ) {
-                switch (upstream.next()) {
-                    case Capsule.Done<T> ignored -> go = false;
-                    case Capsule.Carrier<T> carrier -> list.add(carrier.value());
-                    case Capsule.Failure<T> failure -> {
-                        return Capsule.failed(failure.cause());
-                    }
+                Capsule<T> c = upstream.next();
+                if (c instanceof Capsule.Done) {
+                    go = false;
+                } else if (c instanceof Capsule.Failure) {
+                    return c;
+                } else if (c instanceof Capsule.Carrier) {
+                    list.add(((Capsule.Carrier<T>) c).value());
+                } else {
+                    throw new Capsule.UnknownCapsuleException();
                 }
             }
             this.drained = true;

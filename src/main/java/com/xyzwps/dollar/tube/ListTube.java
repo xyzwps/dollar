@@ -103,5 +103,6 @@ public abstract class ListTube<T> implements Tube<T> {
         return this.collect(new ListCollector<>());
     }
 
+    // not for user api
     public abstract Capsule<T> next();
 }

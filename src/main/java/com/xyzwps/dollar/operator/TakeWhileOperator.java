@@ -16,10 +16,6 @@ public class TakeWhileOperator<T> implements Operator<T, T> {
 
     @Override
     public Capsule<T> next(Tube<T> upstream) {
-        return switch (upstream.next()) {
-            case Capsule.Done<T> ignored -> Capsule.done();
-            case Capsule.Failure<T> failure -> Capsule.failed(failure.cause());
-            case Capsule.Carrier<T> carrier -> predicate.test(carrier.value()) ? carrier : Capsule.done();
-        };
+        return Capsule.map(upstream.next(), carrier -> predicate.test(carrier.value()) ? carrier : Capsule.done());
     }
 }

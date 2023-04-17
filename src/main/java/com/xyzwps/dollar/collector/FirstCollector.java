@@ -15,6 +15,11 @@ public class FirstCollector<T> implements Collector<T, Optional<T>> {
     }
 
     @Override
+    public boolean needMore() {
+        return this.needMore;
+    }
+
+    @Override
     public Optional<T> result() {
         return Optional.ofNullable(t);
     }

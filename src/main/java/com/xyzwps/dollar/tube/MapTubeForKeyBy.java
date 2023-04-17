@@ -16,20 +16,19 @@ public class MapTubeForKeyBy<K, V> extends MapTube<K, V> {
     @Override
     public Capsule<Pair<K, V>> next() {
         while (true) {
-            switch (upstream.next()) {
-                case Capsule.Done<Pair<K, V>> done -> {
-                    return done;
+            Capsule<Pair<K, V>> c = upstream.next();
+            if (c instanceof Capsule.Done) {
+                return c;
+            } else if (c instanceof Capsule.Failure) {
+                return c;
+            } else if (c instanceof Capsule.Carrier) {
+                Pair<K, V> pair = ((Capsule.Carrier<Pair<K, V>>) c).value();
+                if (!deduplicatedKeySet.contains(pair.key())) {
+                    deduplicatedKeySet.add(pair.key());
+                    return c;
                 }
-                case Capsule.Failure<Pair<K, V>> failure -> {
-                    return failure;
-                }
-                case Capsule.Carrier<Pair<K, V>> carrier -> {
-                    var pair = carrier.value();
-                    if (!deduplicatedKeySet.contains(pair.key())) {
-                        deduplicatedKeySet.add(pair.key());
-                        return carrier;
-                    }
-                }
+            } else {
+                throw new Capsule.UnknownCapsuleException();
             }
         }
     }

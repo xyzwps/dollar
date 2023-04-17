@@ -26,20 +26,19 @@ public class ChunkOperator<T> implements Operator<T, List<T>> {
 
         List<T> chunk = new ArrayList<>(this.size);
         for (int i = 0; i < size; i++) {
-            switch (upstream.next()) {
-                case Capsule.Failure<T> failure -> {
-                    return Capsule.failed(failure.cause());
+            Capsule<T> c = upstream.next();
+            if (c instanceof Capsule.Done) {
+                if (chunk.isEmpty()) {
+                    return Capsule.done();
+                } else {
+                    this.done = true;
+                    return Capsule.carry(chunk);
                 }
-                case Capsule.Done<T> ignored -> {
-                    if (chunk.isEmpty()) {
-                        return Capsule.done();
-                    } else {
-                        this.done = true;
-                        return Capsule.carry(chunk);
-                    }
-                }
-                case Capsule.Carrier<T> carrier -> chunk.add(carrier.value());
-            }
+            } else if (c instanceof Capsule.Failure) {
+                return (Capsule<List<T>>) c;
+            } else if (c instanceof Capsule.Carrier) {
+                chunk.add(((Capsule.Carrier<T>) c).value());
+            } else throw new Capsule.UnknownCapsuleException();
         }
         return Capsule.carry(chunk);
     }

@@ -16,10 +16,6 @@ public class MapOperator<T, R> implements Operator<T, R> {
 
     @Override
     public Capsule<R> next(Tube<T> upstream) {
-        return switch (upstream.next()) {
-            case Capsule.Done<T> ignored -> Capsule.done();
-            case Capsule.Failure<T> failure -> Capsule.failed(failure.cause());
-            case Capsule.Carrier<T> carrier -> Capsule.carry(mapFn.apply(carrier.value()));
-        };
+        return Capsule.map(upstream.next(), carrier -> Capsule.carry(mapFn.apply(carrier.value())));
     }
 }

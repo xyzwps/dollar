@@ -12,15 +12,17 @@ public interface Tube<T> {
                 return collector.result();
             }
 
-            switch (this.next()) {
-                case Capsule.Done<T> ignored -> {
-                    return collector.result();
-                }
-                case Capsule.Failure<T> failure -> throw new RuntimeException(failure.cause()); // TODO: 定义错误
-                case Capsule.Carrier<T> carrier -> collector.onRequest(carrier.value());
+            Capsule<T> c = this.next();
+            if (c instanceof Capsule.Done) {
+                return collector.result();
+            } else if (c instanceof Capsule.Failure) {
+                throw new RuntimeException(((Capsule.Failure<T>) c).cause()); // TODO: 定义错误;
+            } else if (c instanceof Capsule.Carrier) {
+                T v = ((Capsule.Carrier<T>) c).value();
+                collector.onRequest(v);
+            } else {
+                throw new Capsule.UnknownCapsuleException();
             }
         }
     }
-
-
 }

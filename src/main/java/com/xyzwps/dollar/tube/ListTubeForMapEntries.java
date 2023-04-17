@@ -16,13 +16,10 @@ public class ListTubeForMapEntries<K, V, D> extends ListTube<D> {
 
     @Override
     public Capsule<D> next() {
-        return switch (upstream.next()) {
-            case Capsule.Done<Pair<K, V>> ignored -> Capsule.done();
-            case Capsule.Failure<Pair<K, V>> failure -> Capsule.failed(failure.cause());
-            case Capsule.Carrier<Pair<K, V>> carrier -> {
-                var p = carrier.value();
-                yield Capsule.carry(this.toValue.apply(p.key(), p.value()));
-            }
-        };
+        return Capsule.map(upstream.next(),
+                carrier -> {
+                    Pair<K, V> p = carrier.value();
+                    return Capsule.carry(this.toValue.apply(p.key(), p.value()));
+                });
     }
 }

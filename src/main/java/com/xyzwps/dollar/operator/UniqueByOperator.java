@@ -19,22 +19,18 @@ public class UniqueByOperator<T, K> implements Operator<T, T> {
     @Override
     public Capsule<T> next(Tube<T> upstream) {
         while (true) {
-            var parcel = upstream.next();
-            switch (parcel) {
-                case Capsule.Done<T> ignored -> {
-                    return Capsule.done();
+            Capsule<T> c = upstream.next();
+            if (c instanceof Capsule.Done) {
+                return c;
+            } else if (c instanceof Capsule.Failure) {
+                return c;
+            } else if (c instanceof Capsule.Carrier) {
+                K k = this.toKey.apply(((Capsule.Carrier<T>) c).value());
+                if (!keys.contains(k)) {
+                    keys.add(k);
+                    return c;
                 }
-                case Capsule.Failure<T> failure -> {
-                    return Capsule.failed(failure.cause());
-                }
-                case Capsule.Carrier<T> carrier -> {
-                    var k = this.toKey.apply(carrier.value());
-                    if (!keys.contains(k)) {
-                        keys.add(k);
-                        return carrier;
-                    }
-                }
-            }
+            } else throw new Capsule.UnknownCapsuleException();
         }
     }
 }

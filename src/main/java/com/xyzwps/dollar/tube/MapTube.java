@@ -14,7 +14,7 @@ public abstract class MapTube<K, V> implements Tube<Pair<K, V>> {
     }
 
     public <K2> MapTube<K2, V> mapKeys(Function<K, K2> mapKeyFn) {
-        var mapKeysStage = new MapTubeStage<>(new MapOperator<>(p -> Pair.of(mapKeyFn.apply(p.key()), p.value())), this);
+        MapTube<K2, V> mapKeysStage = new MapTubeStage<>(new MapOperator<>(p -> Pair.of(mapKeyFn.apply(p.key()), p.value())), this);
         return new MapTubeStage<>(new UniqueByOperator<>(Pair::key), mapKeysStage);
     }
 

@@ -1,12 +1,11 @@
 package com.xyzwps.dollar.tube;
 
-import java.util.Comparator;
-import java.util.Iterator;
+import java.util.*;
 import java.util.function.Function;
 
 public class Utils {
     public static <T> Iterator<T> emptyIterator() {
-        return new Iterator<>() {
+        return new Iterator<T>() {
             @Override
             public boolean hasNext() {
                 return false;

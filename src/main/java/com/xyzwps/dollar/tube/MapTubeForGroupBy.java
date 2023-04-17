@@ -20,16 +20,18 @@ public class MapTubeForGroupBy<K, V> extends MapTube<K, List<V>> {
     @Override
     public Capsule<Pair<K, List<V>>> next() {
         while (this.itr == null) {
-            switch (upstream.next()) {
-                case Capsule.Done<Pair<K, V>> ignored -> this.itr = new MapEntryIterator<>(map);
-                case Capsule.Failure<Pair<K, V>> failure -> {
-                    return Capsule.failed(failure.cause());
-                }
-                case Capsule.Carrier<Pair<K, V>> carrier -> {
-                    var pair = carrier.value();
-                    var list = map.computeIfAbsent(pair.key(), k -> new ArrayList<>());
-                    list.add(pair.value());
-                }
+
+            Capsule<Pair<K, V>> c = upstream.next();
+            if (c instanceof Capsule.Done) {
+                this.itr = new MapEntryIterator<>(map);
+            } else if (c instanceof Capsule.Failure) {
+                return Capsule.failed(((Capsule.Failure<Pair<K, V>>) c).cause());
+            } else if (c instanceof Capsule.Carrier) {
+                Pair<K, V> pair = ((Capsule.Carrier<Pair<K, V>>) c).value();
+                List<V> list = map.computeIfAbsent(pair.key(), k -> new ArrayList<>());
+                list.add(pair.value());
+            } else {
+                throw new Capsule.UnknownCapsuleException();
             }
         }
 

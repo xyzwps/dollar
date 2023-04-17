@@ -2,6 +2,7 @@ package com.xyzwps.dollar.tube;
 
 import com.xyzwps.dollar.iterator.MapEntryIterator;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class MapTubeFromMap<K, V> extends MapTube<K, V> {
@@ -9,7 +10,7 @@ public class MapTubeFromMap<K, V> extends MapTube<K, V> {
     private final MapEntryIterator<K, V> itr;
 
     public MapTubeFromMap(Map<K, V> map) {
-        this.itr = new MapEntryIterator<>(map == null ? Map.of() : map);
+        this.itr = new MapEntryIterator<>(map == null ? new HashMap<>() : map);
     }
 
     @Override

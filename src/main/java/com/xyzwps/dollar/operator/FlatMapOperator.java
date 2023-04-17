@@ -23,25 +23,29 @@ public class FlatMapOperator<T, R> implements Operator<T, R> {
     public Capsule<R> next(Tube<T> upstream) {
         while (true) {
             if (this.subTube == null) {
-                switch (upstream.next()) {
-                    case Capsule.Done<T> ignored -> {
-                        return Capsule.done();
-                    }
-                    case Capsule.Failure<T> failure -> {
-                        return Capsule.failed(failure.cause());
-                    }
-                    case Capsule.Carrier<T> carrier -> this.subTube = this.flatMapFn.apply(carrier.value());
+                Capsule<T> c = upstream.next();
+                if (c instanceof Capsule.Done) {
+                    return (Capsule<R>) c;
+                } else if (c instanceof Capsule.Failure) {
+                    return (Capsule<R>) c;
+                } else if (c instanceof Capsule.Carrier) {
+                    T v = ((Capsule.Carrier<T>) c).value();
+                    this.subTube = this.flatMapFn.apply(v);
+                } else {
+                    throw new Capsule.UnknownCapsuleException();
                 }
             }
 
-            switch (subTube.next()) {
-                case Capsule.Done<R> ignored -> this.subTube = null;
-                case Capsule.Failure<R> failure -> {
-                    return failed(failure.cause());
-                }
-                case Capsule.Carrier<R> carrier -> {
-                    return carry(carrier.value());
-                }
+
+            Capsule<R> c = subTube.next();
+            if (c instanceof Capsule.Done) {
+                this.subTube = null;
+            } else if (c instanceof Capsule.Failure) {
+                return c;
+            } else if (c instanceof Capsule.Carrier) {
+                return c;
+            } else {
+                throw new Capsule.UnknownCapsuleException();
             }
         }
     }

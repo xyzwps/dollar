@@ -22,7 +22,7 @@ public class MapEntryIterator<K, V> implements Iterator<Pair<K, V>> {
 
     @Override
     public Pair<K, V> next() {
-        var key = keyItr.next();
+        K key = keyItr.next();
         return new Pair<>(key, map.get(key));
     }
 }

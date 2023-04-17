@@ -17,20 +17,18 @@ public class FilterOperator<T> implements Operator<T, T> {
     @Override
     public Capsule<T> next(Tube<T> upstream) {
         while (true) {
-            var parcel = upstream.next();
-            switch (parcel) {
-                case Capsule.Done<T> ignored -> {
-                    return Capsule.done();
+            Capsule<T> c = upstream.next();
+            if (c instanceof Capsule.Done) {
+                return c;
+            } else if (c instanceof Capsule.Failure) {
+                return c;
+            } else if (c instanceof Capsule.Carrier) {
+                T v = ((Capsule.Carrier<T>) c).value();
+                if (predicateFn.test(v)) {
+                    return Capsule.carry(v);
                 }
-                case Capsule.Failure<T> failure -> {
-                    return Capsule.failed(failure.cause());
-                }
-                case Capsule.Carrier<T> carrier -> {
-                    var v = carrier.value();
-                    if (predicateFn.test(v)) {
-                        return Capsule.carry(v);
-                    }
-                }
+            } else {
+                throw new Capsule.UnknownCapsuleException();
             }
         }
     }

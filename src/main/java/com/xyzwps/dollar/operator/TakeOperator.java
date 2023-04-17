@@ -22,13 +22,9 @@ public class TakeOperator<T> implements Operator<T, T> {
             return Capsule.done();
         }
 
-        return switch (upstream.next()) {
-            case Capsule.Done<T> ignored -> Capsule.done();
-            case Capsule.Failure<T> failure -> Capsule.failed(failure.cause());
-            case Capsule.Carrier<T> carrier -> {
-                this.taken++;
-                yield carrier;
-            }
-        };
+        return Capsule.map(upstream.next(), carrier -> {
+            this.taken++;
+            return carrier;
+        });
     }
 }

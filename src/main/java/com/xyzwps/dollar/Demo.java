@@ -1,12 +1,15 @@
 package com.xyzwps.dollar;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
+
+import static com.xyzwps.dollar.Dollar.*;
 
 public class Demo {
 
     public static void main(String[] args) {
-        var s = List.of(2, 3, 4, 5, 6);
+        List<Integer> s = Arrays.asList(2, 3, 4, 5, 6);
 
         System.out.println($(s)
                 .map(i -> {
@@ -17,7 +20,7 @@ public class Demo {
                 .flatMap(i -> {
                     int t1 = i, t2 = i + 2;
                     System.out.printf("  2) flat map %d to %d, %d \n", i, t1, t2);
-                    return $(List.of(t1, t2));
+                    return $(Arrays.asList(t1, t2));
                 })
                 .orderBy(Function.identity(), Direction.DESC)
                 .filter(i -> {
