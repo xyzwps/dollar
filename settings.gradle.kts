@@ -1,2 +1,2 @@
-rootProject.name = "dollar"
+rootProject.name = "xyzwps-dollar"
 
