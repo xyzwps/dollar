@@ -1,10 +1,7 @@
 package com.xyzwps.dollar.tube;
 
 import com.xyzwps.dollar.Direction;
-import com.xyzwps.dollar.collector.FirstCollector;
-import com.xyzwps.dollar.collector.ForEachCollector;
-import com.xyzwps.dollar.collector.ListCollector;
-import com.xyzwps.dollar.collector.ReduceCollector;
+import com.xyzwps.dollar.collector.*;
 import com.xyzwps.dollar.operator.*;
 
 import java.util.List;
@@ -32,7 +29,6 @@ public abstract class ListTube<T> implements Tube<T> {
     }
 
     /**
-     *
      * @return
      */
     public ListTube<T> compact() {
@@ -61,6 +57,10 @@ public abstract class ListTube<T> implements Tube<T> {
 
     public <K> MapTube<K, List<T>> groupBy(Function<T, K> toKey) {
         return new MapTubeForGroupBy<>(this.map(it -> Pair.of(toKey.apply(it), it)));
+    }
+
+    public String join(String sep) {
+        return this.collect(new JoinCollector<>(sep));
     }
 
     public <K> MapTube<K, T> keyBy(Function<T, K> toKey) {
