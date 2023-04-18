@@ -41,6 +41,15 @@ publishing {
                 name.set("xyzwps-dollar")
                 description.set("A lodash-like, lazy and powerful java collection utils")
                 url.set("https://github.com/xyzwps/dollar")
+                licenses {
+                    name.set("MIT")
+                    url.set("https://github.com/xyzwps/dollar/blob/master/LICENSE")
+                }
+                scm {
+                    connection.set("scm:git:git://github.com:xyzwps/dollar.git")
+                    developerConnection.set("scm:git:ssh://github.com:xyzwps/dollar.git")
+                    url.set("https://github.com/xyzwps/dollar")
+                }
                 developers {
                     developer {
                         id.set("xyzwps")
