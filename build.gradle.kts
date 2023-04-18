@@ -1,6 +1,7 @@
 plugins {
     id("java")
     `maven-publish`
+    signing
 }
 
 group = "com.xyzwps.lib"
@@ -27,9 +28,8 @@ java {
     withSourcesJar()
 }
 
-// see https://docs.gradle.org/current/userguide/publishing_maven.html
 // see https://zhuanlan.zhihu.com/p/393031307
-// see https://blog.csdn.net/wangxudongx/article/details/119513838
+// gpg see https://zhuanlan.zhihu.com/p/354427909
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
@@ -65,4 +65,8 @@ publishing {
             }
         }
     }
+}
+
+signing {
+    sign(publishing.publications["mavenJava"])
 }
