@@ -52,7 +52,133 @@ public final class Dollar {
     /**
      * Dollar simple utilities.
      */
-    public static class $ {
+    public static final class $ {
+
+        /**
+         * Creates a list of elements split into groups the length of size.
+         * If list can't be split evenly, the final chunk will be the remaining elements.
+         *
+         * @param list The list to handle
+         * @param size Chunk size which should be greater then 0.
+         * @param <T>  Element type
+         * @return new list of chunks
+         */
+        public static <T> List<List<T>> chunk(List<T> list, int size) {
+            if (size < 1) {
+                throw new IllegalArgumentException("Chunk size should be greater than 0.");
+            }
+
+            if ($.isEmpty(list)) {
+                return new ArrayList<>();
+            }
+
+            int listSize = list.size();
+            int chunksCapacity = listSize / size + 1;
+            List<List<T>> chunks = new ArrayList<>(chunksCapacity);
+            List<T> chunk = null;
+            int counter = 0;
+            int i = 0;
+            for (T element : list) {
+                if (counter == 0) {
+                    chunk = new ArrayList<>(size);
+                }
+
+                chunk.add(element);
+                counter++;
+                i++;
+
+                if (counter == size || i == listSize) {
+                    chunks.add(chunk);
+                    chunk = null;
+                    counter = 0;
+                }
+            }
+
+            return chunks;
+        }
+
+
+        /**
+         * Create a {@link HashMap} with a key-value pair.
+         *
+         * @param k   pair key
+         * @param v   pair value
+         * @param <K> key type
+         * @param <V> value type
+         * @return new HashMap
+         */
+        public static <K, V> HashMap<K, V> hashMap(K k, V v) {
+            HashMap<K, V> map = new HashMap<>();
+            map.put(k, v);
+            return map;
+        }
+
+
+        /**
+         * Create a {@link HashMap} with two key-value pairs.
+         *
+         * @param k1  the first pair key
+         * @param v1  the first pair value
+         * @param k2  the second pair key
+         * @param v2  the second pair value
+         * @param <K> key type
+         * @param <V> value type
+         * @return new HashMap
+         */
+        public static <K, V> HashMap<K, V> hashMap(K k1, V v1, K k2, V v2) {
+            HashMap<K, V> map = new HashMap<>();
+            map.put(k1, v1);
+            map.put(k2, v2);
+            return map;
+        }
+
+
+        /**
+         * Create a {@link HashMap} with three key-value pairs.
+         *
+         * @param k1  the first pair key
+         * @param v1  the first pair value
+         * @param k2  the second pair key
+         * @param v2  the second pair value
+         * @param k3  the third pair key
+         * @param v3  the third pair value
+         * @param <K> key type
+         * @param <V> value type
+         * @return new HashMap
+         */
+        public static <K, V> HashMap<K, V> hashMap(K k1, V v1, K k2, V v2, K k3, V v3) {
+            HashMap<K, V> map = new HashMap<>();
+            map.put(k1, v1);
+            map.put(k2, v2);
+            map.put(k3, v3);
+            return map;
+        }
+
+
+        /**
+         * Create a {@link HashMap} with four key-value pairs.
+         *
+         * @param k1  the first pair key
+         * @param v1  the first pair value
+         * @param k2  the second pair key
+         * @param v2  the second pair value
+         * @param k3  the third pair key
+         * @param v3  the third pair value
+         * @param k4  the fourth pair key
+         * @param v4  the fourth pair value
+         * @param <K> key type
+         * @param <V> value type
+         * @return new HashMap
+         */
+        public static <K, V> HashMap<K, V> hashMap(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4) {
+            HashMap<K, V> map = new HashMap<>();
+            map.put(k1, v1);
+            map.put(k2, v2);
+            map.put(k3, v3);
+            map.put(k4, v4);
+            return map;
+        }
+
 
         /**
          * Check if the list is empty or not.
@@ -93,84 +219,6 @@ public final class Dollar {
             return Arrays.asList(elements);
         }
 
-
-        /**
-         * Create a {@link HashMap} with a key-value pair.
-         *
-         * @param k   pair key
-         * @param v   pair value
-         * @param <K> key type
-         * @param <V> value type
-         * @return new HashMap
-         */
-        public static <K, V> HashMap<K, V> hashMap(K k, V v) {
-            HashMap<K, V> map = new HashMap<>();
-            map.put(k, v);
-            return map;
-        }
-
-        /**
-         * Create a {@link HashMap} with two key-value pairs.
-         *
-         * @param k1  the first pair key
-         * @param v1  the first pair value
-         * @param k2  the second pair key
-         * @param v2  the second pair value
-         * @param <K> key type
-         * @param <V> value type
-         * @return new HashMap
-         */
-        public static <K, V> HashMap<K, V> hashMap(K k1, V v1, K k2, V v2) {
-            HashMap<K, V> map = new HashMap<>();
-            map.put(k1, v1);
-            map.put(k2, v2);
-            return map;
-        }
-
-        /**
-         * Create a {@link HashMap} with three key-value pairs.
-         *
-         * @param k1  the first pair key
-         * @param v1  the first pair value
-         * @param k2  the second pair key
-         * @param v2  the second pair value
-         * @param k3  the third pair key
-         * @param v3  the third pair value
-         * @param <K> key type
-         * @param <V> value type
-         * @return new HashMap
-         */
-        public static <K, V> HashMap<K, V> hashMap(K k1, V v1, K k2, V v2, K k3, V v3) {
-            HashMap<K, V> map = new HashMap<>();
-            map.put(k1, v1);
-            map.put(k2, v2);
-            map.put(k3, v3);
-            return map;
-        }
-
-        /**
-         * Create a {@link HashMap} with four key-value pairs.
-         *
-         * @param k1  the first pair key
-         * @param v1  the first pair value
-         * @param k2  the second pair key
-         * @param v2  the second pair value
-         * @param k3  the third pair key
-         * @param v3  the third pair value
-         * @param k4  the fourth pair key
-         * @param v4  the fourth pair value
-         * @param <K> key type
-         * @param <V> value type
-         * @return new HashMap
-         */
-        public static <K, V> HashMap<K, V> hashMap(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4) {
-            HashMap<K, V> map = new HashMap<>();
-            map.put(k1, v1);
-            map.put(k2, v2);
-            map.put(k3, v3);
-            map.put(k4, v4);
-            return map;
-        }
 
         private $() throws IllegalAccessException {
             throw new IllegalAccessException("???");
