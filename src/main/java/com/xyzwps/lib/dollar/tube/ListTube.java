@@ -144,6 +144,17 @@ public abstract class ListTube<T> implements Tube<T> {
 
 
     /**
+     * Alias for {@link #first()}
+     *
+     * @return first element
+     * @see #first()
+     */
+    public Optional<T> head() {
+        return this.first();
+    }
+
+
+    /**
      * Join the string representation(<code>toString()</code>) of all elements
      * with specified <code>sep</code>arator.
      * <pre>
@@ -219,7 +230,7 @@ public abstract class ListTube<T> implements Tube<T> {
      *       list.add(it);
      *       return list;
      * };
-     * $(1, 2, 3).reduce(new ArrayList&lt;Integer&gt;(), accelerator) => [1, 2, 3]the result of the reduction
+     * $(1, 2, 3).reduce(new ArrayList&lt;Integer&gt;(), accelerator) => [1, 2, 3]
      * </pre>
      *
      * @param identity    the identity element of accelerator

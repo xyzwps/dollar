@@ -6,6 +6,12 @@ import com.xyzwps.lib.dollar.tube.Tube;
 import java.util.Objects;
 import java.util.function.Function;
 
+/**
+ * Used by map method.
+ *
+ * @param <T> source element type
+ * @param <R> mapped element type
+ */
 public class MapOperator<T, R> implements Operator<T, R> {
 
     private final Function<T, R> mapFn;

@@ -6,6 +6,11 @@ import com.xyzwps.lib.dollar.tube.Tube;
 import java.util.Objects;
 import java.util.function.Predicate;
 
+/**
+ * Used by takeWhile method.
+ *
+ * @param <T> element type
+ */
 public class TakeWhileOperator<T> implements Operator<T, T> {
 
     private final Predicate<T> predicate;

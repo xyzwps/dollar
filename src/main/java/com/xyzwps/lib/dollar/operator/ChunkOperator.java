@@ -6,6 +6,11 @@ import com.xyzwps.lib.dollar.tube.Tube;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Used by chunk method.
+ *
+ * @param <T> element type
+ */
 public class ChunkOperator<T> implements Operator<T, List<T>> {
 
     private final int size;
@@ -34,8 +39,6 @@ public class ChunkOperator<T> implements Operator<T, List<T>> {
                     this.done = true;
                     return Capsule.carry(chunk);
                 }
-            } else if (c instanceof Capsule.Failure) {
-                return (Capsule<List<T>>) c;
             } else if (c instanceof Capsule.Carrier) {
                 chunk.add(((Capsule.Carrier<T>) c).value());
             } else throw new Capsule.UnknownCapsuleException();

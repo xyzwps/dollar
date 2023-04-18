@@ -19,8 +19,6 @@ public class MapTubeForKeyBy<K, V> extends MapTube<K, V> {
             Capsule<Pair<K, V>> c = upstream.next();
             if (c instanceof Capsule.Done) {
                 return c;
-            } else if (c instanceof Capsule.Failure) {
-                return c;
             } else if (c instanceof Capsule.Carrier) {
                 Pair<K, V> pair = ((Capsule.Carrier<Pair<K, V>>) c).value();
                 if (!deduplicatedKeySet.contains(pair.key())) {

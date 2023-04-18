@@ -43,7 +43,7 @@ class ListApiTests {
     @Test
     void first() {
         assertEquals(Optional.of(1), $(1, 2).first());
-        assertEquals(Optional.empty(), $().first());
+        assertEquals(Optional.empty(), $().head());
     }
 
     @Test
