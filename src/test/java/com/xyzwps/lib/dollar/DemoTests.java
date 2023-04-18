@@ -1,6 +1,5 @@
 package com.xyzwps.lib.dollar;
 
-import com.xyzwps.lib.dollar.Direction;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -27,7 +26,7 @@ class DemoTests {
                 .flatMap(i -> {
                     int t1 = i, t2 = i + 2;
                     log.add(String.format("  2) flat map %d to %d, %d", i, t1, t2));
-                    return $(Arrays.asList(t1, t2));
+                    return $(t1, t2);
                 })
                 .orderBy(Function.identity(), Direction.DESC)
                 .filter(i -> {
@@ -73,5 +72,20 @@ class DemoTests {
 
         assertIterableEquals(logRows, log);
     }
+
+    void readMeDemo() {
+        assertIterableEquals(
+                $.list(28, 24, 20, 16),
+                $(2, 3, 4, 5, 6)
+                        .map(i -> i * 2)
+                        .flatMap(i -> $(i, i + 2))
+                        .orderBy(Function.identity(), Direction.DESC)
+                        .filter(i -> i > 6)
+                        .map(i -> i * 2)
+                        .unique()
+                        .value()
+        );
+    }
+
 }
 
