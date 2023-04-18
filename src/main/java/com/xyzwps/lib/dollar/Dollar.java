@@ -32,8 +32,8 @@ public final class Dollar {
         }
 
         /**
-         * Check value which is falsey or not. The values <tt>null</tt>, <tt>false</tt>,
-         * <tt>0(.0)</tt> and <tt>""</tt> are falsey.
+         * Check value which is falsey or not. The values <code>null</code>, <code>false</code>,
+         * <code>0(.0)</code> and <code>""</code> are falsey.
          *
          * @see ListTube#compact
          */

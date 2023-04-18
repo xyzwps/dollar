@@ -10,8 +10,8 @@ public class TakeOperator<T> implements Operator<T, T> {
     private int taken = 0;
 
     public TakeOperator(int n) {
-        if (n < 0) {
-            throw new IllegalArgumentException("Take count should be greater than or equal to 0.");
+        if (n <= 0) {
+            throw new IllegalArgumentException("Take count should be greater than 0.");
         }
         this.n = n;
     }

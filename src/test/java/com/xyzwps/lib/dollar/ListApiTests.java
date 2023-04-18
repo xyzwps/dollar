@@ -1,6 +1,5 @@
 package com.xyzwps.lib.dollar;
 
-import com.xyzwps.lib.dollar.Direction;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -33,7 +32,7 @@ class ListApiTests {
 
     @Test
     void compact() {
-        assertEquals("[a, ]", $("a", "", null).compact().value().toString());
+        assertEquals("[a]", $("a", "", null).compact().value().toString());
     }
 
     @Test
