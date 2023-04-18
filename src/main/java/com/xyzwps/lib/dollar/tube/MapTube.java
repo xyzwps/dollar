@@ -7,6 +7,9 @@ import com.xyzwps.lib.dollar.operator.UniqueByOperator;
 import java.util.Map;
 import java.util.function.Function;
 
+/**
+ * TODO: add docs
+ */
 public abstract class MapTube<K, V> implements Tube<Pair<K, V>> {
 
     public <V2> MapTube<K, V2> mapValues(Function<V, V2> mapValueFn) {

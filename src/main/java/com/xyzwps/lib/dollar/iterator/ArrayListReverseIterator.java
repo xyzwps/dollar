@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.Objects;
 
 /**
- * Iterate array list in reverse order.
+ * Iterate over an array list in reverse order.
  *
  * @param <T> element type
  */

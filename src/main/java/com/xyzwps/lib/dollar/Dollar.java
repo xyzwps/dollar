@@ -9,32 +9,69 @@ import java.util.*;
 
 /**
  * Apis for you.
- * <p>
- * 用户 API。
  */
 public final class Dollar {
 
-    public static <T> ListTube<T> $(List<T> c) {
-        return new ListTubeFromList<>(c);
+    /**
+     * Create a tube from a {@link List}.
+     *
+     * @param list source list. Null is acceptable.
+     * @param <T>  list element type
+     * @return list tube
+     */
+    public static <T> ListTube<T> $(List<T> list) {
+        return new ListTubeFromList<>(list);
     }
 
+
+    /**
+     * Create a tube from an array.
+     *
+     * @param a   source array
+     * @param <T> array element type
+     * @return list tube
+     */
     public static <T> ListTube<T> $(T... a) {
         return new ListTubeFromList<>(Arrays.asList(a));
     }
 
-    public static <K, V> MapTube<K, V> $(Map<K, V> m) {
-        return new MapTubeFromMap<>(m);
+
+    /**
+     * Create a tube from a map.
+     *
+     * @param map source map. Null is acceptable.
+     * @param <K> map key type
+     * @param <V> map value type
+     * @return map tube
+     */
+    public static <K, V> MapTube<K, V> $(Map<K, V> map) {
+        return new MapTubeFromMap<>(map);
     }
 
+
+    /**
+     * Dollar simple utilities.
+     */
     public static class $ {
+
+        /**
+         * Check if the list is empty or not.
+         *
+         * @param list to be checked
+         * @param <T>  list element type
+         * @return true if list is null or list has no elements
+         */
         public static <T> boolean isEmpty(List<T> list) {
             return list == null || list.isEmpty();
         }
+
 
         /**
          * Check value which is falsey or not. The values <code>null</code>, <code>false</code>,
          * <code>0(.0)</code> and <code>""</code> are falsey.
          *
+         * @param value value to be checked
+         * @return true if the value is falsey
          * @see ListTube#compact
          */
         public static boolean isFalsey(Object value) {
@@ -43,17 +80,46 @@ public final class Dollar {
                     || Objects.equals(value, 0.0) || Objects.equals(value, 0.0f);
         }
 
+
+        /**
+         * Create a list.
+         *
+         * @param elements elements of list
+         * @param <T>      element type
+         * @return new list
+         */
         @SafeVarargs
         public static <T> List<T> list(T... elements) {
             return Arrays.asList(elements);
         }
 
+
+        /**
+         * Create a {@link HashMap} with a key-value pair.
+         *
+         * @param k   pair key
+         * @param v   pair value
+         * @param <K> key type
+         * @param <V> value type
+         * @return new HashMap
+         */
         public static <K, V> HashMap<K, V> hashMap(K k, V v) {
             HashMap<K, V> map = new HashMap<>();
             map.put(k, v);
             return map;
         }
 
+        /**
+         * Create a {@link HashMap} with two key-value pairs.
+         *
+         * @param k1  the first pair key
+         * @param v1  the first pair value
+         * @param k2  the second pair key
+         * @param v2  the second pair value
+         * @param <K> key type
+         * @param <V> value type
+         * @return new HashMap
+         */
         public static <K, V> HashMap<K, V> hashMap(K k1, V v1, K k2, V v2) {
             HashMap<K, V> map = new HashMap<>();
             map.put(k1, v1);
@@ -61,6 +127,19 @@ public final class Dollar {
             return map;
         }
 
+        /**
+         * Create a {@link HashMap} with three key-value pairs.
+         *
+         * @param k1  the first pair key
+         * @param v1  the first pair value
+         * @param k2  the second pair key
+         * @param v2  the second pair value
+         * @param k3  the third pair key
+         * @param v3  the third pair value
+         * @param <K> key type
+         * @param <V> value type
+         * @return new HashMap
+         */
         public static <K, V> HashMap<K, V> hashMap(K k1, V v1, K k2, V v2, K k3, V v3) {
             HashMap<K, V> map = new HashMap<>();
             map.put(k1, v1);
@@ -69,6 +148,21 @@ public final class Dollar {
             return map;
         }
 
+        /**
+         * Create a {@link HashMap} with four key-value pairs.
+         *
+         * @param k1  the first pair key
+         * @param v1  the first pair value
+         * @param k2  the second pair key
+         * @param v2  the second pair value
+         * @param k3  the third pair key
+         * @param v3  the third pair value
+         * @param k4  the fourth pair key
+         * @param v4  the fourth pair value
+         * @param <K> key type
+         * @param <V> value type
+         * @return new HashMap
+         */
         public static <K, V> HashMap<K, V> hashMap(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4) {
             HashMap<K, V> map = new HashMap<>();
             map.put(k1, v1);
@@ -76,6 +170,10 @@ public final class Dollar {
             map.put(k3, v3);
             map.put(k4, v4);
             return map;
+        }
+
+        private $() throws IllegalAccessException {
+            throw new IllegalAccessException("???");
         }
     }
 
