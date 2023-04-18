@@ -4,7 +4,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Objects;
 
+/**
+ * Iterate array list in reverse order.
+ *
+ * @param <T> element type
+ */
 public class ArrayListReverseIterator<T> implements Iterator<T> {
+
     private final ArrayList<T> list;
 
     private int index;

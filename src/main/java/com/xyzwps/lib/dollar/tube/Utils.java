@@ -3,7 +3,17 @@ package com.xyzwps.lib.dollar.tube;
 import java.util.*;
 import java.util.function.Function;
 
-public class Utils {
+/**
+ * Dollar utilities.
+ */
+public final class Utils {
+
+    /**
+     * Create an empty iterator.
+     *
+     * @param <T> element type
+     * @return an empty iterator
+     */
     public static <T> Iterator<T> emptyIterator() {
         return new Iterator<T>() {
             @Override
@@ -18,11 +28,33 @@ public class Utils {
         };
     }
 
+
+    /**
+     * Create an ascending order comparator.
+     *
+     * @param toKey for getting element key
+     * @param <E>   element type
+     * @param <K>   element key type
+     * @return ascending comparator
+     */
     public static <E, K extends Comparable<K>> Comparator<E> ascComparator(Function<E, K> toKey) {
         return Comparator.comparing(toKey);
     }
 
+
+    /**
+     * Create a descending order comparator.
+     *
+     * @param toKey for getting element key
+     * @param <E>   element type
+     * @param <K>   element key type
+     * @return descending comparator
+     */
     public static <E, K extends Comparable<K>> Comparator<E> descComparator(Function<E, K> toKey) {
         return (o1, o2) -> toKey.apply(o2).compareTo(toKey.apply(o1));
+    }
+
+    private Utils() throws IllegalAccessException {
+        throw new IllegalAccessException("???");
     }
 }
