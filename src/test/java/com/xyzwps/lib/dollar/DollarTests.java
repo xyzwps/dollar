@@ -9,6 +9,12 @@ class DollarTests {
 
     @Test
     void chunk() {
+        assertEquals("[]", $.chunk($.list(), 6).toString());
+        assertEquals("[]", $.chunk(null, 6).toString());
+
+        assertThrows(IllegalArgumentException.class, () -> $.chunk($.list(), 0));
+        assertThrows(IllegalArgumentException.class, () -> $.chunk(null, 0));
+
         assertEquals("[[1], [2], [3], [4], [5]]", $.chunk($.list(1, 2, 3, 4, 5), 1).toString());
         assertEquals("[[1, 2], [3, 4], [5]]", $.chunk($.list(1, 2, 3, 4, 5), 2).toString());
         assertEquals("[[1, 2, 3], [4, 5]]", $.chunk($.list(1, 2, 3, 4, 5), 3).toString());
