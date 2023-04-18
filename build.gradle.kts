@@ -42,8 +42,10 @@ publishing {
                 description.set("A lodash-like, lazy and powerful java collection utils")
                 url.set("https://github.com/xyzwps/dollar")
                 licenses {
-                    name.set("MIT")
-                    url.set("https://github.com/xyzwps/dollar/blob/master/LICENSE")
+                    license {
+                        name.set("MIT")
+                        url.set("https://github.com/xyzwps/dollar/blob/master/LICENSE")
+                    }
                 }
                 scm {
                     connection.set("scm:git:git://github.com:xyzwps/dollar.git")
