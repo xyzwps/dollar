@@ -37,3 +37,8 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+### Scripts ###
+publish.sh
+secret.*
+gradle.properties
