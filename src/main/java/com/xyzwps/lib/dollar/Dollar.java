@@ -6,6 +6,8 @@ import com.xyzwps.lib.dollar.tube.MapTube;
 import com.xyzwps.lib.dollar.tube.MapTubeFromMap;
 
 import java.util.*;
+import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 
 /**
  * Apis for you.
@@ -72,6 +74,8 @@ public final class Dollar {
                 return new ArrayList<>();
             }
 
+            // TODO: handle RandomAccess
+
             int listSize = list.size();
             int chunksCapacity = listSize / size + 1;
             List<List<T>> chunks = new ArrayList<>(chunksCapacity);
@@ -97,6 +101,61 @@ public final class Dollar {
             return chunks;
         }
 
+
+        /**
+         * Filter list with the elements which are not falsey.
+         * <p>
+         * The definition of falsey can be seen at {@link #isFalsey}
+         *
+         * @param list The list to filter. Null is acceptable.
+         * @param <T>  List element type
+         * @return new compacted list
+         * @see #isFalsey
+         */
+        public static <T> List<T> compact(List<T> list) {
+            return filter(list, it -> !isFalsey(it));
+        }
+
+        // TODO:
+
+
+        /**
+         * Iterate over the list and retaining the elements which are predicated true.
+         *
+         * @param list      The list to iterate. Null is acceptable.
+         * @param predicate Predicate function. Null will be considered as always true.
+         * @param <T>       Element type
+         * @return new filtered list
+         */
+        public static <T> List<T> filter(List<T> list, Predicate<T> predicate) {
+            Predicate<T> p = predicate == null ? Utils.ALWAYS_TRUE_PREDICATE : predicate;
+            return filter(list, (e, i) -> p.test(e));
+        }
+
+
+        /**
+         * Iterate over the list and retaining the elements which are predicated true.
+         *
+         * @param list      The list to iterate. Null is acceptable.
+         * @param predicate Predicate function with element index. Null will be considered as always true.
+         * @param <T>       Element type
+         * @return new filtered list
+         */
+        public static <T> List<T> filter(List<T> list, BiPredicate<T, Integer> predicate) {
+            if (list == null) {
+                return new ArrayList<>();
+            }
+            BiPredicate<T, Integer> p = predicate == null ? Utils.ALWAYS_TRUE_BIPREDICATE : predicate;
+
+            List<T> result = new ArrayList<>();
+            int i = 0;
+            for (T element : list) {
+                if (p.test(element, i++)) {
+                    result.add(element);
+                }
+            }
+            return result;
+        }
 
         /**
          * Create a {@link HashMap} with a key-value pair.

@@ -1,7 +1,9 @@
-package com.xyzwps.lib.dollar.tube;
+package com.xyzwps.lib.dollar;
 
 import java.util.*;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * Dollar utilities.
@@ -53,6 +55,19 @@ public final class Utils {
     public static <E, K extends Comparable<K>> Comparator<E> descComparator(Function<E, K> toKey) {
         return (o1, o2) -> toKey.apply(o2).compareTo(toKey.apply(o1));
     }
+
+
+    /**
+     * A always-true predicate.
+     */
+    public static final Predicate ALWAYS_TRUE_PREDICATE = (o) -> true;
+
+
+    /**
+     * A always-true bi-predicate.
+     */
+    public static final BiPredicate ALWAYS_TRUE_BIPREDICATE = (o, i) -> true;
+
 
     private Utils() throws IllegalAccessException {
         throw new IllegalAccessException("???");

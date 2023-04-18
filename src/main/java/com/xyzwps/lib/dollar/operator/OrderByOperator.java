@@ -9,8 +9,8 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.function.Function;
 
-import static com.xyzwps.lib.dollar.tube.Utils.ascComparator;
-import static com.xyzwps.lib.dollar.tube.Utils.descComparator;
+import static com.xyzwps.lib.dollar.Utils.ascComparator;
+import static com.xyzwps.lib.dollar.Utils.descComparator;
 
 /**
  * Used by orderBy method.

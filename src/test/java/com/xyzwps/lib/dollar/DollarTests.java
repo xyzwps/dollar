@@ -2,6 +2,10 @@ package com.xyzwps.lib.dollar;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+import java.util.function.BiPredicate;
+import java.util.function.Predicate;
+
 import static com.xyzwps.lib.dollar.Dollar.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,5 +28,34 @@ class DollarTests {
 
         assertThrows(IllegalArgumentException.class, () -> $.chunk($.list(1, 2, 3, 4, 5), 0));
         assertThrows(IllegalArgumentException.class, () -> $.chunk($.list(1, 2, 3, 4, 5), -1));
+    }
+
+    @Test
+    void compact() {
+        assertEquals("[]", $.compact($.list(null, "", false, 0)).toString());
+        assertEquals("[]", $.compact(null).toString());
+    }
+
+
+    @Test
+    void filter1() {
+        assertEquals("[2, 4]", $.filter($.list(1, 2, 3, 4, 5), i -> i % 2 == 0).toString());
+
+        List<Integer> nullList = null;
+        assertEquals("[]", $.filter(nullList, i -> i % 2 == 0).toString());
+
+        Predicate<Integer> nullPredicate = null;
+        assertEquals("[1, 2, 3, 4, 5]", $.filter($.list(1, 2, 3, 4, 5), nullPredicate).toString());
+    }
+
+    @Test
+    void filter2() {
+        assertEquals("[1, 3, 5]", $.filter($.list(1, 2, 3, 4, 5), (e, i) -> i % 2 == 0).toString());
+
+        List<Integer> nullList = null;
+        assertEquals("[]", $.filter(nullList, (e, i) -> i % 2 == 0).toString());
+
+        BiPredicate<Integer, Integer> nullPredicate = null;
+        assertEquals("[1, 2, 3, 4, 5]", $.filter($.list(1, 2, 3, 4, 5), nullPredicate).toString());
     }
 }
