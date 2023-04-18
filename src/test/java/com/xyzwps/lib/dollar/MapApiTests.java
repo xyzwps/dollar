@@ -12,7 +12,7 @@ class MapApiTests {
 
     @Test
     void mapValues() {
-        Map<Integer, Integer> map = $($.newMap(0, "", 1, "1", 2, "11", 3, "111"))
+        Map<Integer, Integer> map = $($.hashMap(0, "", 1, "1", 2, "11", 3, "111"))
                 .mapValues(String::length)
                 .value();
         assertEquals(4, map.size());

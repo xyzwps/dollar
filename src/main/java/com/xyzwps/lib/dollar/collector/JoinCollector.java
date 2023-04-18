@@ -6,7 +6,7 @@ public class JoinCollector<T> implements Collector<T, String> {
 
     private final String sep;
     private final StringBuilder sb = new StringBuilder();
-    private boolean first = false;
+    private boolean first = true;
 
     public JoinCollector(String sep) {
         this.sep = Objects.requireNonNull(sep);

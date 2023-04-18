@@ -5,10 +5,7 @@ import com.xyzwps.lib.dollar.tube.ListTubeFromList;
 import com.xyzwps.lib.dollar.tube.MapTube;
 import com.xyzwps.lib.dollar.tube.MapTubeFromMap;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Apis for you.
@@ -34,20 +31,37 @@ public final class Dollar {
             return list == null || list.isEmpty();
         }
 
-        public static <K, V> HashMap<K, V> newMap(K k, V v) {
+        /**
+         * Check value which is falsey or not. The values <tt>null</tt>, <tt>false</tt>,
+         * <tt>0(.0)</tt> and <tt>""</tt> are falsey.
+         *
+         * @see ListTube#compact
+         */
+        public static boolean isFalsey(Object value) {
+            return value == null || Objects.equals(value, false) || "".equals(value)
+                    || Objects.equals(value, 0) || Objects.equals(value, 0L)
+                    || Objects.equals(value, 0.0) || Objects.equals(value, 0.0f);
+        }
+
+        @SafeVarargs
+        public static <T> List<T> list(T... elements) {
+            return Arrays.asList(elements);
+        }
+
+        public static <K, V> HashMap<K, V> hashMap(K k, V v) {
             HashMap<K, V> map = new HashMap<>();
             map.put(k, v);
             return map;
         }
 
-        public static <K, V> HashMap<K, V> newMap(K k1, V v1, K k2, V v2) {
+        public static <K, V> HashMap<K, V> hashMap(K k1, V v1, K k2, V v2) {
             HashMap<K, V> map = new HashMap<>();
             map.put(k1, v1);
             map.put(k2, v2);
             return map;
         }
 
-        public static <K, V> HashMap<K, V> newMap(K k1, V v1, K k2, V v2, K k3, V v3) {
+        public static <K, V> HashMap<K, V> hashMap(K k1, V v1, K k2, V v2, K k3, V v3) {
             HashMap<K, V> map = new HashMap<>();
             map.put(k1, v1);
             map.put(k2, v2);
@@ -55,7 +69,7 @@ public final class Dollar {
             return map;
         }
 
-        public static <K, V> HashMap<K, V> newMap(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4) {
+        public static <K, V> HashMap<K, V> hashMap(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4) {
             HashMap<K, V> map = new HashMap<>();
             map.put(k1, v1);
             map.put(k2, v2);
