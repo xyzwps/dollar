@@ -36,6 +36,12 @@ class DollarTests {
         assertEquals("[]", $.compact(null).toString());
     }
 
+    @Test
+    void defaultTo() {
+        assertEquals(1, $.defaultTo(null, 1));
+        assertEquals(2, $.defaultTo(2, 1));
+        assertNull($.defaultTo(null, null));
+    }
 
     @Test
     void filter1() {

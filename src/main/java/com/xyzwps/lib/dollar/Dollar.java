@@ -151,6 +151,20 @@ public final class Dollar {
             return result;
         }
 
+        /**
+         * Checks <code>value</code> to determine whether a default value
+         * should be returned in its place. The <code>defaultValue</code>
+         * is returned when <code>value</code> is <code>null</code>.
+         *
+         * @param value        The value to check
+         * @param defaultValue The default value
+         * @param <T>          value type
+         * @return resolved value
+         */
+        public static <T> T defaultTo(T value, T defaultValue) {
+            return value == null ? defaultValue : value;
+        }
+
 
         /**
          * Iterate over the list and retaining the elements which are predicated true.
