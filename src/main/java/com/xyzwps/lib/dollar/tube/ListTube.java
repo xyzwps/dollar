@@ -67,6 +67,8 @@ public abstract class ListTube<T> implements Tube<T> {
         return new ListTubeStage<>(new FilterOperator<>(Objects.requireNonNull(predicateFn)), this);
     }
 
+    // TODO: filter support bi-predicate
+
 
     /**
      * Collect the first element.
@@ -124,6 +126,7 @@ public abstract class ListTube<T> implements Tube<T> {
     public int forEach(Consumer<T> handler) {
         return this.collect(new ForEachCollector<>(handler));
     }
+    // TODO: forEach support bi-consumer
 
 
     /**
@@ -202,6 +205,7 @@ public abstract class ListTube<T> implements Tube<T> {
     public <R> ListTube<R> map(Function<T, R> mapFn) {
         return new ListTubeStage<>(new MapOperator<>(Objects.requireNonNull(mapFn)), this);
     }
+    // TODO: map support bi-function
 
 
     /**

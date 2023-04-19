@@ -58,4 +58,12 @@ class DollarTests {
         BiPredicate<Integer, Integer> nullPredicate = null;
         assertEquals("[1, 2, 3, 4, 5]", $.filter($.list(1, 2, 3, 4, 5), nullPredicate).toString());
     }
+
+    @Test
+    void concat() {
+        assertEquals("[]", $.concat().toString());
+        assertEquals("[]", $.concat(null, null).toString());
+        assertEquals("[1, 2, 3, 4]", $.concat($.list(1, 2), $.list(3, 4)).toString());
+        assertEquals("[1, 2, 3, 4]", $.concat($.list(1, 2), null, $.list(3, 4)).toString());
+    }
 }

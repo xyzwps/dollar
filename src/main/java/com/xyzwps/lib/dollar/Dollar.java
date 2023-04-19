@@ -33,6 +33,7 @@ public final class Dollar {
      * @param <T> array element type
      * @return list tube
      */
+    @SafeVarargs
     public static <T> ListTube<T> $(T... a) {
         return new ListTubeFromList<>(Arrays.asList(a));
     }
@@ -61,7 +62,7 @@ public final class Dollar {
          * If list can't be split evenly, the final chunk will be the remaining elements.
          *
          * @param list The list to handle
-         * @param size Chunk size which should be greater then 0.
+         * @param size Chunk size which should be greater than 0.
          * @param <T>  Element type
          * @return new list of chunks
          */
@@ -116,7 +117,39 @@ public final class Dollar {
             return filter(list, it -> !isFalsey(it));
         }
 
-        // TODO:
+
+        /**
+         * Creates a new list which concatenating all lists in order.
+         *
+         * @param lists The lists to concatenate
+         * @param <T>   Element type
+         * @return concatenated new list
+         */
+        @SafeVarargs
+        public static <T> List<T> concat(List<T>... lists) {
+            if (lists.length == 0) {
+                return new ArrayList<>();
+            }
+
+            int capacity = 0;
+            for (List<T> list : lists) {
+                if (isNotEmpty(list)) {
+                    capacity += list.size();
+                }
+            }
+
+            if (capacity == 0) {
+                return new ArrayList<>();
+            }
+
+            ArrayList<T> result = new ArrayList<>(capacity);
+            for (List<T> list : lists) {
+                if (isNotEmpty(list)) {
+                    result.addAll(list);
+                }
+            }
+            return result;
+        }
 
 
         /**
@@ -128,6 +161,7 @@ public final class Dollar {
          * @return new filtered list
          */
         public static <T> List<T> filter(List<T> list, Predicate<T> predicate) {
+            //noinspection unchecked
             Predicate<T> p = predicate == null ? Utils.ALWAYS_TRUE_PREDICATE : predicate;
             return filter(list, (e, i) -> p.test(e));
         }
@@ -145,6 +179,8 @@ public final class Dollar {
             if (list == null) {
                 return new ArrayList<>();
             }
+
+            //noinspection unchecked
             BiPredicate<T, Integer> p = predicate == null ? Utils.ALWAYS_TRUE_BIPREDICATE : predicate;
 
             List<T> result = new ArrayList<>();
@@ -267,6 +303,18 @@ public final class Dollar {
 
 
         /**
+         * Check if the list is not empty.
+         *
+         * @param list to be checked
+         * @param <T>  list element type
+         * @return true if list {@link #isEmpty(List)} is false
+         */
+        public static <T> boolean isNotEmpty(List<T> list) {
+            return !isEmpty(list);
+        }
+
+
+        /**
          * Create a list.
          *
          * @param elements elements of list
@@ -282,6 +330,7 @@ public final class Dollar {
         private $() throws IllegalAccessException {
             throw new IllegalAccessException("???");
         }
+
     }
 
     private Dollar() throws IllegalAccessException {
