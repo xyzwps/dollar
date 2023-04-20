@@ -24,8 +24,6 @@ public class MapTubeForGroupBy<K, V> extends MapTube<K, List<V>> {
             Capsule<Pair<K, V>> c = upstream.next();
             if (c instanceof Capsule.Done) {
                 this.itr = new MapEntryIterator<>(map);
-            } else if (c instanceof Capsule.Failure) {
-                return Capsule.failed(((Capsule.Failure<Pair<K, V>>) c).cause());
             } else if (c instanceof Capsule.Carrier) {
                 Pair<K, V> pair = ((Capsule.Carrier<Pair<K, V>>) c).value();
                 List<V> list = map.computeIfAbsent(pair.key(), k -> new ArrayList<>());

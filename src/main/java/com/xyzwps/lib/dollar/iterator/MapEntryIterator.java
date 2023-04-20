@@ -5,6 +5,12 @@ import com.xyzwps.lib.dollar.tube.Pair;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * Iterate over the entry set of a map in default order.
+ *
+ * @param <K> map key type
+ * @param <V> map value type
+ */
 public class MapEntryIterator<K, V> implements Iterator<Pair<K, V>> {
 
     private final Map<K, V> map;

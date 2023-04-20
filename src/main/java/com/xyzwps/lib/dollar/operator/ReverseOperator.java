@@ -7,6 +7,11 @@ import com.xyzwps.lib.dollar.tube.Tube;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+/**
+ * Used by reserve method.
+ *
+ * @param <T> source element type.
+ */
 public class ReverseOperator<T> implements Operator<T, T> {
 
     private Iterator<T> itr;
@@ -21,8 +26,6 @@ public class ReverseOperator<T> implements Operator<T, T> {
                 Capsule<T> c = upstream.next();
                 if (c instanceof Capsule.Done) {
                     go = false;
-                } else if (c instanceof Capsule.Failure) {
-                    return c;
                 } else if (c instanceof Capsule.Carrier) {
                     list.add(((Capsule.Carrier<T>) c).value());
                 } else {

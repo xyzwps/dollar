@@ -7,6 +7,12 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.function.Function;
 
+/**
+ * Used by uniqueBy method
+ *
+ * @param <T> element type
+ * @param <K> element key type
+ */
 public class UniqueByOperator<T, K> implements Operator<T, T> {
 
     private final Function<T, K> toKey;
@@ -21,8 +27,6 @@ public class UniqueByOperator<T, K> implements Operator<T, T> {
         while (true) {
             Capsule<T> c = upstream.next();
             if (c instanceof Capsule.Done) {
-                return c;
-            } else if (c instanceof Capsule.Failure) {
                 return c;
             } else if (c instanceof Capsule.Carrier) {
                 K k = this.toKey.apply(((Capsule.Carrier<T>) c).value());

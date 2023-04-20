@@ -67,6 +67,8 @@ public abstract class ListTube<T> implements Tube<T> {
         return new ListTubeStage<>(new FilterOperator<>(Objects.requireNonNull(predicateFn)), this);
     }
 
+    // TODO: filter support bi-predicate
+
 
     /**
      * Collect the first element.
@@ -124,6 +126,7 @@ public abstract class ListTube<T> implements Tube<T> {
     public int forEach(Consumer<T> handler) {
         return this.collect(new ForEachCollector<>(handler));
     }
+    // TODO: forEach support bi-consumer
 
 
     /**
@@ -140,6 +143,17 @@ public abstract class ListTube<T> implements Tube<T> {
      */
     public <K> MapTube<K, List<T>> groupBy(Function<T, K> toKey) {
         return new MapTubeForGroupBy<>(this.map(it -> Pair.of(toKey.apply(it), it)));
+    }
+
+
+    /**
+     * Alias for {@link #first()}
+     *
+     * @return first element
+     * @see #first()
+     */
+    public Optional<T> head() {
+        return this.first();
     }
 
 
@@ -191,6 +205,7 @@ public abstract class ListTube<T> implements Tube<T> {
     public <R> ListTube<R> map(Function<T, R> mapFn) {
         return new ListTubeStage<>(new MapOperator<>(Objects.requireNonNull(mapFn)), this);
     }
+    // TODO: map support bi-function
 
 
     /**
@@ -219,7 +234,7 @@ public abstract class ListTube<T> implements Tube<T> {
      *       list.add(it);
      *       return list;
      * };
-     * $(1, 2, 3).reduce(new ArrayList&lt;Integer&gt;(), accelerator) => [1, 2, 3]the result of the reduction
+     * $(1, 2, 3).reduce(new ArrayList&lt;Integer&gt;(), accelerator) => [1, 2, 3]
      * </pre>
      *
      * @param identity    the identity element of accelerator

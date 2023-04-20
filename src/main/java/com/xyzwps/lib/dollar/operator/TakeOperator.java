@@ -3,6 +3,11 @@ package com.xyzwps.lib.dollar.operator;
 import com.xyzwps.lib.dollar.tube.Capsule;
 import com.xyzwps.lib.dollar.tube.Tube;
 
+/**
+ * Used by take method.
+ *
+ * @param <T> element type
+ */
 public class TakeOperator<T> implements Operator<T, T> {
 
     private final int n;

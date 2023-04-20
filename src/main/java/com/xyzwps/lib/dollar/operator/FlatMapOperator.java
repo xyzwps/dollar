@@ -6,6 +6,12 @@ import com.xyzwps.lib.dollar.tube.Tube;
 import java.util.Objects;
 import java.util.function.Function;
 
+/**
+ * Used by flatMap method.
+ *
+ * @param <T> source element type
+ * @param <R> flatMap result elements result
+ */
 public class FlatMapOperator<T, R> implements Operator<T, R> {
 
     private final Function<T, Tube<R>> flatMapFn;
@@ -23,8 +29,6 @@ public class FlatMapOperator<T, R> implements Operator<T, R> {
                 Capsule<T> c = upstream.next();
                 if (c instanceof Capsule.Done) {
                     return (Capsule<R>) c;
-                } else if (c instanceof Capsule.Failure) {
-                    return (Capsule<R>) c;
                 } else if (c instanceof Capsule.Carrier) {
                     T v = ((Capsule.Carrier<T>) c).value();
                     this.subTube = this.flatMapFn.apply(v);
@@ -37,8 +41,6 @@ public class FlatMapOperator<T, R> implements Operator<T, R> {
             Capsule<R> c = subTube.next();
             if (c instanceof Capsule.Done) {
                 this.subTube = null;
-            } else if (c instanceof Capsule.Failure) {
-                return c;
             } else if (c instanceof Capsule.Carrier) {
                 return c;
             } else {

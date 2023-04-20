@@ -5,6 +5,11 @@ import com.xyzwps.lib.dollar.tube.Tube;
 
 import java.util.HashSet;
 
+/**
+ * Used by unique method
+ *
+ * @param <T> element type
+ */
 public class UniqueOperator<T> implements Operator<T, T> {
 
     private final HashSet<T> set;
@@ -18,8 +23,6 @@ public class UniqueOperator<T> implements Operator<T, T> {
         while (true) {
             Capsule<T> c = upstream.next();
             if (c instanceof Capsule.Done) {
-                return c;
-            } else if (c instanceof Capsule.Failure) {
                 return c;
             } else if (c instanceof Capsule.Carrier) {
                 T t = ((Capsule.Carrier<T>) c).value();
