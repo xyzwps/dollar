@@ -11,7 +11,7 @@ import java.util.Map;
  * @param <K> map key type
  * @param <V> map value type
  */
-public class MapEntryIterator<K, V> implements Iterator<Pair<K, V>> {
+public final class MapEntryIterator<K, V> implements Iterator<Pair<K, V>> {
 
     private final Map<K, V> map;
     private final Iterator<K> keyItr;

@@ -9,7 +9,7 @@ import java.util.Objects;
  *
  * @param <T> element type
  */
-public class ArrayListReverseIterator<T> implements Iterator<T> {
+public final class ArrayListReverseIterator<T> implements Iterator<T> {
 
     private final ArrayList<T> list;
 

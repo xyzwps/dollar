@@ -123,7 +123,7 @@ public abstract class ListTube<T> implements Tube<T> {
      * @return next tube
      */
     public <R> ListTube<R> flatten(Function<T, List<R>> flattenFn) {
-        return new ListTubeStage<>(new FlatMapOperator<>(it -> new ListTubeFromList<>(flattenFn.apply(it))), this);
+        return new ListTubeStage<>(new FlatMapOperator<>(it -> new ListTubeFromIterator<>(flattenFn.apply(it).iterator())), this);
     }
 
 

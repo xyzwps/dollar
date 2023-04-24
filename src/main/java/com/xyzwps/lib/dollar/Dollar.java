@@ -1,5 +1,6 @@
 package com.xyzwps.lib.dollar;
 
+import com.xyzwps.lib.dollar.iterator.ArrayIterator;
 import com.xyzwps.lib.dollar.tube.*;
 
 import java.util.*;
@@ -19,7 +20,7 @@ public final class Dollar {
      * @return list tube
      */
     public static <T> ListTube<T> $(List<T> list) {
-        return new ListTubeFromList<>(list);
+        return new ListTubeFromIterator<>(list.iterator());
     }
 
 
@@ -344,7 +345,7 @@ public final class Dollar {
          */
         @SafeVarargs
         public static <T> ListTube<T> just(T... a) {
-            return new ListTubeFromList<>(Arrays.asList(a));
+            return new ListTubeFromIterator<>(new ArrayIterator<>(a));
         }
 
 
