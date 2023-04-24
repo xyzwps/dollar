@@ -1,9 +1,6 @@
 package com.xyzwps.lib.dollar;
 
-import com.xyzwps.lib.dollar.tube.ListTube;
-import com.xyzwps.lib.dollar.tube.ListTubeFromList;
-import com.xyzwps.lib.dollar.tube.MapTube;
-import com.xyzwps.lib.dollar.tube.MapTubeFromMap;
+import com.xyzwps.lib.dollar.tube.*;
 
 import java.util.*;
 import java.util.function.BiPredicate;
@@ -23,19 +20,6 @@ public final class Dollar {
      */
     public static <T> ListTube<T> $(List<T> list) {
         return new ListTubeFromList<>(list);
-    }
-
-
-    /**
-     * Create a tube from an array.
-     *
-     * @param a   source array
-     * @param <T> array element type
-     * @return list tube
-     */
-    @SafeVarargs
-    public static <T> ListTube<T> $(T... a) {
-        return new ListTubeFromList<>(Arrays.asList(a));
     }
 
 
@@ -352,6 +336,19 @@ public final class Dollar {
 
 
         /**
+         * Create a tube from an array.
+         *
+         * @param a   source array
+         * @param <T> array element type
+         * @return list tube
+         */
+        @SafeVarargs
+        public static <T> ListTube<T> just(T... a) {
+            return new ListTubeFromList<>(Arrays.asList(a));
+        }
+
+
+        /**
          * Create a list.
          *
          * @param elements elements of list
@@ -455,6 +452,18 @@ public final class Dollar {
             }
             sb.append(string);
             return sb.toString();
+        }
+
+
+        /**
+         * Handle a range.
+         *
+         * @param start range start - included
+         * @param end   range end - excluded
+         * @return list tube
+         */
+        public static ListTube<Integer> range(int start, int end) {
+            return new ListTubeFromIterator<>(new Range(start, end).toIterator());
         }
 
 

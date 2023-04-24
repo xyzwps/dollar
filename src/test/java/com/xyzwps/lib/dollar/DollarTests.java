@@ -156,4 +156,12 @@ class DollarTests {
 
         assertEquals("+++---***", $.padStart("+++---***", 6, "abcd"));
     }
+
+
+    @Test
+    void range() {
+        assertEquals("[1, 2, 3]", $.range(1, 4).value().toString());
+        assertEquals("[]", $.range(1, 1).value().toString());
+        assertEquals("[]", $.range(1, -1).value().toString());
+    }
 }

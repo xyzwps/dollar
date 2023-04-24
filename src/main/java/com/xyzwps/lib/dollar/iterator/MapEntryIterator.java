@@ -1,6 +1,6 @@
 package com.xyzwps.lib.dollar.iterator;
 
-import com.xyzwps.lib.dollar.tube.Pair;
+import com.xyzwps.lib.dollar.Pair;
 
 import java.util.Iterator;
 import java.util.Map;

@@ -1,6 +1,6 @@
 package com.xyzwps.lib.dollar.collector;
 
-import com.xyzwps.lib.dollar.tube.Pair;
+import com.xyzwps.lib.dollar.Pair;
 
 import java.util.HashMap;
 import java.util.Map;

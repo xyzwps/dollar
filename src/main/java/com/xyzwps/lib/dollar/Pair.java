@@ -1,4 +1,4 @@
-package com.xyzwps.lib.dollar.tube;
+package com.xyzwps.lib.dollar;
 
 import java.util.Objects;
 

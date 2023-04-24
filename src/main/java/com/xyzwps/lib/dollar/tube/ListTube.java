@@ -2,6 +2,7 @@ package com.xyzwps.lib.dollar.tube;
 
 import com.xyzwps.lib.dollar.Direction;
 import com.xyzwps.lib.dollar.Dollar;
+import com.xyzwps.lib.dollar.Pair;
 import com.xyzwps.lib.dollar.collector.*;
 import com.xyzwps.lib.dollar.function.IndexedFunction;
 import com.xyzwps.lib.dollar.function.IndexedPredicate;

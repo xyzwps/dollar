@@ -32,27 +32,27 @@ class ListApiTests {
 
     @Test
     void compact() {
-        assertEquals("[a]", $("a", "", null).compact().value().toString());
+        assertEquals("[a]", $.just("a", "", null).compact().value().toString());
     }
 
     @Test
     void filter() {
-        assertEquals("[a, ]", $("a", "", null).filter(Objects::nonNull).value().toString());
-        assertEquals("[2, 4]", $(1, 2, 3, 4, 5).filter(i -> i % 2 == 0).value().toString());
-        assertEquals("[1, 3, 5]", $(1, 2, 3, 4, 5).filter((it, i) -> i % 2 == 0).value().toString());
+        assertEquals("[a, ]", $.just("a", "", null).filter(Objects::nonNull).value().toString());
+        assertEquals("[2, 4]", $.just(1, 2, 3, 4, 5).filter(i -> i % 2 == 0).value().toString());
+        assertEquals("[1, 3, 5]", $.just(1, 2, 3, 4, 5).filter((it, i) -> i % 2 == 0).value().toString());
     }
 
     @Test
     void first() {
-        assertEquals(Optional.of(1), $(1, 2).first());
-        assertEquals(Optional.empty(), $().head());
+        assertEquals(Optional.of(1), $.just(1, 2).first());
+        assertEquals(Optional.empty(), $.just().head());
     }
 
     @Test
     void flatMap() {
         assertEquals(
                 "[11, 12, 21, 22]",
-                $(1, 2).flatMap(i -> $(i * 10 + 1, i * 10 + 2)).value().toString()
+                $.just(1, 2).flatMap(i -> $.just(i * 10 + 1, i * 10 + 2)).value().toString()
         );
     }
 
@@ -60,7 +60,7 @@ class ListApiTests {
     void flatten() {
         assertEquals(
                 "[11, 12, 21, 22]",
-                $(1, 2).flatten(i -> Arrays.asList(i * 10 + 1, i * 10 + 2)).value().toString()
+                $.just(1, 2).flatten(i -> Arrays.asList(i * 10 + 1, i * 10 + 2)).value().toString()
         );
     }
 
@@ -68,14 +68,14 @@ class ListApiTests {
     void forEach() {
         {
             List<Integer> t = new ArrayList<>();
-            int count = $(1, 2, 3).forEach(it -> t.add(it));
+            int count = $.just(1, 2, 3).forEach(it -> t.add(it));
             assertEquals(3, count);
             assertEquals("[1, 2, 3]", t.toString());
         }
 
         {
             List<Integer> t = new ArrayList<>();
-            int count = $(1, 2, 3).forEach((it, index) -> t.add(it + (index + 1) * 10));
+            int count = $.just(1, 2, 3).forEach((it, index) -> t.add(it + (index + 1) * 10));
             assertEquals(3, count);
             assertEquals("[11, 22, 33]", t.toString());
         }
@@ -83,7 +83,7 @@ class ListApiTests {
 
     @Test
     void groupBy() {
-        Map<Integer, List<Integer>> map = $(1, 4, 7, 2, 5, 3).groupBy(i -> i % 3).value();
+        Map<Integer, List<Integer>> map = $.just(1, 4, 7, 2, 5, 3).groupBy(i -> i % 3).value();
         assertEquals(3, map.size());
         assertEquals("[1, 4, 7]", map.get(1).toString());
         assertEquals("[2, 5]", map.get(2).toString());
@@ -92,7 +92,7 @@ class ListApiTests {
 
     @Test
     void keyBy() {
-        Map<Integer, Integer> map = $(1, 4, 7, 2, 5, 3).keyBy(i -> i % 3).value();
+        Map<Integer, Integer> map = $.just(1, 4, 7, 2, 5, 3).keyBy(i -> i % 3).value();
         assertEquals(3, map.size());
         assertEquals(1, map.get(1));
         assertEquals(2, map.get(2));
@@ -101,43 +101,43 @@ class ListApiTests {
 
     @Test
     void map() {
-        assertEquals("[2, 4, 6]", $(1, 2, 3).map(i -> i * 2).value().toString());
-        assertEquals("[11, 22, 33]", $(1, 2, 3).map((it, i) -> it + 10 * (i + 1)).value().toString());
+        assertEquals("[2, 4, 6]", $.just(1, 2, 3).map(i -> i * 2).value().toString());
+        assertEquals("[11, 22, 33]", $.just(1, 2, 3).map((it, i) -> it + 10 * (i + 1)).value().toString());
     }
 
     @Test
     void orderBy() {
-        assertEquals("[1, 2, 3, 4, 5]", $(1, 3, 5, 2, 4).orderBy(Function.identity(), Direction.ASC).value().toString());
-        assertEquals("[5, 4, 3, 2, 1]", $(1, 3, 5, 2, 4).orderBy(Function.identity(), Direction.DESC).value().toString());
+        assertEquals("[1, 2, 3, 4, 5]", $.just(1, 3, 5, 2, 4).orderBy(Function.identity(), Direction.ASC).value().toString());
+        assertEquals("[5, 4, 3, 2, 1]", $.just(1, 3, 5, 2, 4).orderBy(Function.identity(), Direction.DESC).value().toString());
     }
 
     @Test
     void reduce() {
-        assertEquals(20, $(1, 2, 3, 4).reduce(10, Integer::sum));
+        assertEquals(20, $.just(1, 2, 3, 4).reduce(10, Integer::sum));
     }
 
     @Test
     void reverse() {
-        assertEquals("[3, 2, 1]", $(1, 2, 3).reverse().value().toString());
+        assertEquals("[3, 2, 1]", $.just(1, 2, 3).reverse().value().toString());
     }
 
     @Test
     void take() {
-        assertEquals("[1, 2]", $(1, 2, 3, 4).take(2).value().toString());
+        assertEquals("[1, 2]", $.just(1, 2, 3, 4).take(2).value().toString());
     }
 
     @Test
     void takeWhile() {
-        assertEquals("[1, 2]", $(1, 2, 3, 4).takeWhile(i -> i < 3).value().toString());
+        assertEquals("[1, 2]", $.just(1, 2, 3, 4).takeWhile(i -> i < 3).value().toString());
     }
 
     @Test
     void unique() {
-        assertEquals("[1, 2, 3]", $(1, 2, 1, 3).unique().value().toString());
+        assertEquals("[1, 2, 3]", $.just(1, 2, 1, 3).unique().value().toString());
     }
 
     @Test
     void uniqueBy() {
-        assertEquals("[1, 2, 3]", $(1, 2, 1, 3, 4).uniqueBy(i -> i % 3).value().toString());
+        assertEquals("[1, 2, 3]", $.just(1, 2, 1, 3, 4).uniqueBy(i -> i % 3).value().toString());
     }
 }

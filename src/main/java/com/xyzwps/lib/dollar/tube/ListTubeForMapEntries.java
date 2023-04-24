@@ -1,5 +1,7 @@
 package com.xyzwps.lib.dollar.tube;
 
+import com.xyzwps.lib.dollar.Pair;
+
 import java.util.Objects;
 import java.util.function.BiFunction;
 
