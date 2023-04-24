@@ -38,6 +38,8 @@ class ListApiTests {
     @Test
     void filter() {
         assertEquals("[a, ]", $("a", "", null).filter(Objects::nonNull).value().toString());
+        assertEquals("[2, 4]", $(1, 2, 3, 4, 5).filter(i -> i % 2 == 0).value().toString());
+        assertEquals("[1, 3, 5]", $(1, 2, 3, 4, 5).filter((it, i) -> i % 2 == 0).value().toString());
     }
 
     @Test
@@ -64,10 +66,19 @@ class ListApiTests {
 
     @Test
     void forEach() {
-        List<Integer> t = new ArrayList<>();
-        int count = $(1, 2, 3).forEach(t::add);
-        assertEquals(3, count);
-        assertEquals("[1, 2, 3]", t.toString());
+        {
+            List<Integer> t = new ArrayList<>();
+            int count = $(1, 2, 3).forEach(it -> t.add(it));
+            assertEquals(3, count);
+            assertEquals("[1, 2, 3]", t.toString());
+        }
+
+        {
+            List<Integer> t = new ArrayList<>();
+            int count = $(1, 2, 3).forEach((it, index) -> t.add(it + (index + 1) * 10));
+            assertEquals(3, count);
+            assertEquals("[11, 22, 33]", t.toString());
+        }
     }
 
     @Test
@@ -91,6 +102,7 @@ class ListApiTests {
     @Test
     void map() {
         assertEquals("[2, 4, 6]", $(1, 2, 3).map(i -> i * 2).value().toString());
+        assertEquals("[11, 22, 33]", $(1, 2, 3).map((it, i) -> it + 10 * (i + 1)).value().toString());
     }
 
     @Test

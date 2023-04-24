@@ -4,6 +4,14 @@ import com.xyzwps.lib.dollar.collector.Collector;
 
 /**
  * Element processing tube.
+ * <p>
+ * A tube is a stage of element process pipeline.
+ * Tubes are lazy. The computations won't
+ * be performed until the {@link #collect(Collector)}
+ * method was invoked.
+ * Generally, tubes cannot be reusable. This means that
+ * once the {@link #collect(Collector)} method was
+ * called, the elements were consumed.
  *
  * @param <T> element type
  */

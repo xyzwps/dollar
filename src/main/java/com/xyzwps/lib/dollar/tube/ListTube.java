@@ -3,15 +3,14 @@ package com.xyzwps.lib.dollar.tube;
 import com.xyzwps.lib.dollar.Direction;
 import com.xyzwps.lib.dollar.Dollar;
 import com.xyzwps.lib.dollar.collector.*;
+import com.xyzwps.lib.dollar.function.IndexedFunction;
+import com.xyzwps.lib.dollar.function.IndexedPredicate;
 import com.xyzwps.lib.dollar.operator.*;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.*;
 
 /**
  * List elements tube.
@@ -60,14 +59,24 @@ public abstract class ListTube<T> implements Tube<T> {
      * $(1, 2, 3, 4, 5).filter(i -> i % 2 == 0).value() => [2, 4]
      * </pre>
      *
-     * @param predicateFn decide which element should be retained
+     * @param predicateFn determine which element should be retained
      * @return next tube
      */
     public ListTube<T> filter(Predicate<T> predicateFn) {
-        return new ListTubeStage<>(new FilterOperator<>(Objects.requireNonNull(predicateFn)), this);
+        Objects.requireNonNull(predicateFn);
+        return this.filter((it, index) -> predicateFn.test(it));
     }
 
-    // TODO: filter support bi-predicate
+
+    /**
+     * Indexed version of {@link #filter(Predicate)}.
+     *
+     * @param predicateFn determine which element should be retained
+     * @return next tube
+     */
+    public ListTube<T> filter(IndexedPredicate<T> predicateFn) {
+        return new ListTubeStage<>(new IndexedFilterOperator<>(predicateFn), this);
+    }
 
 
     /**
@@ -124,9 +133,20 @@ public abstract class ListTube<T> implements Tube<T> {
      * @return handled elements count
      */
     public int forEach(Consumer<T> handler) {
-        return this.collect(new ForEachCollector<>(handler));
+        Objects.requireNonNull(handler);
+        return this.forEach((it, index) -> handler.accept(it));
     }
-    // TODO: forEach support bi-consumer
+
+
+    /**
+     * Iterate all elements.
+     *
+     * @param handler which handling element
+     * @return handled elements count
+     */
+    public int forEach(ObjIntConsumer<T> handler) {
+        return this.collect(new IndexedForEachCollector<>(handler));
+    }
 
 
     /**
@@ -203,9 +223,21 @@ public abstract class ListTube<T> implements Tube<T> {
      * @return next tube
      */
     public <R> ListTube<R> map(Function<T, R> mapFn) {
-        return new ListTubeStage<>(new MapOperator<>(Objects.requireNonNull(mapFn)), this);
+        Objects.requireNonNull(mapFn);
+        return this.map((it, index) -> mapFn.apply(it));
     }
-    // TODO: map support bi-function
+
+
+    /**
+     * Indexed version of {@link #map(Function)}.
+     *
+     * @param mapFn mapper function
+     * @param <R>   element type of map result
+     * @return next tube
+     */
+    public <R> ListTube<R> map(IndexedFunction<T, R> mapFn) {
+        return new ListTubeStage<>(new IndexedMapOperator<>(mapFn), this);
+    }
 
 
     /**

@@ -1,5 +1,6 @@
 package com.xyzwps.lib.dollar.operator;
 
+import com.xyzwps.lib.dollar.function.IndexedPredicate;
 import com.xyzwps.lib.dollar.tube.Capsule;
 import com.xyzwps.lib.dollar.tube.Tube;
 
@@ -11,11 +12,12 @@ import java.util.function.Predicate;
  *
  * @param <T> element type
  */
-public class FilterOperator<T> implements Operator<T, T> {
+public class IndexedFilterOperator<T> implements Operator<T, T> {
 
-    private final Predicate<T> predicateFn;
+    private final IndexedPredicate<T> predicateFn;
+    private int index = 0;
 
-    public FilterOperator(Predicate<T> predicateFn) {
+    public IndexedFilterOperator(IndexedPredicate<T> predicateFn) {
         this.predicateFn = Objects.requireNonNull(predicateFn);
     }
 
@@ -27,7 +29,7 @@ public class FilterOperator<T> implements Operator<T, T> {
                 return c;
             } else if (c instanceof Capsule.Carrier) {
                 T v = ((Capsule.Carrier<T>) c).value();
-                if (predicateFn.test(v)) {
+                if (predicateFn.test(v, this.index++)) {
                     return Capsule.carry(v);
                 }
             } else {
