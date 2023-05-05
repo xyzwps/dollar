@@ -4,7 +4,9 @@ import com.xyzwps.lib.dollar.iterator.ArrayIterator;
 import com.xyzwps.lib.dollar.tube.*;
 
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -192,6 +194,7 @@ public final class Dollar {
             return result;
         }
 
+
         /**
          * Create a {@link HashMap} with a key-value pair.
          *
@@ -350,6 +353,19 @@ public final class Dollar {
 
 
         /**
+         * Count the element of a <code>collection</code>.
+         * Return 0 if <code>collection</code> is <code>null</code>.
+         *
+         * @param collection which to handle
+         * @param <E>        collection element type
+         * @return count of elements in collection
+         */
+        public static <E> int length(Collection<E> collection) {
+            return collection == null ? 0 : collection.size();
+        }
+
+
+        /**
          * Create a list.
          *
          * @param elements elements of list
@@ -359,6 +375,30 @@ public final class Dollar {
         @SafeVarargs
         public static <T> List<T> list(T... elements) {
             return Arrays.asList(elements);
+        }
+
+
+        /**
+         * Map a list to another.
+         *
+         * @param list  which to handle
+         * @param mapFn map function
+         * @param <T>   element type of list
+         * @param <R>   map result type
+         * @return new list
+         */
+        public static <T, R> List<R> map(List<T> list, Function<T, R> mapFn) {
+            if (mapFn == null) {
+                throw new IllegalArgumentException("Argument mapFn cannot be null");
+            }
+
+            if (list == null || list.isEmpty()) {
+                return new ArrayList<>();
+            }
+
+            List<R> result = new ArrayList<>(list.size());
+            list.forEach(it -> result.add(mapFn.apply(it)));
+            return result;
         }
 
 
@@ -465,6 +505,73 @@ public final class Dollar {
          */
         public static ListTube<Integer> range(int start, int end) {
             return new ListTubeFromIterator<>(new Range(start, end).toIterator());
+        }
+
+
+        /**
+         * {@link #zip(List, List, BiFunction) zip} two lists into a list of pairs.
+         *
+         * @param list1 first list
+         * @param list2 second list
+         * @param <E1>  element type of the first list
+         * @param <E2>  element type of the second list
+         * @return a list of pairs
+         */
+        public static <E1, E2> List<Pair<E1, E2>> zip(List<E1> list1, List<E2> list2) {
+            return zip(list1, list2, Pair::new);
+        }
+
+
+        /**
+         * Combine the elements at the same position from two lists into one object in order.
+         *
+         * @param list1   first list
+         * @param list2   second list
+         * @param combine combine function.
+         * @param <E1>    element type of the first list
+         * @param <E2>    element type of the second list
+         * @return a list of pairs
+         */
+        public static <E1, E2, E> List<E> zip(List<E1> list1, List<E2> list2, BiFunction<E1, E2, E> combine) {
+            if (combine == null) {
+                throw new IllegalArgumentException("Argument combine cannot be null");
+            }
+
+            int l1 = $.length(list1);
+            int l2 = $.length(list2);
+
+            int state = (l1 > 0 ? 0b10 : 0b00) | (l2 > 0 ? 0b01 : 0b00);
+            switch (state) {
+                case 0b00:
+                    return new ArrayList<>();
+                case 0b01:
+                    return $.map(list2, it -> combine.apply(null, it));
+                case 0b10:
+                    return $.map(list1, it -> combine.apply(it, null));
+                case 0b11: {
+                    int length = Math.max(l1, l2);
+                    List<E> result = new ArrayList<>(length);
+                    if (list1 instanceof RandomAccess && list2 instanceof RandomAccess) {
+                        for (int i = 0; i < length; i++) {
+                            result.add(combine.apply(
+                                    i < l1 ? list1.get(i) : null,
+                                    i < l2 ? list2.get(i) : null
+                            ));
+                        }
+                    } else {
+                        Iterator<E1> itr1 = list1.listIterator();
+                        Iterator<E2> itr2 = list2.listIterator();
+                        for (int i = 0; i < length; i++) {
+                            result.add(combine.apply(
+                                    itr1.hasNext() ? itr1.next() : null,
+                                    itr2.hasNext() ? itr2.next() : null
+                            ));
+                        }
+                    }
+                    return result;
+                }
+            }
+            throw new Unreachable();
         }
 
 

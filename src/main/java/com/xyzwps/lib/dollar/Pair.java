@@ -71,7 +71,7 @@ public final class Pair<F, S> {
         if (obj == null) return false;
 
         if (obj instanceof Pair) {
-            Pair p = (Pair) obj;
+            Pair<?, ?> p = (Pair<?, ?>) obj;
             return Objects.equals(this.first, p.first) && Objects.equals(this.second, p.second);
         } else {
             return false;
