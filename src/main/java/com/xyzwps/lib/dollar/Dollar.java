@@ -22,7 +22,7 @@ public final class Dollar {
      * @return list tube
      */
     public static <T> ListTube<T> $(List<T> list) {
-        return new ListTubeFromIterator<>(list.iterator());
+        return new ListTubeFromIterator<>(list == null ? Utils.emptyIterator() : list.iterator());
     }
 
 

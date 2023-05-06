@@ -14,6 +14,11 @@ import static org.junit.jupiter.api.Assertions.*;
 class DollarTests {
 
     @Test
+    void listTube() {
+        assertEquals("[]", $((List<Integer>) null).value().toString());
+    }
+
+    @Test
     void chunk() {
         assertEquals("[]", $.chunk($.list(), 6).toString());
         assertEquals("[]", $.chunk(null, 6).toString());
