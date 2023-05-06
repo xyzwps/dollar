@@ -13,6 +13,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.*;
 
+import static com.xyzwps.lib.dollar.Dollar.*;
+
 /**
  * List elements tube.
  *
@@ -116,14 +118,17 @@ public abstract class ListTube<T> implements Tube<T> {
      * Examples:
      * <pre>
      * $(1, 2, 3).flatten(i -> $.list(i * 2, i * 3)).value() => [2, 3, 4, 6, 6, 9]
+     * $(1, 2, 3).flatten(i -> null).value() => []
      * </pre>
+     * <p>
      *
      * @param flattenFn which flatten elements to a list
      * @param <R>       flatted elements type
      * @return next tube
      */
     public <R> ListTube<R> flatten(Function<T, List<R>> flattenFn) {
-        return new ListTubeStage<>(new FlatMapOperator<>(it -> new ListTubeFromIterator<>(flattenFn.apply(it).iterator())), this);
+        Function<T, List<R>> nonNullFlattenFn = (it) -> $.defaultTo(flattenFn.apply(it), $.list());
+        return new ListTubeStage<>(new FlatMapOperator<>(it -> new ListTubeFromIterator<>(nonNullFlattenFn.apply(it).iterator())), this);
     }
 
 
@@ -361,6 +366,36 @@ public abstract class ListTube<T> implements Tube<T> {
      */
     public List<T> value() {
         return this.collect(new ListCollector<>());
+    }
+
+
+    /**
+     * Zip to a list of pairs.
+     *
+     * @param list zipped list
+     * @param <R>  type of elements in zipped list
+     * @return zipped pairs tube
+     */
+    public <R> ListTube<Pair<T, R>> zip(List<R> list) {
+        return this.zip(list, Pair::of);
+    }
+
+
+    /**
+     * Zip to a list of pairs.
+     *
+     * @param list      zipped list
+     * @param combineFn zip combine function
+     * @param <R>       type of elements in zipped list
+     * @param <S>       zip result type
+     * @return zipped pairs tube
+     */
+    public <R, S> ListTube<S> zip(List<R> list, BiFunction<T, R, S> combineFn) {
+        if ($.isEmpty(list)) {
+            return this.map(it -> combineFn.apply(it, null));
+        } else {
+            return new ListTubeStage<>(new ZipOperator<>(list.iterator(), combineFn), this);
+        }
     }
 
 

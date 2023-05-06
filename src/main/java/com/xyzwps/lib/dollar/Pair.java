@@ -83,6 +83,12 @@ public final class Pair<F, S> {
         return Objects.hash(this.first, this.second);
     }
 
+
+    @Override
+    public String toString() {
+        return "(" + this.first + ", " + this.second + ")";
+    }
+
     /**
      * Pair factory method.
      *
