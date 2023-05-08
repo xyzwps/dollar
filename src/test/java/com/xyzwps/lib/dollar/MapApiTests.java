@@ -38,4 +38,23 @@ class MapApiTests {
         assertEquals(2, map.get(2));
         assertEquals(3, map.get(0));
     }
+
+
+    @Test
+    void filter() {
+        TreeMap<Integer, Integer> treeMap = new TreeMap<>();
+        treeMap.put(1, 1);
+        treeMap.put(2, 2);
+        treeMap.put(3, 3);
+        treeMap.put(4, 4);
+        treeMap.put(5, 5);
+        treeMap.put(6, 6);
+        Map<Integer, Integer> map = $(treeMap)
+                .filter((key, value) -> value % 2 == 0)
+                .value();
+        assertEquals(2, map.get(2));
+        assertEquals(4, map.get(4));
+        assertEquals(6, map.get(6));
+        assertEquals(3, map.size());
+    }
 }

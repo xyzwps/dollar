@@ -62,22 +62,23 @@ public abstract class ListTube<T> implements Tube<T> {
      * $(1, 2, 3, 4, 5).filter(i -> i % 2 == 0).value() => [2, 4]
      * </pre>
      *
-     * @param predicateFn determine which element should be retained
+     * @param predicateFn determine which element should be retained. Not null.
      * @return next tube
      */
     public ListTube<T> filter(Predicate<T> predicateFn) {
         Objects.requireNonNull(predicateFn);
-        return this.filter((it, index) -> predicateFn.test(it));
+        return new ListTubeStage<>(new FilterOperator<>(predicateFn), this);
     }
 
 
     /**
      * Indexed version of {@link #filter(Predicate)}.
      *
-     * @param predicateFn determine which element should be retained
+     * @param predicateFn determine which element should be retained. Not null.
      * @return next tube
      */
     public ListTube<T> filter(IndexedPredicate<T> predicateFn) {
+        Objects.requireNonNull(predicateFn);
         return new ListTubeStage<>(new IndexedFilterOperator<>(predicateFn), this);
     }
 

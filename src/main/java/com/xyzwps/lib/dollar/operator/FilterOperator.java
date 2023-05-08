@@ -12,15 +12,14 @@ import java.util.function.Predicate;
  *
  * @param <T> element type
  */
-public class IndexedFilterOperator<T> implements Operator<T, T> {
+public class FilterOperator<T> implements Operator<T, T> {
 
-    private final IndexedPredicate<T> predicateFn;
-    private int index = 0;
+    private final Predicate<T> predicateFn;
 
     /**
      * @param predicateFn never be null
      */
-    public IndexedFilterOperator(IndexedPredicate<T> predicateFn) {
+    public FilterOperator(Predicate<T> predicateFn) {
         this.predicateFn = predicateFn;
     }
 
@@ -32,7 +31,7 @@ public class IndexedFilterOperator<T> implements Operator<T, T> {
                 return c;
             } else if (c instanceof Capsule.Carrier) {
                 T v = ((Capsule.Carrier<T>) c).value();
-                if (predicateFn.test(v, this.index++)) {
+                if (predicateFn.test(v)) {
                     return Capsule.carry(v);
                 }
             } else {
