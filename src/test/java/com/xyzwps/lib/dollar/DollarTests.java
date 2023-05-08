@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
@@ -16,6 +17,11 @@ class DollarTests {
     @Test
     void listTube() {
         assertEquals("[]", $((List<Integer>) null).value().toString());
+    }
+
+    @Test
+    void mapTube() {
+        assertEquals("{}", $((Map<String, Integer>) null).value().toString());
     }
 
     @Test
@@ -58,7 +64,7 @@ class DollarTests {
         assertEquals("[]", $.filter(nullList, i -> i % 2 == 0).toString());
 
         Predicate<Integer> nullPredicate = null;
-        assertEquals("[1, 2, 3, 4, 5]", $.filter($.list(1, 2, 3, 4, 5), nullPredicate).toString());
+        assertThrows(NullPointerException.class, () -> $.filter($.list(1, 2, 3, 4, 5), nullPredicate).toString());
     }
 
     @Test
@@ -69,7 +75,7 @@ class DollarTests {
         assertEquals("[]", $.filter(nullList, (e, i) -> i % 2 == 0).toString());
 
         BiPredicate<Integer, Integer> nullPredicate = null;
-        assertEquals("[1, 2, 3, 4, 5]", $.filter($.list(1, 2, 3, 4, 5), nullPredicate).toString());
+        assertThrows(NullPointerException.class, () -> $.filter($.list(1, 2, 3, 4, 5), nullPredicate).toString());
     }
 
     @Test

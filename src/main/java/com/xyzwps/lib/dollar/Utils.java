@@ -1,5 +1,7 @@
 package com.xyzwps.lib.dollar;
 
+import com.xyzwps.lib.dollar.iterator.EmptyIterator;
+
 import java.util.*;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
@@ -9,26 +11,6 @@ import java.util.function.Predicate;
  * Dollar utilities.
  */
 public final class Utils {
-
-    /**
-     * Create an empty iterator.
-     *
-     * @param <T> element type
-     * @return an empty iterator
-     */
-    public static <T> Iterator<T> emptyIterator() {
-        return new Iterator<T>() {
-            @Override
-            public boolean hasNext() {
-                return false;
-            }
-
-            @Override
-            public T next() {
-                return null;
-            }
-        };
-    }
 
 
     /**

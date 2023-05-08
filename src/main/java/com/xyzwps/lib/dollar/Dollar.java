@@ -1,6 +1,7 @@
 package com.xyzwps.lib.dollar;
 
 import com.xyzwps.lib.dollar.iterator.ArrayIterator;
+import com.xyzwps.lib.dollar.iterator.EmptyIterator;
 import com.xyzwps.lib.dollar.tube.*;
 
 import java.util.*;
@@ -22,7 +23,7 @@ public final class Dollar {
      * @return list tube
      */
     public static <T> ListTube<T> $(List<T> list) {
-        return new ListTubeFromIterator<>(list == null ? Utils.emptyIterator() : list.iterator());
+        return new ListTubeFromIterator<>(list == null ? EmptyIterator.create() : list.iterator());
     }
 
 
@@ -35,7 +36,7 @@ public final class Dollar {
      * @return map tube
      */
     public static <K, V> MapTube<K, V> $(Map<K, V> map) {
-        return new MapTubeFromMap<>(map);
+        return new MapTubeFromMap<>(map == null ? new HashMap<>() : map);
     }
 
 
@@ -157,14 +158,13 @@ public final class Dollar {
          * Iterate over the list and retaining the elements which are predicated true.
          *
          * @param list      The list to iterate. Null is acceptable.
-         * @param predicate Predicate function. Null will be considered as always true.
+         * @param predicate Predicate function. Cannot be null.
          * @param <T>       Element type
          * @return new filtered list
          */
         public static <T> List<T> filter(List<T> list, Predicate<T> predicate) {
-            //noinspection unchecked
-            Predicate<T> p = predicate == null ? Utils.ALWAYS_TRUE_PREDICATE : predicate;
-            return filter(list, (e, i) -> p.test(e));
+            Objects.requireNonNull(predicate);
+            return filter(list, (e, i) -> predicate.test(e));
         }
 
 
@@ -172,22 +172,20 @@ public final class Dollar {
          * Iterate over the list and retaining the elements which are predicated true.
          *
          * @param list      The list to iterate. Null is acceptable.
-         * @param predicate Predicate function with element index. Null will be considered as always true.
+         * @param predicate Predicate function with element index. Cannot be null.
          * @param <T>       Element type
          * @return new filtered list
          */
         public static <T> List<T> filter(List<T> list, BiPredicate<T, Integer> predicate) {
+            Objects.requireNonNull(predicate);
             if (list == null) {
                 return new ArrayList<>();
             }
 
-            //noinspection unchecked
-            BiPredicate<T, Integer> p = predicate == null ? Utils.ALWAYS_TRUE_BIPREDICATE : predicate;
-
             List<T> result = new ArrayList<>();
             int i = 0;
             for (T element : list) {
-                if (p.test(element, i++)) {
+                if (predicate.test(element, i++)) {
                     result.add(element);
                 }
             }
@@ -278,14 +276,14 @@ public final class Dollar {
 
 
         /**
-         * Check if the list is empty or not.
+         * Check if the collection is empty or not.
          *
-         * @param list to be checked
-         * @param <T>  list element type
-         * @return true if list is null or list has no elements
+         * @param collection to be checked
+         * @param <T>        type of elements
+         * @return true if collection is null or has no elements
          */
-        public static <T> boolean isEmpty(List<T> list) {
-            return list == null || list.isEmpty();
+        public static <T> boolean isEmpty(Collection<T> collection) {
+            return collection == null || collection.isEmpty();
         }
 
 
@@ -316,14 +314,14 @@ public final class Dollar {
 
 
         /**
-         * Check if the list is not empty.
+         * Check if the collection is not empty.
          *
-         * @param list to be checked
-         * @param <T>  list element type
-         * @return true if list {@link #isEmpty(List)} is false
+         * @param collection to be checked
+         * @param <T>        type of elements
+         * @return true if collection {@link #isEmpty(Collection)} is false
          */
-        public static <T> boolean isNotEmpty(List<T> list) {
-            return !isEmpty(list);
+        public static <T> boolean isNotEmpty(Collection<T> collection) {
+            return !isEmpty(collection);
         }
 
 
