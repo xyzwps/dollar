@@ -25,7 +25,7 @@ public abstract class ListTube<T> implements Tube<T> {
     /**
      * Examples:
      * <pre>
-     * $(1, 2, 3, 4, 5).chunk(2).value() => [[1,2], [3,4], [5]]
+     * $.just(1, 2, 3, 4, 5).chunk(2).value() => [[1,2], [3,4], [5]]
      * </pre>
      *
      * @param size The length of each chunk, should be greater than 0.
@@ -42,7 +42,7 @@ public abstract class ListTube<T> implements Tube<T> {
      * <p>
      * Examples:
      * <pre>
-     * $(null, 1, 0, true, false, "a", "").compact().value() => [1, true, ""]
+     * $.just(null, 1, 0, true, false, "a", "").compact().value() => [1, true, ""]
      * </pre>
      *
      * @return next tube
@@ -58,8 +58,8 @@ public abstract class ListTube<T> implements Tube<T> {
      * <p>
      * Examples:
      * <pre>
-     * $(1, 2, 3, 4, 5).filter(i -> i % 2 == 1).value() => [1, 3, 5]
-     * $(1, 2, 3, 4, 5).filter(i -> i % 2 == 0).value() => [2, 4]
+     * $.just(1, 2, 3, 4, 5).filter(i -> i % 2 == 1).value() => [1, 3, 5]
+     * $.just(1, 2, 3, 4, 5).filter(i -> i % 2 == 0).value() => [2, 4]
      * </pre>
      *
      * @param predicateFn determine which element should be retained. Not null.
@@ -88,9 +88,9 @@ public abstract class ListTube<T> implements Tube<T> {
      * <p>
      * Examples:
      * <pre>
-     * $(1, 2).first()          => Optional.of(1)
-     * $((Object) null).first() => Optional.empty()
-     * $().first()              => Optional.empty()
+     * $.just(1, 2).first()          => Optional.of(1)
+     * $.just((Object) null).first() => Optional.empty()
+     * $.just().first()              => Optional.empty()
      * </pre>
      *
      * @return first element
@@ -103,7 +103,7 @@ public abstract class ListTube<T> implements Tube<T> {
     /**
      * Examples:
      * <pre>
-     * $(1, 2, 3).flatMap(i -> $(i*2, i*3)).value() => [2, 3, 4, 6, 6, 9]
+     * $.just(1, 2, 3).flatMap(i -> $.just(i*2, i*3)).value() => [2, 3, 4, 6, 6, 9]
      * </pre>
      *
      * @param flatMapFn which flatMap elements to a tube
@@ -118,8 +118,8 @@ public abstract class ListTube<T> implements Tube<T> {
     /**
      * Examples:
      * <pre>
-     * $(1, 2, 3).flatten(i -> $.list(i * 2, i * 3)).value() => [2, 3, 4, 6, 6, 9]
-     * $(1, 2, 3).flatten(i -> null).value() => []
+     * $.just(1, 2, 3).flatten(i -> $.list(i * 2, i * 3)).value() => [2, 3, 4, 6, 6, 9]
+     * $.just(1, 2, 3).flatten(i -> null).value() => []
      * </pre>
      * <p>
      *
@@ -161,7 +161,7 @@ public abstract class ListTube<T> implements Tube<T> {
      * <p>
      * Examples:
      * <pre>
-     * $(1, 2, 3, 4, 5).groupBy(i -> i % 2 == 0 ? "even" : "odd").value() => { "odd": [1, 3, 5], "even": [2, 4] }
+     * $.just(1, 2, 3, 4, 5).groupBy(i -> i % 2 == 0 ? "even" : "odd").value() => { "odd": [1, 3, 5], "even": [2, 4] }
      * </pre>
      *
      * @param toKey to calculate element key
@@ -188,8 +188,8 @@ public abstract class ListTube<T> implements Tube<T> {
      * Join the string representation(<code>toString()</code>) of all elements
      * with specified <code>sep</code>arator.
      * <pre>
-     * $("hello", "world").join(", ") => "hello, world"
-     * $(1, 2, 3, 4, 5).join(" - ")   => "1 - 2 - 3 - 4 - 5"
+     * $.just("hello", "world").join(", ") => "hello, world"
+     * $.just(1, 2, 3, 4, 5).join(" - ")   => "1 - 2 - 3 - 4 - 5"
      * </pre>
      *
      * @param sep joining separator string
@@ -206,7 +206,7 @@ public abstract class ListTube<T> implements Tube<T> {
      * <p>
      * Examples:
      * <pre>
-     * $(1, 2, 3, 4, 5).keyBy(i -> i % 2 == 0 ? "even" : "odd").value() => { "odd": 1, "even": 2 }
+     * $.just(1, 2, 3, 4, 5).keyBy(i -> i % 2 == 0 ? "even" : "odd").value() => { "odd": 1, "even": 2 }
      * </pre>
      *
      * @param toKey to calculate element key
@@ -221,8 +221,8 @@ public abstract class ListTube<T> implements Tube<T> {
     /**
      * Examples:
      * <pre>
-     * $(1, 2, 3).map(i -> i * 2).value() => [2, 4, 6]
-     * $(1, 2, 3).map(i -> i % 2).value() => [1, 0, 1]
+     * $.just(1, 2, 3).map(i -> i * 2).value() => [2, 4, 6]
+     * $.just(1, 2, 3).map(i -> i % 2).value() => [1, 0, 1]
      * </pre>
      *
      * @param mapFn mapper function
@@ -250,8 +250,8 @@ public abstract class ListTube<T> implements Tube<T> {
     /**
      * Sort all elements with specified key and direction.
      * <pre>
-     * $("C1", "A2", "B3").orderBy(it -> Integer.parseInt(it.substring(1)), ASC).value() => [C1, A2, B3]
-     * $("C1", "A2", "B3").orderBy(Function.identity(), ASC).value() => [A2, B3, C1]
+     * $.just("C1", "A2", "B3").orderBy(it -> Integer.parseInt(it.substring(1)), ASC).value() => [C1, A2, B3]
+     * $.just("C1", "A2", "B3").orderBy(Function.identity(), ASC).value() => [A2, B3, C1]
      * </pre>
      *
      * @param toKey     to calculate element key
@@ -267,13 +267,13 @@ public abstract class ListTube<T> implements Tube<T> {
     /**
      * Examples:
      * <pre>
-     * $(1, 2, 3).reduce(10, Integer::sum) => 16
+     * $.just(1, 2, 3).reduce(10, Integer::sum) => 16
      *
      * BiFunction&lt;ArrayList&lt;Integer&gt;, Integer, ArrayList&lt;Integer&gt;&gt; accelerator = (list, it) -> {
      *       list.add(it);
      *       return list;
      * };
-     * $(1, 2, 3).reduce(new ArrayList&lt;Integer&gt;(), accelerator) => [1, 2, 3]
+     * $.just(1, 2, 3).reduce(new ArrayList&lt;Integer&gt;(), accelerator) => [1, 2, 3]
      * </pre>
      *
      * @param identity    the identity element of accelerator
@@ -289,7 +289,7 @@ public abstract class ListTube<T> implements Tube<T> {
     /**
      * Examples:
      * <pre>
-     * $(1, 2, 3).reverse().value() => [3, 2, 1]
+     * $.just(1, 2, 3).reverse().value() => [3, 2, 1]
      * </pre>
      *
      * @return next tube
@@ -304,8 +304,8 @@ public abstract class ListTube<T> implements Tube<T> {
      * <p>
      * Examples:
      * <pre>
-     * $(1, 2, 3, 4, 5).take(6).value() => [1, 2, 3, 4, 5]
-     * $(1, 2, 3, 4, 5).take(3).value() => [1, 2, 3]
+     * $.just(1, 2, 3, 4, 5).take(6).value() => [1, 2, 3, 4, 5]
+     * $.just(1, 2, 3, 4, 5).take(3).value() => [1, 2, 3]
      * </pre>
      *
      * @param n elements count to take, which should be greater than 0
@@ -321,7 +321,7 @@ public abstract class ListTube<T> implements Tube<T> {
      * <p>
      * Examples:
      * <pre>
-     * $(1, 2, 3, 4, 5).takeWhile(i -> i &lt; 3).value() => [1, 2]
+     * $.just(1, 2, 3, 4, 5).takeWhile(i -> i &lt; 3).value() => [1, 2]
      * </pre>
      *
      * @param predicate to determine which elements should be taken
@@ -335,7 +335,7 @@ public abstract class ListTube<T> implements Tube<T> {
     /**
      * Examples:
      * <pre>
-     * $(1, 2, 1).unique().value() => [1, 2]
+     * $.just(1, 2, 1).unique().value() => [1, 2]
      * </pre>
      *
      * @return next tube
@@ -348,7 +348,7 @@ public abstract class ListTube<T> implements Tube<T> {
     /**
      * Examples:
      * <pre>
-     * $(1.2, 2.3, 1.4).uniqueBy(Double::intValue).value() => [1.2, 2.3]
+     * $.just(1.2, 2.3, 1.4).uniqueBy(Double::intValue).value() => [1.2, 2.3]
      * </pre>
      *
      * @param toKey to calculate element key

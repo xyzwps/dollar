@@ -63,8 +63,6 @@ public final class Dollar {
                 return new ArrayList<>();
             }
 
-            // TODO: handle RandomAccess
-
             int listSize = list.size();
             int chunksCapacity = listSize / size + 1;
             List<List<T>> chunks = new ArrayList<>(chunksCapacity);
