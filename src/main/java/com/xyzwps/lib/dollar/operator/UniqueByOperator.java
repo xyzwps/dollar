@@ -1,7 +1,7 @@
 package com.xyzwps.lib.dollar.operator;
 
-import com.xyzwps.lib.dollar.tube.Capsule;
 import com.xyzwps.lib.dollar.tube.Tube;
+import com.xyzwps.lib.dollar.tube.EndException;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -23,18 +23,14 @@ public class UniqueByOperator<T, K> implements Operator<T, T> {
     }
 
     @Override
-    public Capsule<T> next(Tube<T> upstream) {
+    public T next(Tube<T> upstream) throws EndException {
         while (true) {
-            Capsule<T> c = upstream.next();
-            if (c instanceof Capsule.Done) {
-                return c;
-            } else if (c instanceof Capsule.Carrier) {
-                K k = this.toKey.apply(((Capsule.Carrier<T>) c).value());
-                if (!keys.contains(k)) {
-                    keys.add(k);
-                    return c;
-                }
-            } else throw new Capsule.UnknownCapsuleException();
+            T t = upstream.next();
+            K k = this.toKey.apply(t);
+            if (!keys.contains(k)) {
+                keys.add(k);
+                return t;
+            }
         }
     }
 }

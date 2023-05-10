@@ -1,7 +1,7 @@
 package com.xyzwps.lib.dollar.operator;
 
-import com.xyzwps.lib.dollar.tube.Capsule;
 import com.xyzwps.lib.dollar.tube.Tube;
+import com.xyzwps.lib.dollar.tube.EndException;
 
 import java.util.Iterator;
 import java.util.Objects;
@@ -18,15 +18,16 @@ public class ZipOperator<T, R, S> implements Operator<T, S> {
     }
 
     @Override
-    public Capsule<S> next(Tube<T> upstream) {
-        Capsule<T> c = upstream.next();
-        if (c instanceof Capsule.Carrier) {
-            T t = ((Capsule.Carrier<T>) c).value();
-            return Capsule.carry(combineFn.apply(t, this.itr.hasNext() ? this.itr.next() : null));
-        } else {
-            return this.itr.hasNext()
-                    ? Capsule.carry(combineFn.apply(null, this.itr.next()))
-                    : Capsule.done();
+    public S next(Tube<T> upstream) throws EndException {
+        try {
+            T t = upstream.next();
+            return combineFn.apply(t, this.itr.hasNext() ? this.itr.next() : null);
+        } catch (EndException e) {
+            if (this.itr.hasNext()) {
+                return combineFn.apply(null, this.itr.next());
+            } else {
+                throw e;
+            }
         }
     }
 }

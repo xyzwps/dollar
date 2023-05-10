@@ -19,11 +19,11 @@ public class ListTubeFromIterator<T> extends ListTube<T> {
     }
 
     @Override
-    public Capsule<T> next() {
+    public T next() throws EndException {
         if (iterator.hasNext()) {
-            return Capsule.carry(iterator.next());
+            return iterator.next();
         } else {
-            return Capsule.done();
+            throw new EndException();
         }
     }
 }

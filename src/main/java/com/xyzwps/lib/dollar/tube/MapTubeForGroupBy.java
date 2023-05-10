@@ -1,6 +1,7 @@
 package com.xyzwps.lib.dollar.tube;
 
 import com.xyzwps.lib.dollar.Pair;
+import com.xyzwps.lib.dollar.collector.ReduceCollector;
 import com.xyzwps.lib.dollar.iterator.MapEntryIterator;
 
 import java.util.ArrayList;
@@ -11,7 +12,6 @@ import java.util.Map;
 public class MapTubeForGroupBy<K, V> extends MapTube<K, List<V>> {
 
     private final ListTube<Pair<K, V>> upstream;
-    private final Map<K, List<V>> map = new HashMap<>();
     private MapEntryIterator<K, List<V>> itr;
 
     public MapTubeForGroupBy(ListTube<Pair<K, V>> upstream) {
@@ -19,21 +19,27 @@ public class MapTubeForGroupBy<K, V> extends MapTube<K, List<V>> {
     }
 
     @Override
-    public Capsule<Pair<K, List<V>>> next() {
-        while (this.itr == null) {
-
-            Capsule<Pair<K, V>> c = upstream.next();
-            if (c instanceof Capsule.Done) {
-                this.itr = new MapEntryIterator<>(map);
-            } else if (c instanceof Capsule.Carrier) {
-                Pair<K, V> pair = ((Capsule.Carrier<Pair<K, V>>) c).value();
-                List<V> list = map.computeIfAbsent(pair.key(), k -> new ArrayList<>());
-                list.add(pair.value());
-            } else {
-                throw new Capsule.UnknownCapsuleException();
-            }
+    public Pair<K, List<V>> next() throws EndException {
+        if (this.itr == null) {
+            this.initItr();
         }
 
-        return this.itr.hasNext() ? Capsule.carry(this.itr.next()) : Capsule.done();
+        if (this.itr.hasNext()) {
+            return this.itr.next();
+        } else {
+            throw new EndException();
+        }
+    }
+
+    private void initItr() {
+        this.itr = new MapEntryIterator<>(upstream
+                .collect(new ReduceCollector<Pair<K, V>, Map<K, List<V>>>(
+                        new HashMap<>(),
+                        (map, pair) -> {
+                            List<V> list = map.computeIfAbsent(pair.key(), k -> new ArrayList<>());
+                            list.add(pair.value());
+                            return map;
+                        }
+                )));
     }
 }

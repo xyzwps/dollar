@@ -1,7 +1,7 @@
 package com.xyzwps.lib.dollar.operator;
 
-import com.xyzwps.lib.dollar.tube.Capsule;
 import com.xyzwps.lib.dollar.tube.Tube;
+import com.xyzwps.lib.dollar.tube.EndException;
 
 /**
  * Operator definition.
@@ -10,5 +10,5 @@ import com.xyzwps.lib.dollar.tube.Tube;
  * @param <D> downstream element type
  */
 public interface Operator<U, D> {
-    Capsule<D> next(Tube<U> upstream);
+    D next(Tube<U> upstream) throws EndException;
 }

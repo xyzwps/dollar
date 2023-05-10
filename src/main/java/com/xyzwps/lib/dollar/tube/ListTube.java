@@ -405,5 +405,5 @@ public abstract class ListTube<T> implements Tube<T> {
      *
      * @return next capsule
      */
-    public abstract Capsule<T> next();
+    public abstract T next() throws EndException;
 }

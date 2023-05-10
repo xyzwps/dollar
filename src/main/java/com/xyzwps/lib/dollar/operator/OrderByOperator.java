@@ -1,8 +1,9 @@
 package com.xyzwps.lib.dollar.operator;
 
 import com.xyzwps.lib.dollar.Direction;
-import com.xyzwps.lib.dollar.tube.Capsule;
+import com.xyzwps.lib.dollar.collector.ListCollector;
 import com.xyzwps.lib.dollar.tube.Tube;
+import com.xyzwps.lib.dollar.tube.EndException;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -30,29 +31,23 @@ public class OrderByOperator<T, K extends Comparable<K>> implements Operator<T, 
 
     private Iterator<T> itr;
 
-    private boolean drained = false;
-
     @Override
-    public Capsule<T> next(Tube<T> upstream) {
-        if (!drained) {
-            ArrayList<T> list = new ArrayList<>();
-            for (boolean go = true; go; ) {
+    public T next(Tube<T> upstream) throws EndException {
+        if (itr == null) {
+            this.initItr(upstream);
+        }
 
-                Capsule<T> c = upstream.next();
-                if (c instanceof Capsule.Done) {
-                    go = false;
-                } else if (c instanceof Capsule.Carrier) {
-                    list.add(((Capsule.Carrier<T>) c).value());
-                } else {
-                    throw new Capsule.UnknownCapsuleException();
-                }
-            }
-            this.drained = true;
-            Comparator<T> comparator = direction == Direction.DESC ? descComparator(toKey) : ascComparator(toKey);
-            list.sort(comparator);
-            this.itr = list.iterator();
-        } // end if
+        if (itr.hasNext()) {
+            return itr.next();
+        } else {
+            throw new EndException();
+        }
+    }
 
-        return itr.hasNext() ? Capsule.carry(itr.next()) : Capsule.done();
+    private void initItr(Tube<T> upstream) {
+        ArrayList<T> list = upstream.collect(new ListCollector<>());
+        Comparator<T> comparator = direction == Direction.DESC ? descComparator(toKey) : ascComparator(toKey);
+        list.sort(comparator);
+        this.itr = list.iterator();
     }
 }

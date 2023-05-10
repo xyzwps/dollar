@@ -1,7 +1,7 @@
 package com.xyzwps.lib.dollar.operator;
 
-import com.xyzwps.lib.dollar.tube.Capsule;
 import com.xyzwps.lib.dollar.tube.Tube;
+import com.xyzwps.lib.dollar.tube.EndException;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -21,7 +21,7 @@ public class MapOperator<T, R> implements Operator<T, R> {
     }
 
     @Override
-    public Capsule<R> next(Tube<T> upstream) {
-        return Capsule.map(upstream.next(), carrier -> Capsule.carry(mapFn.apply(carrier.value())));
+    public R next(Tube<T> upstream) throws EndException {
+        return mapFn.apply(upstream.next());
     }
 }

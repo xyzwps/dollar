@@ -1,7 +1,7 @@
 package com.xyzwps.lib.dollar.operator;
 
-import com.xyzwps.lib.dollar.tube.Capsule;
 import com.xyzwps.lib.dollar.tube.Tube;
+import com.xyzwps.lib.dollar.tube.EndException;
 
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -20,7 +20,11 @@ public class TakeWhileOperator<T> implements Operator<T, T> {
     }
 
     @Override
-    public Capsule<T> next(Tube<T> upstream) {
-        return Capsule.map(upstream.next(), carrier -> predicate.test(carrier.value()) ? carrier : Capsule.done());
+    public T next(Tube<T> upstream) throws EndException {
+        T t = upstream.next();
+        if (predicate.test(t)) {
+            return t;
+        }
+        throw new EndException();
     }
 }

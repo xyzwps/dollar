@@ -14,7 +14,7 @@ public class MapTubeStage<UK, UV, DK, DV> extends MapTube<DK, DV> {
     }
 
     @Override
-    public Capsule<Pair<DK, DV>> next() {
+    public Pair<DK, DV> next() throws EndException {
         return op.next(upstream);
     }
 }

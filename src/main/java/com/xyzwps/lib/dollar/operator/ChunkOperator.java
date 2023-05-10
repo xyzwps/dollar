@@ -1,7 +1,7 @@
 package com.xyzwps.lib.dollar.operator;
 
-import com.xyzwps.lib.dollar.tube.Capsule;
 import com.xyzwps.lib.dollar.tube.Tube;
+import com.xyzwps.lib.dollar.tube.EndException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,25 +24,23 @@ public class ChunkOperator<T> implements Operator<T, List<T>> {
     }
 
     @Override
-    public Capsule<List<T>> next(Tube<T> upstream) {
+    public List<T> next(Tube<T> upstream) throws EndException {
         if (done) {
-            return Capsule.done();
+            throw new EndException();
         }
 
         List<T> chunk = new ArrayList<>(this.size);
         for (int i = 0; i < size; i++) {
-            Capsule<T> c = upstream.next();
-            if (c instanceof Capsule.Done) {
+            try {
+                chunk.add(upstream.next());
+            } catch (EndException e) {
                 if (chunk.isEmpty()) {
-                    return Capsule.done();
-                } else {
-                    this.done = true;
-                    return Capsule.carry(chunk);
+                    throw e;
                 }
-            } else if (c instanceof Capsule.Carrier) {
-                chunk.add(((Capsule.Carrier<T>) c).value());
-            } else throw new Capsule.UnknownCapsuleException();
+                this.done = true;
+                return chunk;
+            }
         }
-        return Capsule.carry(chunk);
+        return chunk;
     }
 }

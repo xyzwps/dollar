@@ -22,7 +22,7 @@ public interface Tube<T> {
      *
      * @return element capsule.
      */
-    Capsule<T> next();
+    T next() throws EndException;
 
     /**
      * Collect elements from tube.
@@ -37,14 +37,11 @@ public interface Tube<T> {
                 return collector.result();
             }
 
-            Capsule<T> c = this.next();
-            if (c instanceof Capsule.Done) {
-                return collector.result();
-            } else if (c instanceof Capsule.Carrier) {
-                T v = ((Capsule.Carrier<T>) c).value();
+            try {
+                T v = this.next();
                 collector.onRequest(v);
-            } else {
-                throw new Capsule.UnknownCapsuleException();
+            } catch (EndException e) {
+                return collector.result();
             }
         }
     }

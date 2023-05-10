@@ -1,7 +1,7 @@
 package com.xyzwps.lib.dollar.operator;
 
-import com.xyzwps.lib.dollar.tube.Capsule;
 import com.xyzwps.lib.dollar.tube.Tube;
+import com.xyzwps.lib.dollar.tube.EndException;
 
 /**
  * Used by take method.
@@ -22,14 +22,13 @@ public class TakeOperator<T> implements Operator<T, T> {
     }
 
     @Override
-    public Capsule<T> next(Tube<T> upstream) {
+    public T next(Tube<T> upstream) throws EndException {
         if (this.taken >= this.n) {
-            return Capsule.done();
+            throw new EndException();
         }
 
-        return Capsule.map(upstream.next(), carrier -> {
-            this.taken++;
-            return carrier;
-        });
+        T t = upstream.next();
+        this.taken++;
+        return t;
     }
 }

@@ -1,8 +1,9 @@
 package com.xyzwps.lib.dollar.operator;
 
+import com.xyzwps.lib.dollar.collector.ListCollector;
 import com.xyzwps.lib.dollar.iterator.ArrayListReverseIterator;
-import com.xyzwps.lib.dollar.tube.Capsule;
 import com.xyzwps.lib.dollar.tube.Tube;
+import com.xyzwps.lib.dollar.tube.EndException;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -16,26 +17,21 @@ public class ReverseOperator<T> implements Operator<T, T> {
 
     private Iterator<T> itr;
 
-    private boolean drained = false;
-
     @Override
-    public Capsule<T> next(Tube<T> upstream) {
-        if (!drained) {
-            ArrayList<T> list = new ArrayList<>();
-            for (boolean go = true; go; ) {
-                Capsule<T> c = upstream.next();
-                if (c instanceof Capsule.Done) {
-                    go = false;
-                } else if (c instanceof Capsule.Carrier) {
-                    list.add(((Capsule.Carrier<T>) c).value());
-                } else {
-                    throw new Capsule.UnknownCapsuleException();
-                }
-            }
-            this.drained = true;
-            this.itr = new ArrayListReverseIterator<>(list);
-        } // end if
+    public T next(Tube<T> upstream) throws EndException {
+        if (this.itr == null) {
+            this.initItr(upstream);
+        }
 
-        return itr.hasNext() ? Capsule.carry(itr.next()) : Capsule.done();
+        if (itr.hasNext()) {
+            return itr.next();
+        } else {
+            throw new EndException();
+        }
+    }
+
+    private void initItr(Tube<T> upstream) {
+        ArrayList<T> list = upstream.collect(new ListCollector<>());
+        this.itr = new ArrayListReverseIterator<>(list);
     }
 }

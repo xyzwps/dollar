@@ -23,11 +23,11 @@ public class MapTubeFromMap<K, V> extends MapTube<K, V> {
     }
 
     @Override
-    public Capsule<Pair<K, V>> next() {
+    public Pair<K, V> next() throws EndException {
         if (itr.hasNext()) {
-            return Capsule.carry(itr.next());
+            return itr.next();
         } else {
-            return Capsule.done();
+            throw new EndException();
         }
     }
 }

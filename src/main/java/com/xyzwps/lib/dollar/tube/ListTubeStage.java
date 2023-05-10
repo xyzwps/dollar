@@ -13,7 +13,7 @@ public class ListTubeStage<U, T> extends ListTube<T> {
     }
 
     @Override
-    public Capsule<T> next() {
+    public T next() throws EndException {
         return op.next(upstream);
     }
 }

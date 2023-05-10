@@ -1,7 +1,7 @@
 package com.xyzwps.lib.dollar.operator;
 
-import com.xyzwps.lib.dollar.tube.Capsule;
 import com.xyzwps.lib.dollar.tube.Tube;
+import com.xyzwps.lib.dollar.tube.EndException;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -23,28 +23,17 @@ public class FlatMapOperator<T, R> implements Operator<T, R> {
     }
 
     @Override
-    public Capsule<R> next(Tube<T> upstream) {
+    public R next(Tube<T> upstream) throws EndException {
         while (true) {
             if (this.subTube == null) {
-                Capsule<T> c = upstream.next();
-                if (c instanceof Capsule.Done) {
-                    return (Capsule<R>) c;
-                } else if (c instanceof Capsule.Carrier) {
-                    T v = ((Capsule.Carrier<T>) c).value();
-                    this.subTube = this.flatMapFn.apply(v);
-                } else {
-                    throw new Capsule.UnknownCapsuleException();
-                }
+                T v = upstream.next();
+                this.subTube = this.flatMapFn.apply(v);
             }
 
-
-            Capsule<R> c = subTube.next();
-            if (c instanceof Capsule.Done) {
+            try {
+                return subTube.next();
+            } catch (EndException e) {
                 this.subTube = null;
-            } else if (c instanceof Capsule.Carrier) {
-                return c;
-            } else {
-                throw new Capsule.UnknownCapsuleException();
             }
         }
     }

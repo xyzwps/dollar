@@ -17,11 +17,8 @@ public class ListTubeForMapEntries<K, V, D> extends ListTube<D> {
     }
 
     @Override
-    public Capsule<D> next() {
-        return Capsule.map(upstream.next(),
-                carrier -> {
-                    Pair<K, V> p = carrier.value();
-                    return Capsule.carry(this.toValue.apply(p.key(), p.value()));
-                });
+    public D next() throws EndException {
+        Pair<K, V> p = upstream.next();
+        return this.toValue.apply(p.key(), p.value());
     }
 }

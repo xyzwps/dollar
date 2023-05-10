@@ -3,9 +3,9 @@ package com.xyzwps.lib.dollar.collector;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListCollector<T> implements Collector<T, List<T>> {
+public class ListCollector<T> implements Collector<T, ArrayList<T>> {
 
-    private final List<T> list = new ArrayList<>();
+    private final ArrayList<T> list = new ArrayList<>();
 
     @Override
     public void onRequest(T t) {
@@ -13,7 +13,7 @@ public class ListCollector<T> implements Collector<T, List<T>> {
     }
 
     @Override
-    public List<T> result() {
+    public ArrayList<T> result() {
         return list;
     }
 }
