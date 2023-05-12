@@ -1,5 +1,6 @@
 package com.xyzwps.lib.dollar.tube;
 
+import com.xyzwps.lib.dollar.MapTube;
 import com.xyzwps.lib.dollar.Pair;
 import com.xyzwps.lib.dollar.operator.Operator;
 

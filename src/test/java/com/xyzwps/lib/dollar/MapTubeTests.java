@@ -8,7 +8,13 @@ import java.util.TreeMap;
 import static com.xyzwps.lib.dollar.Dollar.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-class MapApiTests {
+class MapTubeTests {
+
+    @Test
+    void nullMap() {
+        Map<Integer, Integer> map = $((Map<Integer, Integer>) null).value();
+        assertEquals(0, map.size());
+    }
 
     @Test
     void mapValues() {

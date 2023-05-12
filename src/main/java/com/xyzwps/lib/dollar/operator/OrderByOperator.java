@@ -2,7 +2,7 @@ package com.xyzwps.lib.dollar.operator;
 
 import com.xyzwps.lib.dollar.Direction;
 import com.xyzwps.lib.dollar.collector.ListCollector;
-import com.xyzwps.lib.dollar.tube.Tube;
+import com.xyzwps.lib.dollar.Tube;
 import com.xyzwps.lib.dollar.tube.EndException;
 
 import java.util.ArrayList;
@@ -10,8 +10,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.function.Function;
 
-import static com.xyzwps.lib.dollar.Utils.ascComparator;
-import static com.xyzwps.lib.dollar.Utils.descComparator;
 
 /**
  * Used by orderBy method.
@@ -50,4 +48,31 @@ public class OrderByOperator<T, K extends Comparable<K>> implements Operator<T, 
         list.sort(comparator);
         this.itr = list.iterator();
     }
+
+
+    /**
+     * Create an ascending order comparator.
+     *
+     * @param toKey for getting element key
+     * @param <E>   element type
+     * @param <K>   element key type
+     * @return ascending comparator
+     */
+    public static <E, K extends Comparable<K>> Comparator<E> ascComparator(Function<E, K> toKey) {
+        return Comparator.comparing(toKey);
+    }
+
+
+    /**
+     * Create a descending order comparator.
+     *
+     * @param toKey for getting element key
+     * @param <E>   element type
+     * @param <K>   element key type
+     * @return descending comparator
+     */
+    public static <E, K extends Comparable<K>> Comparator<E> descComparator(Function<E, K> toKey) {
+        return (o1, o2) -> toKey.apply(o2).compareTo(toKey.apply(o1));
+    }
+
 }

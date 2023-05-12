@@ -2,7 +2,7 @@ package com.xyzwps.lib.dollar.operator;
 
 import com.xyzwps.lib.dollar.collector.ListCollector;
 import com.xyzwps.lib.dollar.iterator.ArrayListReverseIterator;
-import com.xyzwps.lib.dollar.tube.Tube;
+import com.xyzwps.lib.dollar.Tube;
 import com.xyzwps.lib.dollar.tube.EndException;
 
 import java.util.ArrayList;

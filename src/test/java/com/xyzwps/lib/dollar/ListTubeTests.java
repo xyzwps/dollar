@@ -1,5 +1,6 @@
 package com.xyzwps.lib.dollar;
 
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -8,7 +9,47 @@ import java.util.function.Function;
 import static com.xyzwps.lib.dollar.Dollar.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-class ListApiTests {
+class ListTubeTests {
+
+    @Nested
+    class ConstructListTube {
+        @Test
+        void nullList() {
+            assertEquals(0, $((List<Object>) null).value().size());
+        }
+
+        @Test
+        void just() {
+            assertEquals(1, $.just(1).value().size());
+            assertEquals(2, $.just(1, 1).value().size());
+            assertEquals(3, $.just(1, 1, 1).value().size());
+            assertEquals(4, $.just(1, 1, 1, 1).value().size());
+            assertEquals(5, $.just(1, 1, 1, 1, 1).value().size());
+            assertEquals(6, $.just(1, 1, 1, 1, 1, 1).value().size());
+            assertEquals(7, $.just(1, 1, 1, 1, 1, 1, 1).value().size());
+            assertEquals(8, $.just(1, 1, 1, 1, 1, 1, 1, 1).value().size());
+            assertEquals(9, $.just(1, 1, 1, 1, 1, 1, 1, 1, 1).value().size());
+            assertEquals(10, $.just(1, 1, 1, 1, 1, 1, 1, 1, 1, 1).value().size());
+
+            assertEquals(1, $.just(1).reduce(0, Integer::sum));
+            assertEquals(2, $.just(1, 1).reduce(0, Integer::sum));
+            assertEquals(3, $.just(1, 1, 1).reduce(0, Integer::sum));
+            assertEquals(4, $.just(1, 1, 1, 1).reduce(0, Integer::sum));
+            assertEquals(5, $.just(1, 1, 1, 1, 1).reduce(0, Integer::sum));
+            assertEquals(6, $.just(1, 1, 1, 1, 1, 1).reduce(0, Integer::sum));
+            assertEquals(7, $.just(1, 1, 1, 1, 1, 1, 1).reduce(0, Integer::sum));
+            assertEquals(8, $.just(1, 1, 1, 1, 1, 1, 1, 1).reduce(0, Integer::sum));
+            assertEquals(9, $.just(1, 1, 1, 1, 1, 1, 1, 1, 1).reduce(0, Integer::sum));
+            assertEquals(10, $.just(1, 1, 1, 1, 1, 1, 1, 1, 1, 1).reduce(0, Integer::sum));
+        }
+
+        @Test
+        void range() {
+            assertEquals("[1, 2, 3]", $.range(1, 4).value().toString());
+            assertEquals("[]", $.range(1, 1).value().toString());
+            assertEquals("[]", $.range(1, -1).value().toString());
+        }
+    }
 
     @Test
     void chunk() {
@@ -22,7 +63,7 @@ class ListApiTests {
                 "[[1, 2, 3, 4, 5, 6]]",
                 "[[1, 2, 3, 4, 5, 6]]"
         };
-        List<Integer> list = Arrays.asList(1, 2, 3, 4, 5, 6);
+        List<Integer> list = $.arrayList(1, 2, 3, 4, 5, 6);
         for (int i = 1; i < cases.length; i++) {
             assertEquals(cases[i], $(list).chunk(i).value().toString());
         }
@@ -37,7 +78,7 @@ class ListApiTests {
 
     @Test
     void filter() {
-        assertEquals("[a, ]", $.just("a", "", null).filter(Objects::nonNull).value().toString());
+        assertEquals("[a,  ]", $.just("a", " ", null).filter(Objects::nonNull).value().toString());
         assertEquals("[2, 4]", $.just(1, 2, 3, 4, 5).filter(i -> i % 2 == 0).value().toString());
         assertEquals("[1, 3, 5]", $.just(1, 2, 3, 4, 5).filter((it, i) -> i % 2 == 0).value().toString());
     }
@@ -45,7 +86,7 @@ class ListApiTests {
     @Test
     void first() {
         assertEquals(Optional.of(1), $.just(1, 2).first());
-        assertEquals(Optional.empty(), $.just().head());
+        assertEquals(Optional.empty(), $.empty().head());
     }
 
     @Test
@@ -60,7 +101,7 @@ class ListApiTests {
     void flatten() {
         assertEquals(
                 "[11, 12, 21, 22]",
-                $.just(1, 2).flatten(i -> Arrays.asList(i * 10 + 1, i * 10 + 2)).value().toString()
+                $.just(1, 2).flatten(i -> $.arrayList(i * 10 + 1, i * 10 + 2)).value().toString()
         );
     }
 
@@ -143,11 +184,11 @@ class ListApiTests {
 
     @Test
     void zip() {
-        assertEquals("[(1, 1), (2, 2), (3, null)]", $.just(1, 2, 3).zip($.list(1, 2)).value().toString());
-        assertEquals("[(1, 1), (2, 2), (3, 3)]", $.just(1, 2, 3).zip($.list(1, 2, 3)).value().toString());
-        assertEquals("[(1, 1), (2, 2), (3, 3), (null, 4), (null, 5)]", $.just(1, 2, 3).zip($.list(1, 2, 3, 4, 5)).value().toString());
+        assertEquals("[(1, 1), (2, 2), (3, null)]", $.just(1, 2, 3).zip($.arrayList(1, 2)).value().toString());
+        assertEquals("[(1, 1), (2, 2), (3, 3)]", $.just(1, 2, 3).zip($.arrayList(1, 2, 3)).value().toString());
+        assertEquals("[(1, 1), (2, 2), (3, 3), (null, 4), (null, 5)]", $.just(1, 2, 3).zip($.arrayList(1, 2, 3, 4, 5)).value().toString());
 
-        assertEquals("[(1, null), (2, null), (3, null)]", $.just(1, 2, 3).zip($.list()).value().toString());
+        assertEquals("[(1, null), (2, null), (3, null)]", $.just(1, 2, 3).zip($.arrayList()).value().toString());
         assertEquals("[(1, null), (2, null), (3, null)]", $.just(1, 2, 3).zip(null).value().toString());
     }
 }

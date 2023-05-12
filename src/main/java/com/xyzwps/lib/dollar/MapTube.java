@@ -1,10 +1,11 @@
-package com.xyzwps.lib.dollar.tube;
+package com.xyzwps.lib.dollar;
 
-import com.xyzwps.lib.dollar.Pair;
 import com.xyzwps.lib.dollar.collector.MapCollector;
 import com.xyzwps.lib.dollar.operator.FilterOperator;
 import com.xyzwps.lib.dollar.operator.MapOperator;
 import com.xyzwps.lib.dollar.operator.UniqueByOperator;
+import com.xyzwps.lib.dollar.tube.ListTubeForMapEntries;
+import com.xyzwps.lib.dollar.tube.MapTubeStage;
 
 import java.util.Map;
 import java.util.function.BiPredicate;

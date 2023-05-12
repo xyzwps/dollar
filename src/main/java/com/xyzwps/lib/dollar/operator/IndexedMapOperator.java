@@ -1,7 +1,7 @@
 package com.xyzwps.lib.dollar.operator;
 
 import com.xyzwps.lib.dollar.function.IndexedFunction;
-import com.xyzwps.lib.dollar.tube.Tube;
+import com.xyzwps.lib.dollar.Tube;
 import com.xyzwps.lib.dollar.tube.EndException;
 
 import java.util.Objects;

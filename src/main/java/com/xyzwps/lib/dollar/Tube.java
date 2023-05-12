@@ -1,6 +1,7 @@
-package com.xyzwps.lib.dollar.tube;
+package com.xyzwps.lib.dollar;
 
 import com.xyzwps.lib.dollar.collector.Collector;
+import com.xyzwps.lib.dollar.tube.EndException;
 
 /**
  * Element processing tube.

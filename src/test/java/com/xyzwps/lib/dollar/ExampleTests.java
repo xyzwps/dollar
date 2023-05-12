@@ -38,7 +38,7 @@ class ExampleTests {
     void first() {
         assertEquals(Optional.of(1), $.just(1, 3).first());
         assertEquals(Optional.empty(), $.just((Object) null).first());
-        assertEquals(Optional.empty(), $.just().first());
+        assertEquals(Optional.empty(), $.empty().first());
     }
 
     @Test
@@ -48,7 +48,7 @@ class ExampleTests {
 
     @Test
     void flatten() {
-        assertEquals("[2, 3, 4, 6, 6, 9]", $.just(1, 2, 3).flatten(i -> $.list(i * 2, i * 3)).value().toString());
+        assertEquals("[2, 3, 4, 6, 6, 9]", $.just(1, 2, 3).flatten(i -> $.arrayList(i * 2, i * 3)).value().toString());
         assertEquals("[]", $.just(1, 2, 3).flatten(i -> null).value().toString());
     }
 

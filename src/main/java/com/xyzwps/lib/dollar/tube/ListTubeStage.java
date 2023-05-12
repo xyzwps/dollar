@@ -1,5 +1,7 @@
 package com.xyzwps.lib.dollar.tube;
 
+import com.xyzwps.lib.dollar.ListTube;
+import com.xyzwps.lib.dollar.Tube;
 import com.xyzwps.lib.dollar.operator.Operator;
 
 public class ListTubeStage<U, T> extends ListTube<T> {

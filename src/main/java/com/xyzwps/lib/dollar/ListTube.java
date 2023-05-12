@@ -1,12 +1,10 @@
-package com.xyzwps.lib.dollar.tube;
+package com.xyzwps.lib.dollar;
 
-import com.xyzwps.lib.dollar.Direction;
-import com.xyzwps.lib.dollar.Dollar;
-import com.xyzwps.lib.dollar.Pair;
 import com.xyzwps.lib.dollar.collector.*;
 import com.xyzwps.lib.dollar.function.IndexedFunction;
 import com.xyzwps.lib.dollar.function.IndexedPredicate;
 import com.xyzwps.lib.dollar.operator.*;
+import com.xyzwps.lib.dollar.tube.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -46,10 +44,10 @@ public abstract class ListTube<T> implements Tube<T> {
      * </pre>
      *
      * @return next tube
-     * @see Dollar.$#isFalsey
+     * @see DollarGeneral#isFalsey(Object)
      */
     public ListTube<T> compact() {
-        return this.filter(it -> !Dollar.$.isFalsey(it));
+        return this.filter(it -> !$.isFalsey(it));
     }
 
 
@@ -128,7 +126,7 @@ public abstract class ListTube<T> implements Tube<T> {
      * @return next tube
      */
     public <R> ListTube<R> flatten(Function<T, List<R>> flattenFn) {
-        Function<T, List<R>> nonNullFlattenFn = (it) -> $.defaultTo(flattenFn.apply(it), $.list());
+        Function<T, List<R>> nonNullFlattenFn = (it) -> $.defaultTo(flattenFn.apply(it), $.arrayList());
         return new ListTubeStage<>(new FlatMapOperator<>(it -> new ListTubeFromIterator<>(nonNullFlattenFn.apply(it).iterator())), this);
     }
 
