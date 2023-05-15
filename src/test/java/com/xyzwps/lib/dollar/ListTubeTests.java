@@ -76,6 +76,19 @@ class ListTubeTests {
         assertEquals("[a]", $.just("a", "", null).compact().value().toString());
     }
 
+
+    @Test
+    void concat() {
+        assertEquals("[a, , null, 1, 2, null, b]", $
+                .just("a", "", null)
+                .concat(null)
+                .concat($.arrayList("1", "2"))
+                .concat($.arrayList())
+                .concat($.arrayList(null, "b"))
+                .value().toString());
+    }
+
+
     @Test
     void filter() {
         assertEquals("[a,  ]", $.just("a", " ", null).filter(Objects::nonNull).value().toString());

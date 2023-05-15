@@ -52,6 +52,17 @@ public abstract class ListTube<T> implements Tube<T> {
 
 
     /**
+     * Concatenating with an {@link Iterable}.
+     *
+     * @param iterable concatenated iterable. Null is allowed.
+     * @return next tube
+     */
+    public ListTube<T> concat(Iterable<T> iterable) {
+        return new ListTubeStage<>(new ConcatOperator<>(iterable), this);
+    }
+
+
+    /**
      * Iterates over elements, and exclude those which being predicated with <code>false</code>.
      * <p>
      * Examples:
