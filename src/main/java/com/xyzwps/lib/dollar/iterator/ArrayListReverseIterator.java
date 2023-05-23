@@ -2,6 +2,7 @@ package com.xyzwps.lib.dollar.iterator;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 /**
@@ -27,6 +28,9 @@ public final class ArrayListReverseIterator<T> implements Iterator<T> {
 
     @Override
     public T next() {
+        if (this.index == 0) {
+            throw new NoSuchElementException();
+        }
         return list.get(--this.index);
     }
 }

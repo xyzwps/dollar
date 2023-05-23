@@ -378,6 +378,8 @@ public abstract class ListTube<T> implements Tube<T> {
         return this.collect(new ListCollector<>());
     }
 
+    // TODO: toHashSet
+
 
     /**
      * Zip to a list of pairs.

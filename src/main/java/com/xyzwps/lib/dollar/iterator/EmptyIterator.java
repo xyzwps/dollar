@@ -1,6 +1,7 @@
 package com.xyzwps.lib.dollar.iterator;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * An empty iterator. You can get nothing here.
@@ -16,7 +17,7 @@ public class EmptyIterator<T> implements Iterator<T> {
 
     @Override
     public T next() {
-        return null;
+        throw new NoSuchElementException();
     }
 
     private EmptyIterator() {
@@ -31,5 +32,4 @@ public class EmptyIterator<T> implements Iterator<T> {
     public static <T> Iterator<T> create() {
         return new EmptyIterator<>();
     }
-
 }

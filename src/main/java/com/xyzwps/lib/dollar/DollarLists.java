@@ -378,6 +378,16 @@ interface DollarLists extends DollarCollections, DollarGeneral {
         return a;
     }
 
+
+    // TODO: 添加 doc
+    default <T> ArrayList<T> arrayListFrom(Iterator<T> itr) {
+        ArrayList<T> list = new ArrayList<>();
+        if (itr != null) {
+            while (itr.hasNext()) list.add(itr.next());
+        }
+        return list;
+    }
+
     /**
      * Map a list to another.
      *

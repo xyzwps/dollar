@@ -1,5 +1,6 @@
-package com.xyzwps.lib.dollar;
+package com.xyzwps.lib.dollar.stage;
 
+import com.xyzwps.lib.dollar.Direction;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -7,8 +8,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
-import static com.xyzwps.lib.dollar.Dollar.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static com.xyzwps.lib.dollar.Dollar.$;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 
 class DemoTests {
 
@@ -17,7 +19,7 @@ class DemoTests {
         List<String> log = new ArrayList<>();
         List<Integer> s = Arrays.asList(2, 3, 4, 5, 6);
 
-        List<Integer> result = $(s)
+        List<Integer> result = new ListStage<>(s)
                 .map(i -> {
                     int r = i * 2;
                     log.add(String.format("1) map %d to %d", i, r));
@@ -26,7 +28,7 @@ class DemoTests {
                 .flatMap(i -> {
                     int t1 = i, t2 = i + 2;
                     log.add(String.format("  2) flat map %d to %d, %d", i, t1, t2));
-                    return $.just(t1, t2);
+                    return $.arrayList(t1, t2);
                 })
                 .orderBy(Function.identity(), Direction.DESC)
                 .filter(i -> {
