@@ -6,7 +6,6 @@ import com.xyzwps.lib.dollar.iterator.EmptyIterator;
 import java.util.*;
 import java.util.function.Function;
 
-// TODO: 测试
 public class KeyByIterator<T, K> implements Iterator<Pair<K, T>> {
 
     private final Function<T, K> toKey;
@@ -27,6 +26,18 @@ public class KeyByIterator<T, K> implements Iterator<Pair<K, T>> {
         return this.nextCached;
     }
 
+    @Override
+    public Pair<K, T> next() {
+        this.tryToGetNext();
+
+        if (this.nextCached) {
+            this.nextCached = false;
+            return this.nextCache;
+        } else {
+            throw new NoSuchElementException();
+        }
+    }
+
     private void tryToGetNext() {
         if (this.nextCached) return;
 
@@ -42,15 +53,5 @@ public class KeyByIterator<T, K> implements Iterator<Pair<K, T>> {
         }
     }
 
-    @Override
-    public Pair<K, T> next() {
-        this.tryToGetNext();
 
-        if (this.nextCached) {
-            this.nextCached = false;
-            return this.nextCache;
-        } else {
-            throw new NoSuchElementException();
-        }
-    }
 }

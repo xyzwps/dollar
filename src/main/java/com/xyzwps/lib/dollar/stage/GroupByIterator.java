@@ -7,7 +7,6 @@ import com.xyzwps.lib.dollar.iterator.MapEntryIterator;
 import java.util.*;
 import java.util.function.Function;
 
-// TODO: 测试
 public class GroupByIterator<T, K> implements Iterator<Pair<K, List<T>>> {
 
     private final Function<T, K> toKey;
@@ -21,18 +20,16 @@ public class GroupByIterator<T, K> implements Iterator<Pair<K, List<T>>> {
 
     @Override
     public boolean hasNext() {
-        this.tryToInitItr();
-        return this.itr.hasNext();
+        return this.getItr().hasNext();
     }
 
     @Override
     public Pair<K, List<T>> next() {
-        this.tryToInitItr();
-        return this.itr.next();
+        return this.getItr().next();
     }
 
-    private void tryToInitItr() {
-        if (itr != null) return;
+    private MapEntryIterator<K, List<T>> getItr() {
+        if (itr != null) return itr;
 
         Map<K, List<T>> map = new HashMap<>();
         while (up.hasNext()) {
@@ -42,5 +39,6 @@ public class GroupByIterator<T, K> implements Iterator<Pair<K, List<T>>> {
             list.add(upnext);
         }
         this.itr = new MapEntryIterator<>(map);
+        return itr;
     }
 }
