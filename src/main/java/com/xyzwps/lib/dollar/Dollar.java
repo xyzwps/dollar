@@ -1,8 +1,5 @@
 package com.xyzwps.lib.dollar;
 
-import com.xyzwps.lib.dollar.iterator.EmptyIterator;
-import com.xyzwps.lib.dollar.tube.*;
-
 import java.util.*;
 
 /**
@@ -17,8 +14,8 @@ public final class Dollar {
      * @param <T>  list element type
      * @return list tube
      */
-    public static <T> ListTube<T> $(List<T> list) {
-        return new ListTubeFromIterator<>(list == null ? EmptyIterator.create() : list.iterator());
+    public static <T> ListStage<T> $(List<T> list) {
+        return new ListStage<>(list);
     }
 
 
@@ -30,8 +27,8 @@ public final class Dollar {
      * @param <V> map value type
      * @return map tube
      */
-    public static <K, V> MapTube<K, V> $(Map<K, V> map) {
-        return new MapTubeFromMap<>(map == null ? new HashMap<>() : map);
+    public static <K, V> MapStage<K, V> $(Map<K, V> map) {
+        return new MapStage<>(map);
     }
 
 

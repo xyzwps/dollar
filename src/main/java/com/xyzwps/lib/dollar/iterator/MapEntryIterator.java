@@ -5,6 +5,8 @@ import com.xyzwps.lib.dollar.Pair;
 import java.util.Iterator;
 import java.util.Map;
 
+import static com.xyzwps.lib.dollar.Dollar.*;
+
 /**
  * Iterate over the entry set of a map in default order.
  *
@@ -17,8 +19,8 @@ public final class MapEntryIterator<K, V> implements Iterator<Pair<K, V>> {
     private final Iterator<K> keyItr;
 
     public MapEntryIterator(Map<K, V> map) {
-        this.map = map;
-        this.keyItr = map.keySet().iterator();
+        this.map = map == null ? $.hashMap() : map;
+        this.keyItr = this.map.keySet().iterator();
     }
 
     @Override

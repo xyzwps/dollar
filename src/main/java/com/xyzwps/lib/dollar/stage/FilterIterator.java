@@ -1,21 +1,23 @@
 package com.xyzwps.lib.dollar.stage;
 
+import com.xyzwps.lib.dollar.function.IndexedPredicate;
 import com.xyzwps.lib.dollar.iterator.EmptyIterator;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.function.Predicate;
 
 public class FilterIterator<T> implements Iterator<T> {
 
     private final Iterator<T> up;
-    private final Predicate<T> predicate;
+    private final IndexedPredicate<T> predicate;
 
     private T nextCache;
     private boolean nextCached = false;
 
-    public FilterIterator(Iterator<T> up, Predicate<T> predicate) {
+    private int index = 0;
+
+    public FilterIterator(Iterator<T> up, IndexedPredicate<T> predicate) {
         this.up = up == null ? EmptyIterator.create() : up;
         this.predicate = Objects.requireNonNull(predicate);
     }
@@ -28,7 +30,7 @@ public class FilterIterator<T> implements Iterator<T> {
 
         while (this.up.hasNext()) {
             T upnext = this.up.next();
-            if (this.predicate.test(upnext)) {
+            if (this.predicate.test(upnext, this.index++)) {
                 this.nextCache = upnext;
                 this.nextCached = true;
                 return true;

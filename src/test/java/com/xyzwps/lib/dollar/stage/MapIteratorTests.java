@@ -1,5 +1,6 @@
 package com.xyzwps.lib.dollar.stage;
 
+import com.xyzwps.lib.dollar.function.IndexedFunction;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -11,6 +12,8 @@ import static com.xyzwps.lib.dollar.Dollar.*;
 @SuppressWarnings("ConstantValue")
 class MapIteratorTests {
 
+    private static final IndexedFunction<Integer, String> mapFn = (value, index) -> String.format("%d at %d", value, index);
+
     @Test
     void cornerCases() {
         // null map function
@@ -21,7 +24,7 @@ class MapIteratorTests {
 
         // null iterator
         {
-            MapIterator<Integer, String> itr = new MapIterator<>(null, Object::toString);
+            MapIterator<Integer, String> itr = new MapIterator<>(null, mapFn);
             assertFalse(itr.hasNext());
             assertThrows(NoSuchElementException.class, itr::next);
         }
@@ -33,39 +36,39 @@ class MapIteratorTests {
 
         // common
         {
-            MapIterator<Integer, String> itr = new MapIterator<>(list.iterator(), Object::toString);
+            MapIterator<Integer, String> itr = new MapIterator<>(list.iterator(), mapFn);
 
             assertTrue(itr.hasNext());
             assertTrue(itr.hasNext());
             assertTrue(itr.hasNext());
-            assertEquals("1", itr.next());
+            assertEquals("1 at 0", itr.next());
 
             assertTrue(itr.hasNext());
             assertTrue(itr.hasNext());
             assertTrue(itr.hasNext());
-            assertEquals("2", itr.next());
+            assertEquals("2 at 1", itr.next());
 
             assertTrue(itr.hasNext());
             assertTrue(itr.hasNext());
             assertTrue(itr.hasNext());
-            assertEquals("3", itr.next());
+            assertEquals("3 at 2", itr.next());
 
             assertTrue(itr.hasNext());
             assertTrue(itr.hasNext());
             assertTrue(itr.hasNext());
-            assertEquals("4", itr.next());
+            assertEquals("4 at 3", itr.next());
 
             assertFalse(itr.hasNext());
         }
 
         // just next
         {
-            MapIterator<Integer, String> itr = new MapIterator<>(list.iterator(), Object::toString);
+            MapIterator<Integer, String> itr = new MapIterator<>(list.iterator(), mapFn);
 
-            assertEquals("1", itr.next());
-            assertEquals("2", itr.next());
-            assertEquals("3", itr.next());
-            assertEquals("4", itr.next());
+            assertEquals("1 at 0", itr.next());
+            assertEquals("2 at 1", itr.next());
+            assertEquals("3 at 2", itr.next());
+            assertEquals("4 at 3", itr.next());
             assertThrows(NoSuchElementException.class, itr::next);
         }
 

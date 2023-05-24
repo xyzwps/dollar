@@ -1,10 +1,10 @@
 package com.xyzwps.lib.dollar.stage;
 
+import com.xyzwps.lib.dollar.function.IndexedPredicate;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.function.Predicate;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static com.xyzwps.lib.dollar.Dollar.*;
@@ -12,8 +12,8 @@ import static com.xyzwps.lib.dollar.Dollar.*;
 @SuppressWarnings("ConstantValue")
 class FilterIteratorTests {
 
-    static final Predicate<Integer> isEven = (i) -> i != null && i % 2 == 0;
-    static final Predicate<Integer> isOdd = (i) -> i != null && i % 2 == 1;
+    static final IndexedPredicate<Integer> isEven = (i, index) -> i != null && i % 2 == 0;
+    static final IndexedPredicate<Integer> isOdd = (i, index) -> i != null && i % 2 == 1;
 
     @Test
     void cornerCases() {
@@ -93,5 +93,43 @@ class FilterIteratorTests {
             assertThrows(NoSuchElementException.class, itr::next);
         }
 
+    }
+
+    @Test
+    void filterByIndex() {
+        List<Integer> list = $.arrayList(1, 2, 3, 4, 5);
+        IndexedPredicate<Integer> predicate = (i, index) -> index < 3;
+
+        //  common
+        {
+            FilterIterator<Integer> itr = new FilterIterator<>(list.iterator(), predicate);
+
+            assertTrue(itr.hasNext());
+            assertTrue(itr.hasNext());
+            assertTrue(itr.hasNext());
+            assertEquals(1, itr.next());
+
+            assertTrue(itr.hasNext());
+            assertTrue(itr.hasNext());
+            assertTrue(itr.hasNext());
+            assertEquals(2, itr.next());
+
+            assertTrue(itr.hasNext());
+            assertTrue(itr.hasNext());
+            assertTrue(itr.hasNext());
+            assertEquals(3, itr.next());
+
+            assertFalse(itr.hasNext());
+        }
+
+        //  just next
+        {
+            FilterIterator<Integer> itr = new FilterIterator<>(list.iterator(), predicate);
+
+            assertEquals(1, itr.next());
+            assertEquals(2, itr.next());
+            assertEquals(3, itr.next());
+            assertThrows(NoSuchElementException.class, itr::next);
+        }
     }
 }

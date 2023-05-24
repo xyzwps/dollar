@@ -37,7 +37,7 @@ class ExampleTests {
     @Test
     void first() {
         assertEquals(Optional.of(1), $.just(1, 3).first());
-        assertEquals(Optional.empty(), $.just((Object) null).first());
+        assertEquals(Optional.empty(), $.just(null).first());
         assertEquals(Optional.empty(), $.empty().first());
     }
 

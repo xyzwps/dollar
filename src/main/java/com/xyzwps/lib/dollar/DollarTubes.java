@@ -1,6 +1,6 @@
 package com.xyzwps.lib.dollar;
 
-import com.xyzwps.lib.dollar.iterator.ArrayIterator;
+import com.xyzwps.lib.dollar.iterable.ArrayIterable;
 import com.xyzwps.lib.dollar.iterator.EmptyIterator;
 import com.xyzwps.lib.dollar.tube.ListTubeFromIterator;
 
@@ -23,9 +23,9 @@ interface DollarTubes {
      * @param <T> element type
      * @return list tube
      */
-    default <T> ListTube<T> just(T a1) {
+    default <T> ListStage<T> just(T a1) {
         //noinspection unchecked
-        return new ListTubeFromIterator<>(new ArrayIterator<>((T[]) new Object[]{a1}));
+        return new ListStage<T>(new ArrayIterable<>((T[]) new Object[]{a1}));
     }
 
 
@@ -36,10 +36,11 @@ interface DollarTubes {
      * @param a2  the second element
      * @param <T> element type
      * @return list tube
+     * TODO: 用接口去拆分并不是好主意，改成 static method 算了。现在的写法太啰嗦了
      */
-    default <T> ListTube<T> just(T a1, T a2) {
+    default <T> ListStage<T> just(T a1, T a2) {
         //noinspection unchecked
-        return new ListTubeFromIterator<>(new ArrayIterator<>((T[]) new Object[]{a1, a2}));
+        return new ListStage<T>(new ArrayIterable<>((T[]) new Object[]{a1, a2}));
     }
 
 
@@ -52,9 +53,9 @@ interface DollarTubes {
      * @param <T> element type
      * @return list tube
      */
-    default <T> ListTube<T> just(T a1, T a2, T a3) {
+    default <T> ListStage<T> just(T a1, T a2, T a3) {
         //noinspection unchecked
-        return new ListTubeFromIterator<>(new ArrayIterator<>((T[]) new Object[]{a1, a2, a3}));
+        return new ListStage<T>(new ArrayIterable<>((T[]) new Object[]{a1, a2, a3}));
     }
 
 
@@ -68,9 +69,9 @@ interface DollarTubes {
      * @param <T> element type
      * @return list tube
      */
-    default <T> ListTube<T> just(T a1, T a2, T a3, T a4) {
+    default <T> ListStage<T> just(T a1, T a2, T a3, T a4) {
         //noinspection unchecked
-        return new ListTubeFromIterator<>(new ArrayIterator<>((T[]) new Object[]{a1, a2, a3, a4}));
+        return new ListStage<T>(new ArrayIterable<>((T[]) new Object[]{a1, a2, a3, a4}));
     }
 
 
@@ -85,9 +86,9 @@ interface DollarTubes {
      * @param <T> element type
      * @return list tube
      */
-    default <T> ListTube<T> just(T a1, T a2, T a3, T a4, T a5) {
+    default <T> ListStage<T> just(T a1, T a2, T a3, T a4, T a5) {
         //noinspection unchecked
-        return new ListTubeFromIterator<>(new ArrayIterator<>((T[]) new Object[]{a1, a2, a3, a4, a5}));
+        return new ListStage<T>(new ArrayIterable<>((T[]) new Object[]{a1, a2, a3, a4, a5}));
     }
 
 
@@ -103,9 +104,9 @@ interface DollarTubes {
      * @param <T> element type
      * @return list tube
      */
-    default <T> ListTube<T> just(T a1, T a2, T a3, T a4, T a5, T a6) {
+    default <T> ListStage<T> just(T a1, T a2, T a3, T a4, T a5, T a6) {
         //noinspection unchecked
-        return new ListTubeFromIterator<>(new ArrayIterator<>((T[]) new Object[]{a1, a2, a3, a4, a5, a6}));
+        return new ListStage<T>(new ArrayIterable<>((T[]) new Object[]{a1, a2, a3, a4, a5, a6}));
     }
 
 
@@ -122,9 +123,9 @@ interface DollarTubes {
      * @param <T> element type
      * @return list tube
      */
-    default <T> ListTube<T> just(T a1, T a2, T a3, T a4, T a5, T a6, T a7) {
+    default <T> ListStage<T> just(T a1, T a2, T a3, T a4, T a5, T a6, T a7) {
         //noinspection unchecked
-        return new ListTubeFromIterator<>(new ArrayIterator<>((T[]) new Object[]{a1, a2, a3, a4, a5, a6, a7}));
+        return new ListStage<T>(new ArrayIterable<>((T[]) new Object[]{a1, a2, a3, a4, a5, a6, a7}));
     }
 
 
@@ -142,9 +143,9 @@ interface DollarTubes {
      * @param <T> element type
      * @return list tube
      */
-    default <T> ListTube<T> just(T a1, T a2, T a3, T a4, T a5, T a6, T a7, T a8) {
+    default <T> ListStage<T> just(T a1, T a2, T a3, T a4, T a5, T a6, T a7, T a8) {
         //noinspection unchecked
-        return new ListTubeFromIterator<>(new ArrayIterator<>((T[]) new Object[]{a1, a2, a3, a4, a5, a6, a7, a8}));
+        return new ListStage<T>(new ArrayIterable<>((T[]) new Object[]{a1, a2, a3, a4, a5, a6, a7, a8}));
     }
 
 
@@ -163,9 +164,9 @@ interface DollarTubes {
      * @param <T> element type
      * @return list tube
      */
-    default <T> ListTube<T> just(T a1, T a2, T a3, T a4, T a5, T a6, T a7, T a8, T a9) {
+    default <T> ListStage<T> just(T a1, T a2, T a3, T a4, T a5, T a6, T a7, T a8, T a9) {
         //noinspection unchecked
-        return new ListTubeFromIterator<>(new ArrayIterator<>((T[]) new Object[]{a1, a2, a3, a4, a5, a6, a7, a8, a9}));
+        return new ListStage<T>(new ArrayIterable<>((T[]) new Object[]{a1, a2, a3, a4, a5, a6, a7, a8, a9}));
     }
 
 
@@ -185,9 +186,9 @@ interface DollarTubes {
      * @param <T> element type
      * @return list tube
      */
-    default <T> ListTube<T> just(T a1, T a2, T a3, T a4, T a5, T a6, T a7, T a8, T a9, T a10) {
+    default <T> ListStage<T> just(T a1, T a2, T a3, T a4, T a5, T a6, T a7, T a8, T a9, T a10) {
         //noinspection unchecked
-        return new ListTubeFromIterator<>(new ArrayIterator<>((T[]) new Object[]{a1, a2, a3, a4, a5, a6, a7, a8, a9, a10}));
+        return new ListStage<T>(new ArrayIterable<>((T[]) new Object[]{a1, a2, a3, a4, a5, a6, a7, a8, a9, a10}));
     }
 
 

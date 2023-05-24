@@ -122,15 +122,13 @@ class ListTubeTests {
     void forEach() {
         {
             List<Integer> t = new ArrayList<>();
-            int count = $.just(1, 2, 3).forEach(it -> t.add(it));
-            assertEquals(3, count);
+            $.just(1, 2, 3).forEach(i -> t.add(i));
             assertEquals("[1, 2, 3]", t.toString());
         }
 
         {
             List<Integer> t = new ArrayList<>();
-            int count = $.just(1, 2, 3).forEach((it, index) -> t.add(it + (index + 1) * 10));
-            assertEquals(3, count);
+            $.just(1, 2, 3).forEach((it, index) -> t.add(it + (index + 1) * 10));
             assertEquals("[11, 22, 33]", t.toString());
         }
     }
