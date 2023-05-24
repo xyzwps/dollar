@@ -1,6 +1,7 @@
 package com.xyzwps.lib.dollar.stage;
 
 import com.xyzwps.lib.dollar.function.IndexedPredicate;
+import com.xyzwps.lib.dollar.iterator.FilterIterator;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

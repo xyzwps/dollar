@@ -1,6 +1,7 @@
 package com.xyzwps.lib.dollar.stage;
 
 import com.xyzwps.lib.dollar.Pair;
+import com.xyzwps.lib.dollar.iterator.GroupByIterator;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;

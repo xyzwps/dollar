@@ -1,39 +1,50 @@
-package com.xyzwps.lib.dollar.stage;
+package com.xyzwps.lib.dollar.iterator;
 
-import com.xyzwps.lib.dollar.function.IndexedPredicate;
 import com.xyzwps.lib.dollar.iterator.EmptyIterator;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.function.Predicate;
 
-public class FilterIterator<T> implements Iterator<T> {
+/**
+ * Used by takeWhile method.
+ *
+ * @param <T> element type
+ */
+public class TakeWhileIterator<T> implements Iterator<T> {
 
     private final Iterator<T> up;
-    private final IndexedPredicate<T> predicate;
+    private final Predicate<T> predicate;
 
     private T nextCache;
     private boolean nextCached = false;
+    private boolean end = false;
 
-    private int index = 0;
-
-    public FilterIterator(Iterator<T> up, IndexedPredicate<T> predicate) {
+    public TakeWhileIterator(Iterator<T> up, Predicate<T> predicate) {
         this.up = up == null ? EmptyIterator.create() : up;
         this.predicate = Objects.requireNonNull(predicate);
     }
 
+
     @Override
     public boolean hasNext() {
-        if (this.nextCached) {
+        if (end) {
+            return false;
+        }
+
+        if (nextCached) {
             return true;
         }
 
-        while (this.up.hasNext()) {
-            T upnext = this.up.next();
-            if (this.predicate.test(upnext, this.index++)) {
-                this.nextCache = upnext;
+        if (up.hasNext()) {
+            T n = up.next();
+            if (predicate.test(n)) {
+                this.nextCache = n;
                 this.nextCached = true;
                 return true;
+            } else {
+                this.end = true;
             }
         }
 
@@ -44,9 +55,8 @@ public class FilterIterator<T> implements Iterator<T> {
     public T next() {
         if (hasNext()) {
             this.nextCached = false;
-            return this.nextCache;
+            return nextCache;
         }
-
         throw new NoSuchElementException();
     }
 }

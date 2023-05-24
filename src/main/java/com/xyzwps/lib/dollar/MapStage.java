@@ -3,9 +3,9 @@ package com.xyzwps.lib.dollar;
 import com.xyzwps.lib.dollar.function.IndexedFunction;
 import com.xyzwps.lib.dollar.iterable.ChainedIterable;
 import com.xyzwps.lib.dollar.iterable.MapEntryIterable;
-import com.xyzwps.lib.dollar.stage.FilterIterator;
-import com.xyzwps.lib.dollar.stage.MapIterator;
-import com.xyzwps.lib.dollar.stage.UniqueByIterator;
+import com.xyzwps.lib.dollar.iterator.FilterIterator;
+import com.xyzwps.lib.dollar.iterator.MapIterator;
+import com.xyzwps.lib.dollar.iterator.UniqueByIterator;
 
 import java.util.HashMap;
 import java.util.Iterator;

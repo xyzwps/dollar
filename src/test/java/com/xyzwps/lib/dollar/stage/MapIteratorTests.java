@@ -1,6 +1,7 @@
 package com.xyzwps.lib.dollar.stage;
 
 import com.xyzwps.lib.dollar.function.IndexedFunction;
+import com.xyzwps.lib.dollar.iterator.MapIterator;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

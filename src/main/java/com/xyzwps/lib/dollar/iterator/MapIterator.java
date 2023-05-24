@@ -1,4 +1,4 @@
-package com.xyzwps.lib.dollar.stage;
+package com.xyzwps.lib.dollar.iterator;
 
 import com.xyzwps.lib.dollar.function.IndexedFunction;
 import com.xyzwps.lib.dollar.iterator.EmptyIterator;

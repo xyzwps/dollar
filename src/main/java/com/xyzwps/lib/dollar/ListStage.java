@@ -7,8 +7,7 @@ import com.xyzwps.lib.dollar.function.IndexedFunction;
 import com.xyzwps.lib.dollar.function.IndexedPredicate;
 import com.xyzwps.lib.dollar.iterable.ChainedIterable;
 import com.xyzwps.lib.dollar.iterable.EmptyIterable;
-import com.xyzwps.lib.dollar.iterator.EmptyIterator;
-import com.xyzwps.lib.dollar.stage.*;
+import com.xyzwps.lib.dollar.iterator.*;
 
 import java.util.*;
 import java.util.function.BiFunction;

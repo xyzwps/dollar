@@ -1,5 +1,6 @@
 package com.xyzwps.lib.dollar.stage;
 
+import com.xyzwps.lib.dollar.iterator.UniqueByIterator;
 import org.junit.jupiter.api.Test;
 
 import java.util.Iterator;
