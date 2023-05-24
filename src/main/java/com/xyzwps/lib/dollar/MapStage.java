@@ -1,6 +1,6 @@
 package com.xyzwps.lib.dollar;
 
-import com.xyzwps.lib.dollar.function.IndexedFunction;
+import com.xyzwps.lib.dollar.function.ObjIntFunction;
 import com.xyzwps.lib.dollar.iterable.ChainedIterable;
 import com.xyzwps.lib.dollar.iterable.MapEntryIterable;
 import com.xyzwps.lib.dollar.iterator.FilterIterator;
@@ -32,13 +32,13 @@ public class MapStage<K, V> implements Iterable<Pair<K, V>> {
 
     public <V2> MapStage<K, V2> mapValues(Function<V, V2> mapValueFn) {
         Objects.requireNonNull(mapValueFn);
-        IndexedFunction<Pair<K, V>, Pair<K, V2>> fn = (pair, index) -> Pair.of(pair.key(), mapValueFn.apply(pair.value()));
+        ObjIntFunction<Pair<K, V>, Pair<K, V2>> fn = (pair, index) -> Pair.of(pair.key(), mapValueFn.apply(pair.value()));
         return new MapStage<>(this.entryIterable, up -> new MapIterator<>(up, fn)); // TODO: 这里不用 this.entryIterable，直接 this 就可以了。。。其他地方也是
     }
 
     public <K2> MapStage<K2, V> mapKeys(Function<K, K2> mapKeyFn) {
         Objects.requireNonNull(mapKeyFn);
-        IndexedFunction<Pair<K, V>, Pair<K2, V>> fn0 = (pair, index) -> Pair.of(mapKeyFn.apply(pair.key()), pair.value());
+        ObjIntFunction<Pair<K, V>, Pair<K2, V>> fn0 = (pair, index) -> Pair.of(mapKeyFn.apply(pair.key()), pair.value());
         MapStage<K2, V> stage0 = new MapStage<>(this.entryIterable, up -> new MapIterator<>(up, fn0));
         return new MapStage<>(stage0.entryIterable, up -> new UniqueByIterator<>(up, Pair::key));
     }

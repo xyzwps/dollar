@@ -7,7 +7,7 @@ package com.xyzwps.lib.dollar.function;
  * @param <R> the type of the result of the function
  */
 @FunctionalInterface
-public interface IndexedFunction<T, R> {
+public interface ObjIntFunction<T, R> {
 
     /**
      * Applies this function to the given argument.

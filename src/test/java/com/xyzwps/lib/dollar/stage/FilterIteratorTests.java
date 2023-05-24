@@ -1,6 +1,6 @@
 package com.xyzwps.lib.dollar.stage;
 
-import com.xyzwps.lib.dollar.function.IndexedPredicate;
+import com.xyzwps.lib.dollar.function.ObjIntPredicate;
 import com.xyzwps.lib.dollar.iterator.FilterIterator;
 import org.junit.jupiter.api.Test;
 
@@ -13,8 +13,8 @@ import static com.xyzwps.lib.dollar.Dollar.*;
 @SuppressWarnings("ConstantValue")
 class FilterIteratorTests {
 
-    static final IndexedPredicate<Integer> isEven = (i, index) -> i != null && i % 2 == 0;
-    static final IndexedPredicate<Integer> isOdd = (i, index) -> i != null && i % 2 == 1;
+    static final ObjIntPredicate<Integer> isEven = (i, index) -> i != null && i % 2 == 0;
+    static final ObjIntPredicate<Integer> isOdd = (i, index) -> i != null && i % 2 == 1;
 
     @Test
     void cornerCases() {
@@ -99,7 +99,7 @@ class FilterIteratorTests {
     @Test
     void filterByIndex() {
         List<Integer> list = $.arrayList(1, 2, 3, 4, 5);
-        IndexedPredicate<Integer> predicate = (i, index) -> index < 3;
+        ObjIntPredicate<Integer> predicate = (i, index) -> index < 3;
 
         //  common
         {

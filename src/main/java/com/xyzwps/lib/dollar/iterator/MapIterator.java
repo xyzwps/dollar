@@ -1,7 +1,6 @@
 package com.xyzwps.lib.dollar.iterator;
 
-import com.xyzwps.lib.dollar.function.IndexedFunction;
-import com.xyzwps.lib.dollar.iterator.EmptyIterator;
+import com.xyzwps.lib.dollar.function.ObjIntFunction;
 
 import java.util.Iterator;
 import java.util.Objects;
@@ -14,11 +13,11 @@ import java.util.Objects;
  */
 public class MapIterator<T, R> implements Iterator<R> {
 
-    private final IndexedFunction<T, R> mapFn;
+    private final ObjIntFunction<T, R> mapFn;
     private final Iterator<T> up;
     private int index = 0;
 
-    public MapIterator(Iterator<T> up, IndexedFunction<T, R> mapFn) {
+    public MapIterator(Iterator<T> up, ObjIntFunction<T, R> mapFn) {
         this.up = up == null ? EmptyIterator.create() : up;
         this.mapFn = Objects.requireNonNull(mapFn);
     }

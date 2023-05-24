@@ -1,7 +1,6 @@
 package com.xyzwps.lib.dollar.iterator;
 
-import com.xyzwps.lib.dollar.function.IndexedPredicate;
-import com.xyzwps.lib.dollar.iterator.EmptyIterator;
+import com.xyzwps.lib.dollar.function.ObjIntPredicate;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -10,14 +9,14 @@ import java.util.Objects;
 public class FilterIterator<T> implements Iterator<T> {
 
     private final Iterator<T> up;
-    private final IndexedPredicate<T> predicate;
+    private final ObjIntPredicate<T> predicate;
 
     private T nextCache;
     private boolean nextCached = false;
 
     private int index = 0;
 
-    public FilterIterator(Iterator<T> up, IndexedPredicate<T> predicate) {
+    public FilterIterator(Iterator<T> up, ObjIntPredicate<T> predicate) {
         this.up = up == null ? EmptyIterator.create() : up;
         this.predicate = Objects.requireNonNull(predicate);
     }

@@ -1,6 +1,6 @@
 package com.xyzwps.lib.dollar.stage;
 
-import com.xyzwps.lib.dollar.function.IndexedFunction;
+import com.xyzwps.lib.dollar.function.ObjIntFunction;
 import com.xyzwps.lib.dollar.iterator.MapIterator;
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +13,7 @@ import static com.xyzwps.lib.dollar.Dollar.*;
 @SuppressWarnings("ConstantValue")
 class MapIteratorTests {
 
-    private static final IndexedFunction<Integer, String> mapFn = (value, index) -> String.format("%d at %d", value, index);
+    private static final ObjIntFunction<Integer, String> mapFn = (value, index) -> String.format("%d at %d", value, index);
 
     @Test
     void cornerCases() {

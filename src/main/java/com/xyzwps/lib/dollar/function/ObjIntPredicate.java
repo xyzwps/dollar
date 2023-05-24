@@ -7,7 +7,7 @@ package com.xyzwps.lib.dollar.function;
  * @param <E> the type of the element to the predicate
  */
 @FunctionalInterface
-public interface IndexedPredicate<E> {
+public interface ObjIntPredicate<E> {
 
     /**
      * Evaluates this predicate on the given argument.

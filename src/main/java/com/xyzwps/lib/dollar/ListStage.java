@@ -3,8 +3,8 @@ package com.xyzwps.lib.dollar;
 import com.xyzwps.lib.dollar.collector.Collector;
 import com.xyzwps.lib.dollar.collector.JoinCollector;
 import com.xyzwps.lib.dollar.collector.ReduceCollector;
-import com.xyzwps.lib.dollar.function.IndexedFunction;
-import com.xyzwps.lib.dollar.function.IndexedPredicate;
+import com.xyzwps.lib.dollar.function.ObjIntFunction;
+import com.xyzwps.lib.dollar.function.ObjIntPredicate;
 import com.xyzwps.lib.dollar.iterable.ChainedIterable;
 import com.xyzwps.lib.dollar.iterable.EmptyIterable;
 import com.xyzwps.lib.dollar.iterator.*;
@@ -94,7 +94,7 @@ public class ListStage<T> implements Iterable<T> {
      * @param predicateFn determine which element should be retained. Not null.
      * @return next tube
      */
-    public ListStage<T> filter(IndexedPredicate<T> predicateFn) {
+    public ListStage<T> filter(ObjIntPredicate<T> predicateFn) {
         return new ListStage<>(this.iterable, up -> new FilterIterator<>(up, predicateFn));
     }
 
@@ -185,7 +185,7 @@ public class ListStage<T> implements Iterable<T> {
      * @param <R>   element type of map result
      * @return next tube
      */
-    public <R> ListStage<R> map(IndexedFunction<T, R> mapFn) {
+    public <R> ListStage<R> map(ObjIntFunction<T, R> mapFn) {
         return new ListStage<>(this.iterable, up -> new MapIterator<>(up, mapFn));
     }
 
