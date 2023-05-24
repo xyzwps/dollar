@@ -2,7 +2,7 @@ package com.xyzwps.lib.dollar;
 
 import java.util.Iterator;
 
-public final class Range {
+public final class Range implements Iterable<Integer> {
 
     /**
      * Include
@@ -19,7 +19,8 @@ public final class Range {
         this.end = end;
     }
 
-    public Iterator<Integer> toIterator() {
+    @Override
+    public Iterator<Integer> iterator() {
         return new Iterator<Integer>() {
 
             private int current = start;

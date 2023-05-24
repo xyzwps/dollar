@@ -1,8 +1,7 @@
 package com.xyzwps.lib.dollar;
 
 import com.xyzwps.lib.dollar.iterable.ArrayIterable;
-import com.xyzwps.lib.dollar.iterator.EmptyIterator;
-import com.xyzwps.lib.dollar.tube.ListTubeFromIterator;
+import com.xyzwps.lib.dollar.iterable.EmptyIterable;
 
 interface DollarTubes {
 
@@ -12,8 +11,8 @@ interface DollarTubes {
      * @param <T> element type
      * @return list tube
      */
-    default <T> ListTube<T> empty() {
-        return new ListTubeFromIterator<>(EmptyIterator.create());
+    default <T> ListStage<T> empty() {
+        return new ListStage<T>(EmptyIterable.create());
     }
 
     /**
@@ -199,7 +198,7 @@ interface DollarTubes {
      * @param end   range end - excluded
      * @return list tube
      */
-    default ListTube<Integer> range(int start, int end) {
-        return new ListTubeFromIterator<>(new Range(start, end).toIterator());
+    default ListStage<Integer> range(int start, int end) {
+        return new ListStage<>(new Range(start, end));
     }
 }
