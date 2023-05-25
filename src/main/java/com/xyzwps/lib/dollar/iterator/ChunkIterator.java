@@ -1,8 +1,6 @@
 package com.xyzwps.lib.dollar.iterator;
 
 
-import com.xyzwps.lib.dollar.iterator.EmptyIterator;
-
 import java.util.*;
 
 public class ChunkIterator<T> implements Iterator<List<T>> {
@@ -13,7 +11,7 @@ public class ChunkIterator<T> implements Iterator<List<T>> {
 
     public ChunkIterator(Iterator<T> up, int chunkSize) {
         if (chunkSize < 1) {
-            throw new IllegalArgumentException("Chunk size should be greater than 0");
+            throw new IllegalArgumentException("Each chunk should have at least one element.");
         }
         this.chunkSize = chunkSize;
         this.up = up == null ? EmptyIterator.create() : up;

@@ -1,7 +1,6 @@
-package com.xyzwps.lib.dollar.stage;
+package com.xyzwps.lib.dollar.iterator;
 
 
-import com.xyzwps.lib.dollar.iterator.TakeIterator;
 import org.junit.jupiter.api.Test;
 
 import java.util.Iterator;
@@ -14,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SuppressWarnings("ConstantValue")
 class TakeIteratorTests {
 
-    private static final List<Integer> list = $.arrayList(1, 2, 3, 4);
+    private static final List<Integer> list = $.list(1, 2, 3, 4);
 
     @Test
     void cornerCases() {

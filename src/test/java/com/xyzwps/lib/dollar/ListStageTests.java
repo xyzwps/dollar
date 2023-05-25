@@ -9,10 +9,13 @@ import java.util.function.Function;
 import static com.xyzwps.lib.dollar.Dollar.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-class ListTubeTests {
+// TODO: reorganize all of test cases
+class ListStageTests {
+
+    // TODO: test laziness
 
     @Nested
-    class ConstructListTube {
+    class ConstructListStage {
         @Test
         void nullList() {
             assertEquals(0, $((List<Object>) null).value().size());
@@ -63,7 +66,7 @@ class ListTubeTests {
                 "[[1, 2, 3, 4, 5, 6]]",
                 "[[1, 2, 3, 4, 5, 6]]"
         };
-        List<Integer> list = $.arrayList(1, 2, 3, 4, 5, 6);
+        List<Integer> list = $.list(1, 2, 3, 4, 5, 6);
         for (int i = 1; i < cases.length; i++) {
             assertEquals(cases[i], $(list).chunk(i).value().toString());
         }
@@ -82,9 +85,9 @@ class ListTubeTests {
         assertEquals("[a, , null, 1, 2, null, b]", $
                 .just("a", "", null)
                 .concat(null)
-                .concat($.arrayList("1", "2"))
-                .concat($.arrayList())
-                .concat($.arrayList(null, "b"))
+                .concat($.list("1", "2"))
+                .concat($.list())
+                .concat($.list(null, "b"))
                 .value().toString());
     }
 
@@ -107,14 +110,6 @@ class ListTubeTests {
         assertEquals(
                 "[11, 12, 21, 22]",
                 $.just(1, 2).flatMap(i -> $.just(i * 10 + 1, i * 10 + 2)).value().toString()
-        );
-    }
-
-    @Test
-    void flatten() {
-        assertEquals(
-                "[11, 12, 21, 22]",
-                $.just(1, 2).flatten(i -> $.arrayList(i * 10 + 1, i * 10 + 2)).value().toString()
         );
     }
 
@@ -195,11 +190,11 @@ class ListTubeTests {
 
     @Test
     void zip() {
-        assertEquals("[(1, 1), (2, 2), (3, null)]", $.just(1, 2, 3).zip($.arrayList(1, 2)).value().toString());
-        assertEquals("[(1, 1), (2, 2), (3, 3)]", $.just(1, 2, 3).zip($.arrayList(1, 2, 3)).value().toString());
-        assertEquals("[(1, 1), (2, 2), (3, 3), (null, 4), (null, 5)]", $.just(1, 2, 3).zip($.arrayList(1, 2, 3, 4, 5)).value().toString());
+        assertEquals("[(1, 1), (2, 2), (3, null)]", $.just(1, 2, 3).zip($.list(1, 2)).value().toString());
+        assertEquals("[(1, 1), (2, 2), (3, 3)]", $.just(1, 2, 3).zip($.list(1, 2, 3)).value().toString());
+        assertEquals("[(1, 1), (2, 2), (3, 3), (null, 4), (null, 5)]", $.just(1, 2, 3).zip($.list(1, 2, 3, 4, 5)).value().toString());
 
-        assertEquals("[(1, null), (2, null), (3, null)]", $.just(1, 2, 3).zip($.arrayList()).value().toString());
+        assertEquals("[(1, null), (2, null), (3, null)]", $.just(1, 2, 3).zip($.list()).value().toString());
         assertEquals("[(1, null), (2, null), (3, null)]", $.just(1, 2, 3).zip(null).value().toString());
     }
 }

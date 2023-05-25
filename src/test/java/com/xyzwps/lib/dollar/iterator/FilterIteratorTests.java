@@ -1,7 +1,6 @@
-package com.xyzwps.lib.dollar.stage;
+package com.xyzwps.lib.dollar.iterator;
 
 import com.xyzwps.lib.dollar.function.ObjIntPredicate;
-import com.xyzwps.lib.dollar.iterator.FilterIterator;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -20,7 +19,7 @@ class FilterIteratorTests {
     void cornerCases() {
         // null predicate
         {
-            List<Integer> list = $.arrayList(1, 2, 3);
+            List<Integer> list = $.list(1, 2, 3);
             assertThrows(NullPointerException.class, () -> new FilterIterator<>(list.iterator(), null));
         }
 
@@ -34,7 +33,7 @@ class FilterIteratorTests {
 
     @Test
     void commonCases() {
-        List<Integer> list = $.arrayList(1, 2, 3, 4, 5);
+        List<Integer> list = $.list(1, 2, 3, 4, 5);
 
         // even common
         {
@@ -98,7 +97,7 @@ class FilterIteratorTests {
 
     @Test
     void filterByIndex() {
-        List<Integer> list = $.arrayList(1, 2, 3, 4, 5);
+        List<Integer> list = $.list(1, 2, 3, 4, 5);
         ObjIntPredicate<Integer> predicate = (i, index) -> index < 3;
 
         //  common

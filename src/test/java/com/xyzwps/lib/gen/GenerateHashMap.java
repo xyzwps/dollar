@@ -28,7 +28,7 @@ public class GenerateHashMap {
         println(" * @param <V> value type");
         println(" * @return new HashMap");
         println(" */");
-        println("default <K, V> HashMap<K, V> hashMap(" + args(argsCount) + ") {");
+        println("public static <K, V> HashMap<K, V> hashMap(" + args(argsCount) + ") {");
         if (argsCount == 0) {
             println("    return new HashMap<>();");
         } else {

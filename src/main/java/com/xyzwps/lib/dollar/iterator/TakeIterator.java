@@ -1,7 +1,5 @@
 package com.xyzwps.lib.dollar.iterator;
 
-import com.xyzwps.lib.dollar.iterator.EmptyIterator;
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -19,7 +17,7 @@ public class TakeIterator<T> implements Iterator<T> {
     public TakeIterator(Iterator<T> up, int n) {
         this.up = up == null ? EmptyIterator.create() : up;
         if (n <= 0) {
-            throw new IllegalArgumentException("Take count should be greater than 0.");
+            throw new IllegalArgumentException("You should take at least one element.");
         }
         this.n = n;
     }

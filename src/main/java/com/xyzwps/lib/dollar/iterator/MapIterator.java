@@ -22,7 +22,6 @@ public class MapIterator<T, R> implements Iterator<R> {
         this.mapFn = Objects.requireNonNull(mapFn);
     }
 
-
     @Override
     public boolean hasNext() {
         return this.up.hasNext();

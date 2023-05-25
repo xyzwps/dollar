@@ -23,6 +23,8 @@ public class FlatMapIterator<T, R> implements Iterator<R> {
         this.flatMapFn = Objects.requireNonNull(flatMapFn);
     }
 
+    // TODO: 丑
+
     @Override
     public boolean hasNext() {
         if (this.nextCached) return true;

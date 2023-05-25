@@ -1,6 +1,7 @@
 package com.xyzwps.lib.dollar;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public final class Range implements Iterable<Integer> {
 
@@ -25,6 +26,8 @@ public final class Range implements Iterable<Integer> {
 
             private int current = start;
 
+            // TODO: 测试
+
             @Override
             public boolean hasNext() {
                 return current < end;
@@ -32,7 +35,10 @@ public final class Range implements Iterable<Integer> {
 
             @Override
             public Integer next() {
-                return current++;
+                if (hasNext()) {
+                    return current++;
+                }
+                throw new NoSuchElementException();
             }
         };
     }

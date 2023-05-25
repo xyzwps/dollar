@@ -1,7 +1,6 @@
-package com.xyzwps.lib.dollar.stage;
+package com.xyzwps.lib.dollar.iterator;
 
 import com.xyzwps.lib.dollar.Pair;
-import com.xyzwps.lib.dollar.iterator.KeyByIterator;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -24,14 +23,14 @@ class KeyByIteratorTests {
 
         // null toKey function
         {
-            List<Integer> list = $.arrayList(1, 2, 3);
+            List<Integer> list = $.list(1, 2, 3);
             assertThrows(NullPointerException.class, () -> new KeyByIterator<>(list.iterator(), null));
         }
     }
 
     @Test
     void commonCase() {
-        List<Integer> list = $.arrayList(1, 1, 1111, 2, 2222, 3, 11, 12, 21);
+        List<Integer> list = $.list(1, 1, 1111, 2, 2222, 3, 11, 12, 21);
 
         // common
         {

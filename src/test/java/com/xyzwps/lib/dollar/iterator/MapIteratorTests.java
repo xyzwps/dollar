@@ -1,7 +1,6 @@
-package com.xyzwps.lib.dollar.stage;
+package com.xyzwps.lib.dollar.iterator;
 
 import com.xyzwps.lib.dollar.function.ObjIntFunction;
-import com.xyzwps.lib.dollar.iterator.MapIterator;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -19,7 +18,7 @@ class MapIteratorTests {
     void cornerCases() {
         // null map function
         {
-            List<Integer> list = $.arrayList(1, 2, 3, 4);
+            List<Integer> list = $.list(1, 2, 3, 4);
             assertThrows(NullPointerException.class, () -> new MapIterator<>(list.iterator(), null));
         }
 
@@ -33,7 +32,7 @@ class MapIteratorTests {
 
     @Test
     void commonCases() {
-        List<Integer> list = $.arrayList(1, 2, 3, 4);
+        List<Integer> list = $.list(1, 2, 3, 4);
 
         // common
         {

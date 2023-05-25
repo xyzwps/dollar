@@ -1,6 +1,5 @@
-package com.xyzwps.lib.dollar.stage;
+package com.xyzwps.lib.dollar.iterator;
 
-import com.xyzwps.lib.dollar.iterator.ReverseIterator;
 import org.junit.jupiter.api.Test;
 
 import java.util.Iterator;
@@ -13,7 +12,7 @@ import static com.xyzwps.lib.dollar.Dollar.*;
 @SuppressWarnings("ConstantValue")
 class ReverseIteratorTests {
 
-    private static final List<Integer> list = $.arrayList(1, 2, 3, 4, 5, 6);
+    private static final List<Integer> list = $.list(1, 2, 3, 4, 5, 6);
 
     @Test
     void cornerCases() {

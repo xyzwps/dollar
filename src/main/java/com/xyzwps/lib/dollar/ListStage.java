@@ -5,7 +5,7 @@ import com.xyzwps.lib.dollar.collector.JoinCollector;
 import com.xyzwps.lib.dollar.collector.ReduceCollector;
 import com.xyzwps.lib.dollar.function.ObjIntFunction;
 import com.xyzwps.lib.dollar.function.ObjIntPredicate;
-import com.xyzwps.lib.dollar.iterable.ChainedIterable;
+import com.xyzwps.lib.dollar.iterable.ChainIterable;
 import com.xyzwps.lib.dollar.iterable.EmptyIterable;
 import com.xyzwps.lib.dollar.iterator.*;
 
@@ -26,7 +26,7 @@ public class ListStage<T> implements Iterable<T> {
     }
 
     <S> ListStage(Iterable<S> up, Function<Iterator<S>, Iterator<T>> chainFn) {
-        this(ChainedIterable.create(up, chainFn));
+        this(ChainIterable.create(up, chainFn));
     }
 
     /**
@@ -52,7 +52,7 @@ public class ListStage<T> implements Iterable<T> {
      * </pre>
      *
      * @return next stage
-     * @see DollarGeneral#isFalsey(Object)
+     * @see Dollar#$#isFalsey(Object)
      */
     public ListStage<T> compact() {
         return this.filter(it -> !$.isFalsey(it));
@@ -92,7 +92,7 @@ public class ListStage<T> implements Iterable<T> {
      * Indexed version of {@link #filter(Predicate)}.
      *
      * @param predicateFn determine which element should be retained. Not null.
-     * @return next tube
+     * @return next stage
      */
     public ListStage<T> filter(ObjIntPredicate<T> predicateFn) {
         return new ListStage<>(this.iterable, up -> new FilterIterator<>(up, predicateFn));
@@ -104,30 +104,13 @@ public class ListStage<T> implements Iterable<T> {
      * $.just(1, 2, 3).flatMap(i -> $.just(i*2, i*3)).value() => [2, 3, 4, 6, 6, 9]
      * </pre>
      *
-     * @param flatMapFn which flatMap elements to a tube
+     * @param flatMapFn which map an element to an {@link Iterable}
      * @param <R>       flatted elements type
      * @return next stage
      */
     public <R> ListStage<R> flatMap(Function<T, Iterable<R>> flatMapFn) {
         return new ListStage<>(this.iterable, up -> new FlatMapIterator<>(up, flatMapFn));
     }
-
-    /**
-     * Examples:
-     * <pre>
-     * $.just(1, 2, 3).flatten(i -> $.list(i * 2, i * 3)).value() => [2, 3, 4, 6, 6, 9]
-     * $.just(1, 2, 3).flatten(i -> null).value() => []
-     * </pre>
-     * <p>
-     *
-     * @param flattenFn which flatten elements to a list
-     * @param <R>       flatted elements type
-     * @return next stage
-     */
-    public <R> ListStage<R> flatten(Function<T, Iterable<R>> flattenFn) {
-        return this.flatMap(flattenFn);
-    }
-
 
     /**
      * Group elements by key.
@@ -139,7 +122,7 @@ public class ListStage<T> implements Iterable<T> {
      *
      * @param toKey to calculate element key
      * @param <K>   element key type
-     * @return next tube TODO: 删除所有 tube 字眼
+     * @return next stage
      */
     public <K> MapStage<K, List<T>> groupBy(Function<T, K> toKey) {
         return new MapStage<>(() -> new GroupByIterator<>(this.iterator(), toKey));
@@ -183,7 +166,7 @@ public class ListStage<T> implements Iterable<T> {
      *
      * @param mapFn mapper function
      * @param <R>   element type of map result
-     * @return next tube
+     * @return next stage
      */
     public <R> ListStage<R> map(ObjIntFunction<T, R> mapFn) {
         return new ListStage<>(this.iterable, up -> new MapIterator<>(up, mapFn));
@@ -310,7 +293,7 @@ public class ListStage<T> implements Iterable<T> {
     }
 
     /**
-     * Collect elements from tube.
+     * Collect elements from a stage.
      *
      * @param collector element collector
      * @param <R>       result element type
@@ -414,7 +397,7 @@ public class ListStage<T> implements Iterable<T> {
      * @return collected list
      */
     public List<T> value() {
-        return $.arrayListFrom(this.iterator());
+        return $.listFrom(this.iterator());
     }
 
 }

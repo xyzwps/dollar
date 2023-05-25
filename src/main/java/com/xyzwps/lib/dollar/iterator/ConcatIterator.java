@@ -1,6 +1,6 @@
 package com.xyzwps.lib.dollar.iterator;
 
-import com.xyzwps.lib.dollar.iterator.EmptyIterator;
+import com.xyzwps.lib.dollar.Unreachable;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -17,17 +17,26 @@ public class ConcatIterator<T> implements Iterator<T> {
 
     @Override
     public boolean hasNext() {
-        return this.up.hasNext() || this.tail.hasNext();
+        return this.hasMore() > 0;
+    }
+
+    private int hasMore() {
+        if (this.up.hasNext()) {
+            return 1;
+        }
+        if (this.tail.hasNext()) {
+            return 2;
+        }
+        return 0;
     }
 
     @Override
     public T next() {
-        if (this.up.hasNext()) {
-            return this.up.next();
+        switch (this.hasMore()) {
+            case 0: throw new NoSuchElementException();
+            case 1: return this.up.next();
+            case 2: return this.tail.next();
+            default: throw new Unreachable();
         }
-        if (this.tail.hasNext()) {
-            return this.tail.next();
-        }
-        throw new NoSuchElementException();
     }
 }

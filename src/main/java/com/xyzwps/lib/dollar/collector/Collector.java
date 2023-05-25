@@ -1,10 +1,12 @@
 package com.xyzwps.lib.dollar.collector;
 
 /**
- * Collect elements from tube into a result.
+ * Collect elements into a result.
  *
- * @param <T> type of elements from tube
+ * @param <T> type of elements to collect
  * @param <R> type of collecting result
+ *
+ * TODO: 好像不太需要了
  */
 public interface Collector<T, R> {
 
@@ -19,7 +21,7 @@ public interface Collector<T, R> {
     }
 
     /**
-     * Receive a element from tube.
+     * Receive an element.
      *
      * @param t the received element
      */

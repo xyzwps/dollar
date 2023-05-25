@@ -20,6 +20,8 @@ public class KeyByIterator<T, K> implements Iterator<Pair<K, T>> {
         this.toKey = Objects.requireNonNull(toKey);
     }
 
+    // TODO: 丑
+
     @Override
     public boolean hasNext() {
         this.tryToGetNext();

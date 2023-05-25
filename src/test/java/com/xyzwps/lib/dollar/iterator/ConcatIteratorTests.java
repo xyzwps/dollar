@@ -1,6 +1,5 @@
-package com.xyzwps.lib.dollar.stage;
+package com.xyzwps.lib.dollar.iterator;
 
-import com.xyzwps.lib.dollar.iterator.ConcatIterator;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -21,7 +20,7 @@ class ConcatIteratorTests {
 
     @Test
     void leftEmpty() {
-        List<Integer> left = $.arrayList(1, 2, 3, 4);
+        List<Integer> left = $.list(1, 2, 3, 4);
 
         // common
         {
@@ -64,7 +63,7 @@ class ConcatIteratorTests {
 
     @Test
     void rightEmpty() {
-        List<Integer> right = $.arrayList(5, 6, 7);
+        List<Integer> right = $.list(5, 6, 7);
 
         // common
         {
@@ -102,8 +101,8 @@ class ConcatIteratorTests {
 
     @Test
     void bothNotEmpty() {
-        List<Integer> left = $.arrayList(1, 2, 3, 4);
-        List<Integer> right = $.arrayList(5, 6, 7);
+        List<Integer> left = $.list(1, 2, 3, 4);
+        List<Integer> right = $.list(5, 6, 7);
 
         // common
         {

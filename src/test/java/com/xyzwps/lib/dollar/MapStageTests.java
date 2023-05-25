@@ -8,7 +8,7 @@ import java.util.TreeMap;
 import static com.xyzwps.lib.dollar.Dollar.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-class MapTubeTests {
+class MapStageTests {
 
     @Test
     void nullMap() {

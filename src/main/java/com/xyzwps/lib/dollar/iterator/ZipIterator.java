@@ -1,6 +1,6 @@
 package com.xyzwps.lib.dollar.iterator;
 
-import com.xyzwps.lib.dollar.iterator.EmptyIterator;
+import com.xyzwps.lib.dollar.Unreachable;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -35,7 +35,7 @@ public class ZipIterator<T, R, S> implements Iterator<S> {
             case 1: return combineFn.apply(left.next(), null);
             case 2: return combineFn.apply(null, right.next());
             case 3: return combineFn.apply(left.next(), right.next());
-            default: throw new IllegalStateException();
+            default: throw new Unreachable();
         }
     }
 }

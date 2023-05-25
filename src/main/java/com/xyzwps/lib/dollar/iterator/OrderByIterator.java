@@ -1,7 +1,6 @@
 package com.xyzwps.lib.dollar.iterator;
 
 import com.xyzwps.lib.dollar.Direction;
-import com.xyzwps.lib.dollar.iterator.EmptyIterator;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -29,25 +28,24 @@ public class OrderByIterator<T, K extends Comparable<K>> implements Iterator<T> 
 
     @Override
     public boolean hasNext() {
-        this.tryToInitItr();
-        return this.itr.hasNext();
+        return this.getItr().hasNext();
     }
 
     @Override
     public T next() {
-        this.tryToInitItr();
-        return this.itr.next();
+        return this.getItr().next();
     }
 
-    private void tryToInitItr() {
+    private Iterator<T> getItr() {
         if (this.itr != null) {
-            return;
+            return this.itr;
         }
 
-        ArrayList<T> list = $.arrayListFrom(up);
+        ArrayList<T> list = $.listFrom(up);
         Comparator<T> comparator = direction == Direction.DESC ? descComparator(toKey) : ascComparator(toKey);
         list.sort(comparator);
         this.itr = list.iterator();
+        return this.itr;
     }
 
 

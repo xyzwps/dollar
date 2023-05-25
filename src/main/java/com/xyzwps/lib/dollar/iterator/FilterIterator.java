@@ -21,6 +21,8 @@ public class FilterIterator<T> implements Iterator<T> {
         this.predicate = Objects.requireNonNull(predicate);
     }
 
+    // TODO: 丑
+
     @Override
     public boolean hasNext() {
         if (this.nextCached) {

@@ -1,6 +1,5 @@
-package com.xyzwps.lib.dollar.stage;
+package com.xyzwps.lib.dollar.iterator;
 
-import com.xyzwps.lib.dollar.iterator.ZipIterator;
 import org.junit.jupiter.api.Test;
 
 import java.util.Iterator;
@@ -16,8 +15,8 @@ class ZipIteratorTests {
 
     @Test
     void nullCombineFn() {
-        List<Integer> left = $.arrayList(1, 2);
-        List<Integer> right = $.arrayList(10, 20);
+        List<Integer> left = $.list(1, 2);
+        List<Integer> right = $.list(10, 20);
         assertThrows(NullPointerException.class,
                 () -> new ZipIterator<>(left.iterator(), right.iterator(), null));
     }
@@ -34,7 +33,7 @@ class ZipIteratorTests {
 
     @Test
     void leftNull() {
-        List<Integer> right = $.arrayList(10, 20);
+        List<Integer> right = $.list(10, 20);
 
         // common
         {
@@ -67,7 +66,7 @@ class ZipIteratorTests {
 
     @Test
     void rightNull() {
-        List<Integer> left = $.arrayList(10, 20);
+        List<Integer> left = $.list(10, 20);
 
         // common
         {
@@ -100,8 +99,8 @@ class ZipIteratorTests {
 
     @Test
     void leftShort() {
-        List<Integer> left = $.arrayList(1, 2);
-        List<Integer> right = $.arrayList(10, 20, 30, 40);
+        List<Integer> left = $.list(1, 2);
+        List<Integer> right = $.list(10, 20, 30, 40);
 
         // common
         {
@@ -146,8 +145,8 @@ class ZipIteratorTests {
 
     @Test
     void rightShort() {
-        List<Integer> left = $.arrayList(1, 2, 3, 4);
-        List<Integer> right = $.arrayList(10, 20);
+        List<Integer> left = $.list(1, 2, 3, 4);
+        List<Integer> right = $.list(10, 20);
 
         // common
         {
@@ -192,8 +191,8 @@ class ZipIteratorTests {
 
     @Test
     void lengthEqual() {
-        List<Integer> left = $.arrayList(1, 2, 3, 4);
-        List<Integer> right = $.arrayList(10, 20, 30, 40);
+        List<Integer> left = $.list(1, 2, 3, 4);
+        List<Integer> right = $.list(10, 20, 30, 40);
 
         // common
         {

@@ -1,7 +1,5 @@
 package com.xyzwps.lib.dollar.iterator;
 
-import com.xyzwps.lib.dollar.iterator.EmptyIterator;
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -26,6 +24,7 @@ public class TakeWhileIterator<T> implements Iterator<T> {
         this.predicate = Objects.requireNonNull(predicate);
     }
 
+    // TODO: 丑
 
     @Override
     public boolean hasNext() {

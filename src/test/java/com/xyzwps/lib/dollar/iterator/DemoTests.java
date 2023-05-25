@@ -1,4 +1,4 @@
-package com.xyzwps.lib.dollar.stage;
+package com.xyzwps.lib.dollar.iterator;
 
 import com.xyzwps.lib.dollar.Direction;
 import com.xyzwps.lib.dollar.ListStage;
@@ -29,7 +29,7 @@ class DemoTests {
                 .flatMap(i -> {
                     int t1 = i, t2 = i + 2;
                     log.add(String.format("  2) flat map %d to %d, %d", i, t1, t2));
-                    return $.arrayList(t1, t2);
+                    return $.list(t1, t2);
                 })
                 .orderBy(Function.identity(), Direction.DESC)
                 .filter(i -> {
@@ -82,7 +82,7 @@ class DemoTests {
     @Test
     void readMeDemo() {
         assertIterableEquals(
-                $.arrayList(28, 24, 20, 16),
+                $.list(28, 24, 20, 16),
                 $.just(2, 3, 4, 5, 6)
                         .map(i -> i * 2)
                         .flatMap(i -> $.just(i, i + 2))

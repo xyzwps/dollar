@@ -1,7 +1,7 @@
 package com.xyzwps.lib.dollar;
 
 /**
- * Throw when executing a unreachable branch.
+ * Throw when executing an unreachable branch.
  */
 public class Unreachable extends RuntimeException {
 

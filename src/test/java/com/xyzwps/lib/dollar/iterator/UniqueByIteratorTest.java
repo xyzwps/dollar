@@ -1,6 +1,5 @@
-package com.xyzwps.lib.dollar.stage;
+package com.xyzwps.lib.dollar.iterator;
 
-import com.xyzwps.lib.dollar.iterator.UniqueByIterator;
 import org.junit.jupiter.api.Test;
 
 import java.util.Iterator;
@@ -14,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SuppressWarnings("ConstantValue")
 class UniqueByIteratorTest {
 
-    private static final List<Integer> list = $.arrayList(1, 2, 2, 3, 3, 3, 4);
+    private static final List<Integer> list = $.list(1, 2, 2, 3, 3, 3, 4);
 
     @Test
     void cornerCases() {

@@ -1,6 +1,5 @@
-package com.xyzwps.lib.dollar.stage;
+package com.xyzwps.lib.dollar.iterator;
 
-import com.xyzwps.lib.dollar.iterator.ChunkIterator;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -16,7 +15,7 @@ class ChunkIteratorTests {
     void cornerCases() {
         // invalid chunk size
         {
-            List<Integer> list = $.arrayList(1, 2, 3, 4, 5, 6, 7);
+            List<Integer> list = $.list(1, 2, 3, 4, 5, 6, 7);
             $.range(-50, 1).forEach(i -> assertThrows(
                     IllegalArgumentException.class,
                     () -> new ChunkIterator<>(list.iterator(), i)
@@ -33,7 +32,7 @@ class ChunkIteratorTests {
 
     @Test
     void commonCases() {
-        List<Integer> list = $.arrayList(1, 2, 3, 4, 5, 6, 7);
+        List<Integer> list = $.list(1, 2, 3, 4, 5, 6, 7);
 
         // chunk 1 common
         {

@@ -1,7 +1,5 @@
 package com.xyzwps.lib.dollar.iterator;
 
-import com.xyzwps.lib.dollar.iterator.EmptyIterator;
-
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
