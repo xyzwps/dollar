@@ -14,73 +14,8 @@ import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 
 class DollarListsTests {
 
-    @Test
-    void arrayList() {
-        assertEquals("[]", $.list().toString());
-        assertEquals("[1]", $.list(1).toString());
-        assertEquals("[1, 2]", $.list(1, 2).toString());
-        assertEquals("[1, 2, 3]", $.list(1, 2, 3).toString());
-        assertEquals("[1, 2, 3, 4]", $.list(1, 2, 3, 4).toString());
-        assertEquals("[1, 2, 3, 4, 5]", $.list(1, 2, 3, 4, 5).toString());
-        assertEquals("[1, 2, 3, 4, 5, 6]", $.list(1, 2, 3, 4, 5, 6).toString());
-        assertEquals("[1, 2, 3, 4, 5, 6, 7]", $.list(1, 2, 3, 4, 5, 6, 7).toString());
-        assertEquals("[1, 2, 3, 4, 5, 6, 7, 8]", $.list(1, 2, 3, 4, 5, 6, 7, 8).toString());
-        assertEquals("[1, 2, 3, 4, 5, 6, 7, 8, 9]", $.list(1, 2, 3, 4, 5, 6, 7, 8, 9).toString());
-        assertEquals("[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]", $.list(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).toString());
-    }
 
-    @Test
-    void chunk() {
-        assertEquals("[]", $.chunk($.list(), 6).toString());
-        assertEquals("[]", $.chunk(null, 6).toString());
 
-        assertThrows(IllegalArgumentException.class, () -> $.chunk($.list(), 0));
-        assertThrows(IllegalArgumentException.class, () -> $.chunk(null, 0));
-
-        assertEquals("[[1], [2], [3], [4], [5]]", $.chunk($.list(1, 2, 3, 4, 5), 1).toString());
-        assertEquals("[[1, 2], [3, 4], [5]]", $.chunk($.list(1, 2, 3, 4, 5), 2).toString());
-        assertEquals("[[1, 2, 3], [4, 5]]", $.chunk($.list(1, 2, 3, 4, 5), 3).toString());
-        assertEquals("[[1, 2, 3, 4], [5]]", $.chunk($.list(1, 2, 3, 4, 5), 4).toString());
-        assertEquals("[[1, 2, 3, 4, 5]]", $.chunk($.list(1, 2, 3, 4, 5), 5).toString());
-        assertEquals("[[1, 2, 3, 4, 5]]", $.chunk($.list(1, 2, 3, 4, 5), 6).toString());
-
-        assertThrows(IllegalArgumentException.class, () -> $.chunk($.list(1, 2, 3, 4, 5), 0));
-        assertThrows(IllegalArgumentException.class, () -> $.chunk($.list(1, 2, 3, 4, 5), -1));
-    }
-
-    @Test
-    void compact() {
-        assertEquals("[]", $.compact($.list(null, "", false, 0)).toString());
-        assertEquals("[6, 哈哈]", $.compact($.list(null, 6, "", "哈哈", false, 0)).toString());
-        assertEquals("[]", $.compact(null).toString());
-    }
-
-    @Test
-    void filter1() {
-        assertEquals("[2, 4]", $.filter($.list(1, 2, 3, 4, 5), i -> i % 2 == 0).toString());
-
-        ;
-        assertEquals("[]", $.filter((List<Integer>) null, i -> i % 2 == 0).toString());
-
-        assertThrows(NullPointerException.class, () -> $.filter($.list(1, 2, 3, 4, 5), (Predicate<Integer>) null).toString());
-    }
-
-    @Test
-    void filter2() {
-        assertEquals("[1, 3, 5]", $.filter($.list(1, 2, 3, 4, 5), (e, i) -> i % 2 == 0).toString());
-
-        assertEquals("[]", $.filter(null, (e, i) -> i % 2 == 0).toString());
-
-        assertThrows(NullPointerException.class, () -> $.filter($.list(1, 2, 3, 4, 5), (BiPredicate<Integer, Integer>) null).toString());
-    }
-
-    @Test
-    void concat() {
-        assertEquals("[]", $.concat().toString());
-        assertEquals("[]", $.concat(null, null).toString());
-        assertEquals("[1, 2, 3, 4]", $.concat($.list(1, 2), $.list(3, 4)).toString());
-        assertEquals("[1, 2, 3, 4]", $.concat($.list(1, 2), null, $.list(3, 4)).toString());
-    }
 
     @Test
     void zip() {

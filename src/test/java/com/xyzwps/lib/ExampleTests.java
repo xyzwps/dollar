@@ -1,5 +1,6 @@
-package com.xyzwps.lib.dollar;
+package com.xyzwps.lib;
 
+import com.xyzwps.lib.dollar.Direction;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.function.Function;
 import static com.xyzwps.lib.dollar.Dollar.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+// TODO: 先放一边
 class ExampleTests {
 
     @Test

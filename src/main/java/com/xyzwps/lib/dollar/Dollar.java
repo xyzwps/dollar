@@ -3,12 +3,10 @@ package com.xyzwps.lib.dollar;
 import com.xyzwps.lib.dollar.function.ObjIntFunction;
 import com.xyzwps.lib.dollar.iterable.ArrayIterable;
 import com.xyzwps.lib.dollar.iterable.EmptyIterable;
+import com.xyzwps.lib.dollar.iterable.Range;
 
 import java.util.*;
-import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.*;
 
 /**
  * Apis for you.
@@ -884,7 +882,7 @@ public final class Dollar {
          * @param <R>       flatted elements type
          * @return next stage
          */
-        public <T, R> ArrayList<R> flatMap(Iterable<T> iterable, Function<T, Iterable<R>> flatMapFn) {
+        public static <T, R> ArrayList<R> flatMap(Iterable<T> iterable, Function<T, Iterable<R>> flatMapFn) {
             Objects.requireNonNull(flatMapFn);
 
             if (iterable == null) {
@@ -1065,6 +1063,27 @@ public final class Dollar {
             HashSet<T> set = new HashSet<>();
             iterable.forEach(set::add);
             return set;
+        }
+
+        // TODO: 写 doc
+        public static <T> void forEach(Iterable<T> iterable, Consumer<T> handler) {
+            if (iterable == null) {
+                return;
+            }
+
+            iterable.forEach(handler::accept);
+        }
+
+        // TODO: 写 doc
+        public static <T> void forEach(Iterable<T> iterable, ObjIntConsumer<T> handler) {
+            if (iterable == null) {
+                return;
+            }
+
+            int i = 0;
+            for (T it : iterable) {
+                handler.accept(it, i++);
+            }
         }
 
 

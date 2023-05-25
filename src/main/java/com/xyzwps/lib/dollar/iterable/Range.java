@@ -1,4 +1,4 @@
-package com.xyzwps.lib.dollar;
+package com.xyzwps.lib.dollar.iterable;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -16,6 +16,10 @@ public final class Range implements Iterable<Integer> {
     private final int end;
 
     public Range(int start, int end) {
+        if (start >= end) {
+            throw new IllegalArgumentException("The start value should be less than end value.");
+        }
+
         this.start = start;
         this.end = end;
     }
@@ -25,8 +29,6 @@ public final class Range implements Iterable<Integer> {
         return new Iterator<Integer>() {
 
             private int current = start;
-
-            // TODO: 测试
 
             @Override
             public boolean hasNext() {
