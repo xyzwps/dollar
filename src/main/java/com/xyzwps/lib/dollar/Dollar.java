@@ -952,6 +952,7 @@ public final class Dollar {
         }
 
         // TODO: 写 doc
+        // 如果 key 冲突，取最先遇到的那个
         public static <T, K> HashMap<K, T> keyBy(Iterable<T> iterable, Function<T, K> toKey) {
             Objects.requireNonNull(toKey);
 
@@ -960,7 +961,7 @@ public final class Dollar {
             }
 
             HashMap<K, T> result = new HashMap<>();
-            iterable.forEach(it -> result.put(toKey.apply(it), it));
+            iterable.forEach(it -> result.computeIfAbsent(toKey.apply(it), k -> it));
             return result;
         }
 
@@ -1002,12 +1003,12 @@ public final class Dollar {
             });
 
             int last = list.size() - 1;
-            int half = last / 2;
-            for (int i = 0; i <= half; i++) {
+            int half = list.size() / 2;
+            for (int i = 0; i < half; i++) {
                 T t1 = list.get(i);
                 T t2 = list.get(last - i);
-                list.add(last - i, t1);
-                list.add(i, t2);
+                list.set(last - i, t1);
+                list.set(i, t2);
             }
             return list;
         }
@@ -1086,7 +1087,8 @@ public final class Dollar {
             }
         }
 
-
+        // TODO: unique
+        // TODO: uniqueBy
         // TODO: zip
     }
 

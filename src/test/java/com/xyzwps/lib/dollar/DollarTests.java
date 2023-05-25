@@ -12,6 +12,55 @@ import static com.xyzwps.lib.dollar.Dollar.*;
 class DollarTests {
 
     @Test
+    void takeWhile() {
+        assertEquals("[1, 2]", $.takeWhile($.list(1, 2, 3, 4), i -> i < 3).toString());
+    }
+
+    @Test
+    void take() {
+        assertEquals("[1, 2]", $.take($.list(1, 2, 3, 4), 2).toString());
+    }
+
+    @Test
+    void reverse() {
+        assertEquals("[3, 2, 1]", $.reverse($.list(1, 2, 3)).toString());
+        assertEquals("[4, 3, 2, 1]", $.reverse($.list(1, 2, 3, 4)).toString());
+    }
+
+    @Test
+    void reduce() {
+        assertEquals(20, $.reduce($.list(1, 2, 3, 4), 10, Integer::sum));
+    }
+
+    @Test
+    void map1() {
+        assertEquals("[2, 4, 6]", $.map($.list(1, 2, 3), i -> i * 2).toString());
+    }
+
+    @Test
+    void map2() {
+        assertEquals("[11, 22, 33]", $.map($.just(1, 2, 3), (it, i) -> it + 10 * (i + 1)).toString());
+    }
+
+    @Test
+    void keyBy() {
+        Map<Integer, Integer> map = $.keyBy($.list(1, 4, 7, 2, 5, 3), i -> i % 3);
+        assertEquals(3, map.size());
+        assertEquals(1, map.get(1));
+        assertEquals(2, map.get(2));
+        assertEquals(3, map.get(0));
+    }
+
+    @Test
+    void groupBy() {
+        HashMap<Integer, ArrayList<Integer>> map = $.groupBy($.list(1, 4, 7, 2, 5, 3), i -> i % 3);
+        assertEquals(3, map.size());
+        assertEquals("[1, 4, 7]", map.get(1).toString());
+        assertEquals("[2, 5]", map.get(2).toString());
+        assertEquals("[3]", map.get(0).toString());
+    }
+
+    @Test
     void forEach1() {
         List<Integer> t = new ArrayList<>();
         $.forEach($.list(1, 2, 3), i -> t.add(i));

@@ -4,10 +4,7 @@ import com.xyzwps.lib.dollar.function.ObjIntPredicate;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Predicate;
 
 import static com.xyzwps.lib.dollar.Dollar.$;
@@ -15,6 +12,56 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ListTests {
+
+    @Test
+    void takeWhile() {
+        assertEquals("[1, 2]", $.just(1, 2, 3, 4).takeWhile(i -> i < 3).value().toString());
+    }
+
+    @Test
+    void take() {
+        assertEquals("[1, 2]", $.just(1, 2, 3, 4).take(2).value().toString());
+    }
+
+    @Test
+    void reverse() {
+        assertEquals("[3, 2, 1]", $.just(1, 2, 3).reverse().value().toString());
+        assertEquals("[4, 3, 2, 1]", $.just(1, 2, 3, 4).reverse().value().toString());
+    }
+
+    @Test
+    void reduce() {
+        assertEquals(20, $.just(1, 2, 3, 4).reduce(10, Integer::sum));
+    }
+
+    @Test
+    void map1() {
+        assertEquals("[2, 4, 6]", $.just(1, 2, 3).map(i -> i * 2).value().toString());
+    }
+
+    @Test
+    void map2() {
+        assertEquals("[11, 22, 33]", $.just(1, 2, 3).map((it, i) -> it + 10 * (i + 1)).value().toString());
+    }
+
+    @Test
+    void keyBy() {
+        Map<Integer, Integer> map = $.just(1, 4, 7, 2, 5, 3).keyBy(i -> i % 3).value();
+        assertEquals(3, map.size());
+        assertEquals(1, map.get(1));
+        assertEquals(2, map.get(2));
+        assertEquals(3, map.get(0));
+    }
+
+    @Test
+    void groupBy() {
+        // TODO: 改用 HashMap 和 ArrayList。如何理解 HashMap and ArrayList preferred
+        Map<Integer, List<Integer>> map = $.just(1, 4, 7, 2, 5, 3).groupBy(i -> i % 3).value();
+        assertEquals(3, map.size());
+        assertEquals("[1, 4, 7]", map.get(1).toString());
+        assertEquals("[2, 5]", map.get(2).toString());
+        assertEquals("[3]", map.get(0).toString());
+    }
 
     @Test
     void forEach1() {
