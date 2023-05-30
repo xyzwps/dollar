@@ -39,7 +39,7 @@ public class ListStage<T> implements Iterable<T> {
      * @return next stage
      */
     public ListStage<List<T>> chunk(int size) {
-        return new ListStage<>(this.iterable, up -> new ChunkIterator<>(up, size));
+        return new ListStage<>(this, up -> new ChunkIterator<>(up, size));
     }
 
     /**
@@ -65,7 +65,7 @@ public class ListStage<T> implements Iterable<T> {
      * @return next stage
      */
     public ListStage<T> concat(Iterable<T> tail) {
-        return new ListStage<>(this.iterable, up -> {
+        return new ListStage<>(this, up -> {
             Iterator<T> itr = tail == null ? EmptyIterator.create() : tail.iterator();
             return new ConcatIterator<>(up, itr);
         });
@@ -95,7 +95,7 @@ public class ListStage<T> implements Iterable<T> {
      * @return next stage
      */
     public ListStage<T> filter(ObjIntPredicate<T> predicateFn) {
-        return new ListStage<>(this.iterable, up -> new FilterIterator<>(up, predicateFn));
+        return new ListStage<>(this, up -> new FilterIterator<>(up, predicateFn));
     }
 
     /**
@@ -109,7 +109,7 @@ public class ListStage<T> implements Iterable<T> {
      * @return next stage
      */
     public <R> ListStage<R> flatMap(Function<T, Iterable<R>> flatMapFn) {
-        return new ListStage<>(this.iterable, up -> new FlatMapIterator<>(up, flatMapFn));
+        return new ListStage<>(this, up -> new FlatMapIterator<>(up, flatMapFn));
     }
 
     /**
@@ -169,7 +169,7 @@ public class ListStage<T> implements Iterable<T> {
      * @return next stage
      */
     public <R> ListStage<R> map(ObjIntFunction<T, R> mapFn) {
-        return new ListStage<>(this.iterable, up -> new MapIterator<>(up, mapFn));
+        return new ListStage<>(this, up -> new MapIterator<>(up, mapFn));
     }
 
     /**
@@ -185,7 +185,7 @@ public class ListStage<T> implements Iterable<T> {
      * @return next stage
      */
     public <K extends Comparable<K>> ListStage<T> orderBy(Function<T, K> toKey, Direction direction) {
-        return new ListStage<>(this.iterable, up -> new OrderByIterator<>(up, toKey, direction));
+        return new ListStage<>(this, up -> new OrderByIterator<>(up, toKey, direction));
     }
 
     /**
@@ -213,9 +213,11 @@ public class ListStage<T> implements Iterable<T> {
      * @return next stage
      */
     public ListStage<T> take(int n) {
-        return new ListStage<>(this.iterable, up -> new TakeIterator<>(up, n));
+        if (n <= 0) {
+            throw new IllegalArgumentException("You should take at least one element.");
+        }
+        return filter((it, index) -> index < n);
     }
-    // TODO: take 可以用 filter 实现
 
     /**
      * Take elements from the beginning, until <code>predicate</code> returns <code>false</code>.
@@ -229,7 +231,7 @@ public class ListStage<T> implements Iterable<T> {
      * @return next stage
      */
     public ListStage<T> takeWhile(Predicate<T> predicate) {
-        return new ListStage<>(this.iterable, up -> new TakeWhileIterator<>(up, predicate));
+        return new ListStage<>(this, up -> new TakeWhileIterator<>(up, predicate));
     }
 
     /**
@@ -255,7 +257,7 @@ public class ListStage<T> implements Iterable<T> {
      * @return next stage
      */
     public <K> ListStage<T> uniqueBy(Function<T, K> toKey) {
-        return new ListStage<>(this.iterable, up -> new UniqueByIterator<>(up, toKey));
+        return new ListStage<>(this, up -> new UniqueByIterator<>(up, toKey));
     }
 
     /**
@@ -280,10 +282,11 @@ public class ListStage<T> implements Iterable<T> {
      * @return zipped pairs stage
      */
     public <R, S> ListStage<S> zip(List<R> list, BiFunction<T, R, S> combineFn) {
+        Objects.requireNonNull(combineFn);
         if ($.isEmpty(list)) {
             return this.map(it -> combineFn.apply(it, null));
         } else {
-            return new ListStage<>(this.iterable, up -> new ZipIterator<>(up, list.iterator(), combineFn));
+            return new ListStage<>(this, up -> new ZipIterator<>(up, list.iterator(), combineFn));
         }
     }
 

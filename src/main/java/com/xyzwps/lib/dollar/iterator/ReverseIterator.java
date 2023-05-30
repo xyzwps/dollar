@@ -1,5 +1,6 @@
 package com.xyzwps.lib.dollar.iterator;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import static com.xyzwps.lib.dollar.Dollar.*;
@@ -29,7 +30,7 @@ public class ReverseIterator<T> implements Iterator<T> {
             return this.itr;
         }
 
-        this.itr = new ArrayListReverseIterator<>($.listFrom(up));
+        this.itr = new ArrayListReverseIterator<>((ArrayList<T>) $.listFrom(up));
         return this.itr;
     }
 }

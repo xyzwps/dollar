@@ -4,12 +4,37 @@ import org.junit.jupiter.api.Test;
 
 import java.util.*;
 import java.util.function.BiPredicate;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static com.xyzwps.lib.dollar.Dollar.*;
 
 class DollarTests {
+
+    @Test
+    void zip2() {
+        assertEquals("[(1, 1), (2, 2), (3, null)]", $.zip($.list(1, 2, 3), $.list(1, 2)).toString());
+        assertEquals("[(1, 1), (2, 2), (3, 3)]", $.zip($.list(1, 2, 3), $.list(1, 2, 3)).toString());
+        assertEquals("[(1, 1), (2, 2), (3, 3), (null, 4), (null, 5)]", $.zip($.list(1, 2, 3), $.list(1, 2, 3, 4, 5)).toString());
+
+        assertEquals("[(1, null), (2, null), (3, null)]", $.zip($.list(1, 2, 3), $.list()).toString());
+        assertEquals("[(1, null), (2, null), (3, null)]", $.zip($.list(1, 2, 3), null).toString());
+
+        assertThrows(NullPointerException.class, () -> $.zip($.list(1), $.list(2), null));
+
+        assertEquals($.zip(null, null).size(), 0);
+    }
+
+    @Test
+    void unique() {
+        assertEquals("[1, 2, 3]", $.unique($.list(1, 2, 1, 3)).toString());
+    }
+
+    @Test
+    void uniqueBy() {
+        assertEquals("[1, 2, 3]", $.uniqueBy($.list(1, 2, 1, 3, 4), i -> i % 3).toString());
+    }
 
     @Test
     void takeWhile() {
@@ -19,6 +44,14 @@ class DollarTests {
     @Test
     void take() {
         assertEquals("[1, 2]", $.take($.list(1, 2, 3, 4), 2).toString());
+    }
+
+    @Test
+    void orderBy() {
+        assertEquals("[1, 2, 3, 4, 5]", $.orderBy($.list(1, 3, 5, 2, 4), Function.identity(), Direction.ASC).toString());
+        assertEquals("[5, 4, 3, 2, 1]", $.orderBy($.list(1, 3, 5, 2, 4), Function.identity(), Direction.DESC).toString());
+
+        assertEquals("[]", $.orderBy((List<Integer>) null, Function.identity(), Direction.DESC).toString());
     }
 
     @Test
@@ -53,7 +86,7 @@ class DollarTests {
 
     @Test
     void groupBy() {
-        HashMap<Integer, ArrayList<Integer>> map = $.groupBy($.list(1, 4, 7, 2, 5, 3), i -> i % 3);
+        Map<Integer, List<Integer>> map = $.groupBy($.list(1, 4, 7, 2, 5, 3), i -> i % 3);
         assertEquals(3, map.size());
         assertEquals("[1, 4, 7]", map.get(1).toString());
         assertEquals("[2, 5]", map.get(2).toString());

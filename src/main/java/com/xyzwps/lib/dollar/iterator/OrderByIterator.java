@@ -2,10 +2,7 @@ package com.xyzwps.lib.dollar.iterator;
 
 import com.xyzwps.lib.dollar.Direction;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 
 import static com.xyzwps.lib.dollar.Dollar.*;
@@ -41,7 +38,7 @@ public class OrderByIterator<T, K extends Comparable<K>> implements Iterator<T> 
             return this.itr;
         }
 
-        ArrayList<T> list = $.listFrom(up);
+        List<T> list = $.listFrom(up);
         Comparator<T> comparator = direction == Direction.DESC ? descComparator(toKey) : ascComparator(toKey);
         list.sort(comparator);
         this.itr = list.iterator();

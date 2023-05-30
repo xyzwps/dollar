@@ -4,6 +4,8 @@ import com.xyzwps.lib.dollar.function.ObjIntFunction;
 import com.xyzwps.lib.dollar.iterable.ArrayIterable;
 import com.xyzwps.lib.dollar.iterable.EmptyIterable;
 import com.xyzwps.lib.dollar.iterable.Range;
+import com.xyzwps.lib.dollar.iterator.EmptyIterator;
+import com.xyzwps.lib.dollar.iterator.OrderByIterator;
 
 import java.util.*;
 import java.util.function.*;
@@ -11,7 +13,8 @@ import java.util.function.*;
 /**
  * Apis for you.
  * <p>
- * TODO: 重新测试，测试和 *stage 对齐
+ * TODO: 专门为 Random Access 优化
+ * TODO: 写中文文档
  */
 public final class Dollar {
 
@@ -243,20 +246,26 @@ public final class Dollar {
         /**
          * Create a list.
          *
-         * @param args TODO: 添加描述
-         * @param <T>  element type
-         * @return new ArrayList
+         * @param args elements of list
+         * @param <T>  type of elements
+         * @return new list
          */
         @SafeVarargs
-        public static <T> ArrayList<T> list(T... args) {
+        public static <T> List<T> list(T... args) {
             List<T> list = Arrays.asList(args);
             return list instanceof ArrayList ? (ArrayList<T>) list : new ArrayList<>(list);
         }
 
 
-        // TODO: 添加 doc
-        public static <T> ArrayList<T> listFrom(Iterator<T> itr) {
-            ArrayList<T> list = new ArrayList<>();
+        /**
+         * Create a list from an {@link Iterator}.
+         *
+         * @param itr which provide elements
+         * @param <T> type of elements
+         * @return new list
+         */
+        public static <T> List<T> listFrom(Iterator<T> itr) {
+            List<T> list = new ArrayList<>();
             if (itr != null) {
                 while (itr.hasNext()) list.add(itr.next());
             }
@@ -272,7 +281,7 @@ public final class Dollar {
          * @param <R>      map result type
          * @return new list
          */
-        public static <T, R> ArrayList<R> map(Iterable<T> iterable, Function<T, R> mapFn) {
+        public static <T, R> List<R> map(Iterable<T> iterable, Function<T, R> mapFn) {
             Objects.requireNonNull(mapFn);
 
             if (iterable == null) {
@@ -285,15 +294,23 @@ public final class Dollar {
                 capacity = list.size();
             }
 
-            ArrayList<R> result = new ArrayList<>(capacity);
+            List<R> result = new ArrayList<>(capacity);
             for (T t : iterable) {
                 result.add(mapFn.apply(t));
             }
             return result;
         }
 
-        // TODO: add doc
-        public static <T, R> ArrayList<R> map(Iterable<T> iterable, ObjIntFunction<T, R> mapFn) {
+        /**
+         * Mapping a list of elements to another.
+         *
+         * @param iterable to be mapped
+         * @param mapFn    mapping function
+         * @param <T>      type of elements applied to mapping function
+         * @param <R>      type of elements returned by mapping function
+         * @return mapping result
+         */
+        public static <T, R> List<R> map(Iterable<T> iterable, ObjIntFunction<T, R> mapFn) {
             Objects.requireNonNull(mapFn);
 
             if (iterable == null) {
@@ -306,7 +323,7 @@ public final class Dollar {
                 capacity = list.size();
             }
 
-            ArrayList<R> result = new ArrayList<>(capacity);
+            List<R> result = new ArrayList<>(capacity);
             int index = 0;
             for (T t : iterable) {
                 result.add(mapFn.apply(t, index++));
@@ -314,87 +331,21 @@ public final class Dollar {
             return result;
         }
 
-        /**
-         * {@link #zip(List, List, BiFunction) zip} two lists into a list of pairs.
-         *
-         * @param list1 first list
-         * @param list2 second list
-         * @param <E1>  element type of the first list
-         * @param <E2>  element type of the second list
-         * @return a list of pairs
-         */
-        public static <E1, E2> List<Pair<E1, E2>> zip(List<E1> list1, List<E2> list2) {
-            return zip(list1, list2, Pair::new);
-        }
-
 
         /**
-         * Combine the elements at the same position from two lists into one object in order.
-         *
-         * @param list1   first list
-         * @param list2   second list
-         * @param combine combine function.
-         * @param <E1>    element type of the first list
-         * @param <E2>    element type of the second list
-         * @return a list of pairs
-         */
-        public static <E1, E2, E> List<E> zip(List<E1> list1, List<E2> list2, BiFunction<E1, E2, E> combine) {
-            if (combine == null) {
-                throw new IllegalArgumentException("Argument combine cannot be null");
-            }
-
-            int l1 = length(list1);
-            int l2 = length(list2);
-
-            int state = (l1 > 0 ? 0b10 : 0b00) | (l2 > 0 ? 0b01 : 0b00);
-            switch (state) {
-                case 0b00:
-                    return new ArrayList<>();
-                case 0b01:
-                    return map(list2, it -> combine.apply(null, it));
-                case 0b10:
-                    return map(list1, it -> combine.apply(it, null));
-                case 0b11: {
-                    int length = Math.max(l1, l2);
-                    List<E> result = new ArrayList<>(length);
-                    if (list1 instanceof RandomAccess && list2 instanceof RandomAccess) {
-                        for (int i = 0; i < length; i++) {
-                            result.add(combine.apply(
-                                    i < l1 ? list1.get(i) : null,
-                                    i < l2 ? list2.get(i) : null
-                            ));
-                        }
-                    } else {
-                        Iterator<E1> itr1 = list1.listIterator();
-                        Iterator<E2> itr2 = list2.listIterator();
-                        for (int i = 0; i < length; i++) {
-                            result.add(combine.apply(
-                                    itr1.hasNext() ? itr1.next() : null,
-                                    itr2.hasNext() ? itr2.next() : null
-                            ));
-                        }
-                    }
-                    return result;
-                }
-            }
-            throw new Unreachable();
-        }
-
-
-        /**
-         * Create a {@link HashMap} with key-value pairs.
+         * Create a {@link Map} with key-value pairs.
          *
          * @param <K> key type
          * @param <V> value type
          * @return new HashMap
          */
-        public static <K, V> HashMap<K, V> hashMap() {
+        public static <K, V> Map<K, V> hashMap() {
             return new HashMap<>();
         }
 
 
         /**
-         * Create a {@link HashMap} with key-value pairs.
+         * Create a {@link Map} with key-value pairs.
          *
          * @param k1  the first key
          * @param v1  the first value
@@ -402,15 +353,15 @@ public final class Dollar {
          * @param <V> value type
          * @return new HashMap
          */
-        public static <K, V> HashMap<K, V> hashMap(K k1, V v1) {
-            HashMap<K, V> map = new HashMap<>();
+        public static <K, V> Map<K, V> hashMap(K k1, V v1) {
+            Map<K, V> map = new HashMap<>();
             map.put(k1, v1);
             return map;
         }
 
 
         /**
-         * Create a {@link HashMap} with key-value pairs.
+         * Create a {@link Map} with key-value pairs.
          *
          * @param k1  the first key
          * @param v1  the first value
@@ -420,8 +371,8 @@ public final class Dollar {
          * @param <V> value type
          * @return new HashMap
          */
-        public static <K, V> HashMap<K, V> hashMap(K k1, V v1, K k2, V v2) {
-            HashMap<K, V> map = new HashMap<>();
+        public static <K, V> Map<K, V> hashMap(K k1, V v1, K k2, V v2) {
+            Map<K, V> map = new HashMap<>();
             map.put(k1, v1);
             map.put(k2, v2);
             return map;
@@ -429,7 +380,7 @@ public final class Dollar {
 
 
         /**
-         * Create a {@link HashMap} with key-value pairs.
+         * Create a {@link Map} with key-value pairs.
          *
          * @param k1  the first key
          * @param v1  the first value
@@ -441,8 +392,8 @@ public final class Dollar {
          * @param <V> value type
          * @return new HashMap
          */
-        public static <K, V> HashMap<K, V> hashMap(K k1, V v1, K k2, V v2, K k3, V v3) {
-            HashMap<K, V> map = new HashMap<>();
+        public static <K, V> Map<K, V> hashMap(K k1, V v1, K k2, V v2, K k3, V v3) {
+            Map<K, V> map = new HashMap<>();
             map.put(k1, v1);
             map.put(k2, v2);
             map.put(k3, v3);
@@ -451,7 +402,7 @@ public final class Dollar {
 
 
         /**
-         * Create a {@link HashMap} with key-value pairs.
+         * Create a {@link Map} with key-value pairs.
          *
          * @param k1  the first key
          * @param v1  the first value
@@ -465,8 +416,8 @@ public final class Dollar {
          * @param <V> value type
          * @return new HashMap
          */
-        public static <K, V> HashMap<K, V> hashMap(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4) {
-            HashMap<K, V> map = new HashMap<>();
+        public static <K, V> Map<K, V> hashMap(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4) {
+            Map<K, V> map = new HashMap<>();
             map.put(k1, v1);
             map.put(k2, v2);
             map.put(k3, v3);
@@ -476,7 +427,7 @@ public final class Dollar {
 
 
         /**
-         * Create a {@link HashMap} with key-value pairs.
+         * Create a {@link Map} with key-value pairs.
          *
          * @param k1  the first key
          * @param v1  the first value
@@ -492,8 +443,8 @@ public final class Dollar {
          * @param <V> value type
          * @return new HashMap
          */
-        public static <K, V> HashMap<K, V> hashMap(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5) {
-            HashMap<K, V> map = new HashMap<>();
+        public static <K, V> Map<K, V> hashMap(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5) {
+            Map<K, V> map = new HashMap<>();
             map.put(k1, v1);
             map.put(k2, v2);
             map.put(k3, v3);
@@ -504,7 +455,7 @@ public final class Dollar {
 
 
         /**
-         * Create a {@link HashMap} with key-value pairs.
+         * Create a {@link Map} with key-value pairs.
          *
          * @param k1  the first key
          * @param v1  the first value
@@ -522,8 +473,8 @@ public final class Dollar {
          * @param <V> value type
          * @return new HashMap
          */
-        public static <K, V> HashMap<K, V> hashMap(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6) {
-            HashMap<K, V> map = new HashMap<>();
+        public static <K, V> Map<K, V> hashMap(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6) {
+            Map<K, V> map = new HashMap<>();
             map.put(k1, v1);
             map.put(k2, v2);
             map.put(k3, v3);
@@ -535,7 +486,7 @@ public final class Dollar {
 
 
         /**
-         * Create a {@link HashMap} with key-value pairs.
+         * Create a {@link Map} with key-value pairs.
          *
          * @param k1  the first key
          * @param v1  the first value
@@ -555,8 +506,8 @@ public final class Dollar {
          * @param <V> value type
          * @return new HashMap
          */
-        public static <K, V> HashMap<K, V> hashMap(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6, K k7, V v7) {
-            HashMap<K, V> map = new HashMap<>();
+        public static <K, V> Map<K, V> hashMap(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6, K k7, V v7) {
+            Map<K, V> map = new HashMap<>();
             map.put(k1, v1);
             map.put(k2, v2);
             map.put(k3, v3);
@@ -569,7 +520,7 @@ public final class Dollar {
 
 
         /**
-         * Create a {@link HashMap} with key-value pairs.
+         * Create a {@link Map} with key-value pairs.
          *
          * @param k1  the first key
          * @param v1  the first value
@@ -591,8 +542,8 @@ public final class Dollar {
          * @param <V> value type
          * @return new HashMap
          */
-        public static <K, V> HashMap<K, V> hashMap(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6, K k7, V v7, K k8, V v8) {
-            HashMap<K, V> map = new HashMap<>();
+        public static <K, V> Map<K, V> hashMap(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6, K k7, V v7, K k8, V v8) {
+            Map<K, V> map = new HashMap<>();
             map.put(k1, v1);
             map.put(k2, v2);
             map.put(k3, v3);
@@ -606,7 +557,7 @@ public final class Dollar {
 
 
         /**
-         * Create a {@link HashMap} with key-value pairs.
+         * Create a {@link Map} with key-value pairs.
          *
          * @param k1  the first key
          * @param v1  the first value
@@ -630,8 +581,8 @@ public final class Dollar {
          * @param <V> value type
          * @return new HashMap
          */
-        public static <K, V> HashMap<K, V> hashMap(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6, K k7, V v7, K k8, V v8, K k9, V v9) {
-            HashMap<K, V> map = new HashMap<>();
+        public static <K, V> Map<K, V> hashMap(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6, K k7, V v7, K k8, V v8, K k9, V v9) {
+            Map<K, V> map = new HashMap<>();
             map.put(k1, v1);
             map.put(k2, v2);
             map.put(k3, v3);
@@ -646,7 +597,7 @@ public final class Dollar {
 
 
         /**
-         * Create a {@link HashMap} with key-value pairs.
+         * Create a {@link Map} with key-value pairs.
          *
          * @param k1  the first key
          * @param v1  the first value
@@ -672,8 +623,8 @@ public final class Dollar {
          * @param <V> value type
          * @return new HashMap
          */
-        public static <K, V> HashMap<K, V> hashMap(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6, K k7, V v7, K k8, V v8, K k9, V v9, K k10, V v10) {
-            HashMap<K, V> map = new HashMap<>();
+        public static <K, V> Map<K, V> hashMap(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6, K k7, V v7, K k8, V v8, K k9, V v9, K k10, V v10) {
+            Map<K, V> map = new HashMap<>();
             map.put(k1, v1);
             map.put(k2, v2);
             map.put(k3, v3);
@@ -688,7 +639,7 @@ public final class Dollar {
         }
 
         /**
-         * Check if the string is empty or not.
+         * Check if a string is empty or not.
          *
          * @param string to be checked
          * @return true if string is null, or it's length is 0
@@ -697,12 +648,22 @@ public final class Dollar {
             return string == null || string.isEmpty();
         }
 
-        // TODO: 写 doc
+        /**
+         * Check if a {@link Map} is empty of not.
+         *
+         * @param map to be checked
+         * @return true if map is null, or it has no any entries.
+         */
         public static boolean isEmpty(Map<?, ?> map) {
             return map == null || map.isEmpty();
         }
 
-        // TODO: 写 doc
+        /**
+         * Check if a {@link Map} is not empty.
+         *
+         * @param map to be checked
+         * @return true if map {@link #isEmpty(Map)} is false
+         */
         public static boolean isNotEmpty(Map<?, ?> map) {
             return !isEmpty(map);
         }
@@ -846,11 +807,14 @@ public final class Dollar {
         }
 
         /**
-         * TODO: 写 doc
+         * Get the first element from {@link Iterable}.
+         * <p>
+         * Warning: When {@link Optional#empty()} is returned, uou cannot recognize
+         * that the <code>iterable</code> is empty, or it's first element is null.
          *
-         * @param iterable
-         * @param <T>
-         * @return
+         * @param iterable to be handled
+         * @param <T>      type of the first element
+         * @return {@link Optional} of the first element
          */
         public static <T> Optional<T> first(Iterable<T> iterable) {
             if (iterable == null) {
@@ -865,11 +829,11 @@ public final class Dollar {
         }
 
         /**
-         * TODO: 写 doc
+         * Alias for {@link #first(Iterable)}.
          *
-         * @param iterable
-         * @param <T>
-         * @return
+         * @param iterable to be handled
+         * @param <T>      type of the first element
+         * @return {@link Optional} of the first element
          */
         public static <T> Optional<T> head(Iterable<T> iterable) {
             return first(iterable);
@@ -882,7 +846,7 @@ public final class Dollar {
          * @param <R>       flatted elements type
          * @return next stage
          */
-        public static <T, R> ArrayList<R> flatMap(Iterable<T> iterable, Function<T, Iterable<R>> flatMapFn) {
+        public static <T, R> List<R> flatMap(Iterable<T> iterable, Function<T, Iterable<R>> flatMapFn) {
             Objects.requireNonNull(flatMapFn);
 
             if (iterable == null) {
@@ -900,85 +864,98 @@ public final class Dollar {
         }
 
         // TODO: 写 doc
-        public static <K, V, V2> HashMap<K, V2> mapValues(Map<K, V> map, Function<V, V2> mapFn) {
+        public static <K, V, V2> Map<K, V2> mapValues(Map<K, V> map, Function<V, V2> mapFn) {
             Objects.requireNonNull(mapFn);
 
             if (isEmpty(map)) {
                 return new HashMap<>();
             }
 
-            HashMap<K, V2> result = new HashMap<>();
+            Map<K, V2> result = new HashMap<>();
             map.forEach((k, v) -> result.put(k, mapFn.apply(v)));
             return result;
         }
 
         // TODO: 写 doc
-        public static <K, V, V2> HashMap<K, V2> mapValues(Map<K, V> map, BiFunction<V, K, V2> mapFn) {
+        public static <K, V, V2> Map<K, V2> mapValues(Map<K, V> map, BiFunction<V, K, V2> mapFn) {
             Objects.requireNonNull(mapFn);
 
             if (isEmpty(map)) {
                 return new HashMap<>();
             }
 
-            HashMap<K, V2> result = new HashMap<>();
+            Map<K, V2> result = new HashMap<>();
             map.forEach((k, v) -> result.put(k, mapFn.apply(v, k)));
             return result;
         }
 
         // TODO: 写 doc
-        public static <K, V, K2> HashMap<K2, V> mapKeys(Map<K, V> map, Function<K, K2> mapFn) {
+        public static <K, V, K2> Map<K2, V> mapKeys(Map<K, V> map, Function<K, K2> mapFn) {
             Objects.requireNonNull(mapFn);
 
             if (isEmpty(map)) {
                 return new HashMap<>();
             }
 
-            HashMap<K2, V> result = new HashMap<>();
+            Map<K2, V> result = new HashMap<>();
             map.forEach((k, v) -> result.put(mapFn.apply(k), v));
             return result;
         }
 
         // TODO: 写 doc
-        public static <K, V, K2> HashMap<K2, V> mapKeys(Map<K, V> map, BiFunction<K, V, K2> mapFn) {
+        public static <K, V, K2> Map<K2, V> mapKeys(Map<K, V> map, BiFunction<K, V, K2> mapFn) {
             Objects.requireNonNull(mapFn);
 
             if (isEmpty(map)) {
                 return new HashMap<>();
             }
 
-            HashMap<K2, V> result = new HashMap<>();
+            Map<K2, V> result = new HashMap<>();
             map.forEach((k, v) -> result.put(mapFn.apply(k, v), v));
             return result;
         }
 
         // TODO: 写 doc
         // 如果 key 冲突，取最先遇到的那个
-        public static <T, K> HashMap<K, T> keyBy(Iterable<T> iterable, Function<T, K> toKey) {
+        public static <T, K> Map<K, T> keyBy(Iterable<T> iterable, Function<T, K> toKey) {
             Objects.requireNonNull(toKey);
 
             if (iterable == null) {
                 return new HashMap<>();
             }
 
-            HashMap<K, T> result = new HashMap<>();
+            Map<K, T> result = new HashMap<>();
             iterable.forEach(it -> result.computeIfAbsent(toKey.apply(it), k -> it));
             return result;
         }
 
         // TODO: 写 doc
-        public static <T, K> HashMap<K, ArrayList<T>> groupBy(Iterable<T> iterable, Function<T, K> toKey) {
+        public static <T, K> Map<K, List<T>> groupBy(Iterable<T> iterable, Function<T, K> toKey) {
             Objects.requireNonNull(toKey);
 
             if (iterable == null) {
                 return new HashMap<>();
             }
 
-            HashMap<K, ArrayList<T>> result = new HashMap<>();
+            Map<K, List<T>> result = new HashMap<>();
             iterable.forEach(it -> result.computeIfAbsent(toKey.apply(it), k -> new ArrayList<>()).add(it));
             return result;
         }
 
-        // TODO: orderBy
+        // TODO: 写 doc
+        public static <T, K extends Comparable<K>> List<T> orderBy(Iterable<T> iterable, Function<T, K> toKey, Direction direction) {
+            Objects.requireNonNull(toKey);
+            Objects.requireNonNull(direction);
+
+            if (iterable == null) {
+                return new ArrayList<>();
+            }
+
+            List<T> list = $.listFrom(iterable.iterator());
+            Comparator<T> comparator = direction == Direction.DESC ? OrderByIterator.descComparator(toKey) : OrderByIterator.ascComparator(toKey);
+            list.sort(comparator);
+            return list;
+        }
 
         // TODO: 写 doc
         public static <T, R> R reduce(Iterable<T> iterable, R identity, BiFunction<R, T, R> reducer) {
@@ -996,7 +973,7 @@ public final class Dollar {
         }
 
         // TODO: 写 doc
-        public static <T> ArrayList<T> reverse(Iterable<T> iterable) {
+        public static <T> List<T> reverse(Iterable<T> iterable) {
             ArrayList<T> list = reduce(iterable, new ArrayList<>(), (li, it) -> {
                 li.add(it);
                 return li;
@@ -1014,7 +991,7 @@ public final class Dollar {
         }
 
         // TODO: 写 doc
-        public static <T> ArrayList<T> take(Iterable<T> iterable, int n) {
+        public static <T> List<T> take(Iterable<T> iterable, int n) {
             if (n < 1) {
                 throw new IllegalArgumentException("You should take at least one element.");
             }
@@ -1037,7 +1014,7 @@ public final class Dollar {
         }
 
         // TODO: 写 doc
-        public static <T> ArrayList<T> takeWhile(Iterable<T> iterable, Predicate<T> predicate) {
+        public static <T> List<T> takeWhile(Iterable<T> iterable, Predicate<T> predicate) {
             Objects.requireNonNull(predicate);
 
             if (iterable == null) {
@@ -1056,12 +1033,12 @@ public final class Dollar {
         }
 
         // TODO: 写 doc
-        public static <T> HashSet<T> toSet(Iterable<T> iterable) {
+        public static <T> Set<T> toSet(Iterable<T> iterable) {
             if (iterable == null) {
                 return new HashSet<>();
             }
 
-            HashSet<T> set = new HashSet<>();
+            Set<T> set = new HashSet<>();
             iterable.forEach(set::add);
             return set;
         }
@@ -1087,9 +1064,115 @@ public final class Dollar {
             }
         }
 
-        // TODO: unique
-        // TODO: uniqueBy
-        // TODO: zip
+        // TODO: 写 doc
+        public static <T> List<T> unique(Iterable<T> iterable) {
+            if (iterable == null) {
+                return new ArrayList<>();
+            }
+
+            List<T> result = new ArrayList<>();
+            Set<T> dedupSet = new HashSet<>();
+            for (T it : iterable) {
+                if (!dedupSet.contains(it)) {
+                    dedupSet.add(it);
+                    result.add(it);
+                }
+            }
+            return result;
+        }
+
+        // TODO: 写 doc
+        public static <T, K> List<T> uniqueBy(Iterable<T> iterable, Function<T, K> toKey) {
+            Objects.requireNonNull(toKey);
+
+            if (iterable == null) {
+                return new ArrayList<>();
+            }
+
+            List<T> result = new ArrayList<>();
+            Set<K> dedupSet = new HashSet<>();
+            for (T it : iterable) {
+                K key = toKey.apply(it);
+                if (!dedupSet.contains(key)) {
+                    dedupSet.add(key);
+                    result.add(it);
+                }
+            }
+            return result;
+        }
+
+        // TODO: 写 doc
+        public static <T, K> List<T> uniqueBy(Iterable<T> iterable, ObjIntFunction<T, K> toKey) {
+            Objects.requireNonNull(toKey);
+
+            if (iterable == null) {
+                return new ArrayList<>();
+            }
+
+            List<T> result = new ArrayList<>();
+            Set<K> dedupSet = new HashSet<>();
+            int i = 0;
+            for (T it : iterable) {
+                K key = toKey.apply(it, i++);
+                if (!dedupSet.contains(key)) {
+                    dedupSet.add(key);
+                    result.add(it);
+                }
+            }
+            return result;
+        }
+
+        /**
+         * {@link #zip(Iterable, Iterable, BiFunction) zip} two lists into a list of pairs.
+         *
+         * @param left  first list
+         * @param right second list
+         * @param <T>   element type of the first list
+         * @param <R>   element type of the second list
+         * @return a list of pairs
+         */
+        public static <T, R> List<Pair<T, R>> zip(Iterable<T> left, Iterable<R> right) {
+            return zip(left, right, Pair::of);
+        }
+
+
+        /**
+         * Combine the elements at the same position from two lists into one object in order.
+         *
+         * @param left      first list
+         * @param right     second list
+         * @param combineFn combine function.
+         * @param <T>       element type of the first list
+         * @param <R>       element type of the second list
+         * @return a list of combined
+         */
+        public static <T, R, S> List<S> zip(Iterable<T> left, Iterable<R> right, BiFunction<T, R, S> combineFn) {
+            Objects.requireNonNull(combineFn);
+
+            List<S> result = new ArrayList<>();
+            Iterator<T> li = left == null ? EmptyIterator.create() : left.iterator();
+            Iterator<R> ri = right == null ? EmptyIterator.create() : right.iterator();
+            while (true) {
+                int state = 0;
+                if (li.hasNext()) state += 1;
+                if (ri.hasNext()) state += 2;
+                switch (state) {
+                    case 0:
+                        return result;
+                    case 1:
+                        result.add(combineFn.apply(li.next(), null));
+                        break;
+                    case 2:
+                        result.add(combineFn.apply(null, ri.next()));
+                        break;
+                    case 3:
+                        result.add(combineFn.apply(li.next(), ri.next()));
+                        break;
+                    default:
+                        throw new Unreachable();
+                }
+            }
+        }
     }
 
 

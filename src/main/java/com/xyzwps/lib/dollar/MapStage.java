@@ -11,9 +11,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 
+// TODO: 写 doc
 public class MapStage<K, V> implements Iterable<Pair<K, V>> {
 
     private final Iterable<Pair<K, V>> entryIterable;
@@ -33,23 +36,32 @@ public class MapStage<K, V> implements Iterable<Pair<K, V>> {
     public <V2> MapStage<K, V2> mapValues(Function<V, V2> mapValueFn) {
         Objects.requireNonNull(mapValueFn);
         ObjIntFunction<Pair<K, V>, Pair<K, V2>> fn = (pair, index) -> Pair.of(pair.key(), mapValueFn.apply(pair.value()));
-        return new MapStage<>(this.entryIterable, up -> new MapIterator<>(up, fn)); // TODO: 这里不用 this.entryIterable，直接 this 就可以了。。。其他地方也是
+        return new MapStage<>(this, up -> new MapIterator<>(up, fn));
     }
 
-    // TODO: mapValues2
+    public <V2> MapStage<K, V2> mapValues(BiFunction<V, K, V2> mapValueFn) {
+        Objects.requireNonNull(mapValueFn);
+        ObjIntFunction<Pair<K, V>, Pair<K, V2>> fn = (pair, index) -> Pair.of(pair.key(), mapValueFn.apply(pair.value(), pair.key()));
+        return new MapStage<>(this, up -> new MapIterator<>(up, fn));
+    }
 
     public <K2> MapStage<K2, V> mapKeys(Function<K, K2> mapKeyFn) {
         Objects.requireNonNull(mapKeyFn);
         ObjIntFunction<Pair<K, V>, Pair<K2, V>> fn0 = (pair, index) -> Pair.of(mapKeyFn.apply(pair.key()), pair.value());
-        MapStage<K2, V> stage0 = new MapStage<>(this.entryIterable, up -> new MapIterator<>(up, fn0));
-        return new MapStage<>(stage0.entryIterable, up -> new UniqueByIterator<>(up, Pair::key));
+        MapStage<K2, V> stage0 = new MapStage<>(this, up -> new MapIterator<>(up, fn0));
+        return new MapStage<>(stage0, up -> new UniqueByIterator<>(up, Pair::key));
     }
 
-    // TODO: mapKeys2
+    public <K2> MapStage<K2, V> mapKeys(BiFunction<K, V, K2> mapKeyFn) {
+        Objects.requireNonNull(mapKeyFn);
+        ObjIntFunction<Pair<K, V>, Pair<K2, V>> fn0 = (pair, index) -> Pair.of(mapKeyFn.apply(pair.key(), pair.value()), pair.value());
+        MapStage<K2, V> stage0 = new MapStage<>(this, up -> new MapIterator<>(up, fn0));
+        return new MapStage<>(stage0, up -> new UniqueByIterator<>(up, Pair::key));
+    }
 
     public MapStage<K, V> filter(BiPredicate<K, V> predicateFn) {
         Objects.requireNonNull(predicateFn);
-        return new MapStage<>(this.entryIterable, up -> new FilterIterator<>(up, (p, i) -> predicateFn.test(p.key(), p.value())));
+        return new MapStage<>(this, up -> new FilterIterator<>(up, (p, i) -> predicateFn.test(p.key(), p.value())));
     }
 
     public HashMap<K, V> value() {
@@ -58,7 +70,10 @@ public class MapStage<K, V> implements Iterable<Pair<K, V>> {
         return result;
     }
 
-    // TODO: forEach
+    public void forEach(BiConsumer<K, V> action) {
+        Objects.requireNonNull(action);
+        this.forEach(pair -> action.accept(pair.key(), pair.value()));
+    }
 
     public ListStage<V> values() {
         return new ListStage<>(this, up -> new MapIterator<>(up, (p, i) -> p.value()));

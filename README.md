@@ -22,3 +22,7 @@ assertIterableEquals(
         .value()
 );
 ```
+
+TODO: 原则
+
+如果返回，则总是返回 ArrayList、HashMap、HashSet 
