@@ -1,12 +1,11 @@
 package com.xyzwps.lib.dollar.function;
 
 /**
- * Indexed version of {@link java.util.function.Function Function}.
+ * {@link ObjIntFunction} represents a function accepting two arguments,
+ * the first one is an object and the second is an int primitive value.
  *
- * TODO: 修改描述
- *
- * @param <T> the type of the input to the function
- * @param <R> the type of the result of the function
+ * @param <T> first argument type of the function
+ * @param <R> return type of the function
  */
 @FunctionalInterface
 public interface ObjIntFunction<T, R> {
@@ -14,9 +13,9 @@ public interface ObjIntFunction<T, R> {
     /**
      * Applies this function to the given argument.
      *
-     * @param element the function argument
-     * @param index   the index of <code>element</code>
-     * @return the function result
+     * @param element the first argument
+     * @param index   the second argument
+     * @return the function return value
      */
     R apply(T element, int index);
 }

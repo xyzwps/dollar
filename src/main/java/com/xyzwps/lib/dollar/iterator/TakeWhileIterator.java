@@ -1,7 +1,6 @@
 package com.xyzwps.lib.dollar.iterator;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.Predicate;
 
@@ -10,13 +9,10 @@ import java.util.function.Predicate;
  *
  * @param <T> element type
  */
-public class TakeWhileIterator<T> implements Iterator<T> {
+public class TakeWhileIterator<T> extends PreGetIterator<T> {
 
     private final Iterator<T> up;
     private final Predicate<T> predicate;
-
-    private T nextCache;
-    private boolean nextCached = false;
     private boolean end = false;
 
     public TakeWhileIterator(Iterator<T> up, Predicate<T> predicate) {
@@ -24,38 +20,20 @@ public class TakeWhileIterator<T> implements Iterator<T> {
         this.predicate = Objects.requireNonNull(predicate);
     }
 
-    // TODO: 丑
-
     @Override
-    public boolean hasNext() {
-        if (end) {
-            return false;
-        }
+    protected void tryToGetNext() {
+        if (end) return;
 
-        if (nextCached) {
-            return true;
-        }
+        if (this.holder.cached()) return;
 
         if (up.hasNext()) {
             T n = up.next();
             if (predicate.test(n)) {
-                this.nextCache = n;
-                this.nextCached = true;
-                return true;
+                this.holder.accept(n);
             } else {
                 this.end = true;
             }
         }
-
-        return false;
     }
 
-    @Override
-    public T next() {
-        if (hasNext()) {
-            this.nextCached = false;
-            return nextCache;
-        }
-        throw new NoSuchElementException();
-    }
 }

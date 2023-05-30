@@ -4,7 +4,6 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
-// TODO: 测试
 public final class ArrayIterator<T> implements Iterator<T> {
 
     private final T[] array;

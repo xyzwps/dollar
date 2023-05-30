@@ -13,8 +13,6 @@ public class OrderByIterator<T, K extends Comparable<K>> implements Iterator<T> 
     private final Direction direction;
     private final Iterator<T> up;
 
-    // TODO: 缓存一下 toKey，避免反复计算
-
     public OrderByIterator(Iterator<T> up, Function<T, K> toKey, Direction direction) {
         this.up = up == null ? EmptyIterator.create() : up;
         this.toKey = Objects.requireNonNull(toKey);

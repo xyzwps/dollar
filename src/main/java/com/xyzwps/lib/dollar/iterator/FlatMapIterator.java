@@ -2,40 +2,30 @@ package com.xyzwps.lib.dollar.iterator;
 
 
 import com.xyzwps.lib.dollar.iterable.EmptyIterable;
-import com.xyzwps.lib.dollar.iterator.EmptyIterator;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.Function;
 
-public class FlatMapIterator<T, R> implements Iterator<R> {
+public class FlatMapIterator<T, R> extends PreGetIterator<R> {
     private final Iterator<T> up;
     private final Function<T, Iterable<R>> flatMapFn;
-
     private Iterator<R> itr;
-
-    private R nextCache;
-    private boolean nextCached = false;
 
     public FlatMapIterator(Iterator<T> up, Function<T, Iterable<R>> flatMapFn) {
         this.up = up == null ? EmptyIterator.create() : up;
         this.flatMapFn = Objects.requireNonNull(flatMapFn);
     }
 
-    // TODO: 丑
-
     @Override
-    public boolean hasNext() {
-        if (this.nextCached) return true;
+    protected void tryToGetNext() {
+        if (this.holder.cached()) return;
 
-        // TODO: 看一下其他 iterator，尽量都改成这种风格
         while (true) {
             if (this.itr != null) {
                 if (this.itr.hasNext()) {
-                    this.nextCache = this.itr.next();
-                    this.nextCached = true;
-                    return true;
+                    this.holder.accept(this.itr.next());
+                    return;
                 } else {
                     this.itr = null;
                 }
@@ -46,17 +36,8 @@ public class FlatMapIterator<T, R> implements Iterator<R> {
                 flat = flat == null ? EmptyIterable.create() : flat;
                 this.itr = flat.iterator();
             } else {
-                return false;
+                return;
             }
         }
-    }
-
-    @Override
-    public R next() {
-        if (this.hasNext()) {
-            this.nextCached = false;
-            return this.nextCache;
-        }
-        throw new NoSuchElementException();
     }
 }
