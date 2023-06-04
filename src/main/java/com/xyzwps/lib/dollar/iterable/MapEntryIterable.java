@@ -13,7 +13,7 @@ public class MapEntryIterable<K, V> implements Iterable<Pair<K, V>> {
     private final Map<K, V> map;
 
     public MapEntryIterable(Map<K, V> map) {
-        this.map = map == null ? $.hashMap() : map;
+        this.map = map == null ? $.mapOf() : map;
     }
 
     @Override

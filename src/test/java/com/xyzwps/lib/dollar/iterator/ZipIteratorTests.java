@@ -15,8 +15,8 @@ class ZipIteratorTests {
 
     @Test
     void nullCombineFn() {
-        List<Integer> left = $.list(1, 2);
-        List<Integer> right = $.list(10, 20);
+        List<Integer> left = $.listOf(1, 2);
+        List<Integer> right = $.listOf(10, 20);
         assertThrows(NullPointerException.class,
                 () -> new ZipIterator<>(left.iterator(), right.iterator(), null));
     }
@@ -33,7 +33,7 @@ class ZipIteratorTests {
 
     @Test
     void leftNull() {
-        List<Integer> right = $.list(10, 20);
+        List<Integer> right = $.listOf(10, 20);
 
         // common
         {
@@ -66,7 +66,7 @@ class ZipIteratorTests {
 
     @Test
     void rightNull() {
-        List<Integer> left = $.list(10, 20);
+        List<Integer> left = $.listOf(10, 20);
 
         // common
         {
@@ -99,8 +99,8 @@ class ZipIteratorTests {
 
     @Test
     void leftShort() {
-        List<Integer> left = $.list(1, 2);
-        List<Integer> right = $.list(10, 20, 30, 40);
+        List<Integer> left = $.listOf(1, 2);
+        List<Integer> right = $.listOf(10, 20, 30, 40);
 
         // common
         {
@@ -145,8 +145,8 @@ class ZipIteratorTests {
 
     @Test
     void rightShort() {
-        List<Integer> left = $.list(1, 2, 3, 4);
-        List<Integer> right = $.list(10, 20);
+        List<Integer> left = $.listOf(1, 2, 3, 4);
+        List<Integer> right = $.listOf(10, 20);
 
         // common
         {
@@ -191,8 +191,8 @@ class ZipIteratorTests {
 
     @Test
     void lengthEqual() {
-        List<Integer> left = $.list(1, 2, 3, 4);
-        List<Integer> right = $.list(10, 20, 30, 40);
+        List<Integer> left = $.listOf(1, 2, 3, 4);
+        List<Integer> right = $.listOf(10, 20, 30, 40);
 
         // common
         {

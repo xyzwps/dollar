@@ -18,7 +18,7 @@ class MapIteratorTests {
     void cornerCases() {
         // null map function
         {
-            List<Integer> list = $.list(1, 2, 3, 4);
+            List<Integer> list = $.listOf(1, 2, 3, 4);
             assertThrows(NullPointerException.class, () -> new MapIterator<>(list.iterator(), null));
         }
 
@@ -32,7 +32,7 @@ class MapIteratorTests {
 
     @Test
     void commonCases() {
-        List<Integer> list = $.list(1, 2, 3, 4);
+        List<Integer> list = $.listOf(1, 2, 3, 4);
 
         // common
         {

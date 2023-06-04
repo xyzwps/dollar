@@ -14,60 +14,60 @@ class DollarTests {
 
     @Test
     void zip2() {
-        assertEquals("[(1, 1), (2, 2), (3, null)]", $.zip($.list(1, 2, 3), $.list(1, 2)).toString());
-        assertEquals("[(1, 1), (2, 2), (3, 3)]", $.zip($.list(1, 2, 3), $.list(1, 2, 3)).toString());
-        assertEquals("[(1, 1), (2, 2), (3, 3), (null, 4), (null, 5)]", $.zip($.list(1, 2, 3), $.list(1, 2, 3, 4, 5)).toString());
+        assertEquals("[(1, 1), (2, 2), (3, null)]", $.zip($.listOf(1, 2, 3), $.listOf(1, 2)).toString());
+        assertEquals("[(1, 1), (2, 2), (3, 3)]", $.zip($.listOf(1, 2, 3), $.listOf(1, 2, 3)).toString());
+        assertEquals("[(1, 1), (2, 2), (3, 3), (null, 4), (null, 5)]", $.zip($.listOf(1, 2, 3), $.listOf(1, 2, 3, 4, 5)).toString());
 
-        assertEquals("[(1, null), (2, null), (3, null)]", $.zip($.list(1, 2, 3), $.list()).toString());
-        assertEquals("[(1, null), (2, null), (3, null)]", $.zip($.list(1, 2, 3), null).toString());
+        assertEquals("[(1, null), (2, null), (3, null)]", $.zip($.listOf(1, 2, 3), $.listOf()).toString());
+        assertEquals("[(1, null), (2, null), (3, null)]", $.zip($.listOf(1, 2, 3), null).toString());
 
-        assertThrows(NullPointerException.class, () -> $.zip($.list(1), $.list(2), null));
+        assertThrows(NullPointerException.class, () -> $.zip($.listOf(1), $.listOf(2), null));
 
         assertEquals($.zip(null, null).size(), 0);
     }
 
     @Test
     void unique() {
-        assertEquals("[1, 2, 3]", $.unique($.list(1, 2, 1, 3)).toString());
+        assertEquals("[1, 2, 3]", $.unique($.listOf(1, 2, 1, 3)).toString());
     }
 
     @Test
     void uniqueBy() {
-        assertEquals("[1, 2, 3]", $.uniqueBy($.list(1, 2, 1, 3, 4), i -> i % 3).toString());
+        assertEquals("[1, 2, 3]", $.uniqueBy($.listOf(1, 2, 1, 3, 4), i -> i % 3).toString());
     }
 
     @Test
     void takeWhile() {
-        assertEquals("[1, 2]", $.takeWhile($.list(1, 2, 3, 4), i -> i < 3).toString());
+        assertEquals("[1, 2]", $.takeWhile($.listOf(1, 2, 3, 4), i -> i < 3).toString());
     }
 
     @Test
     void take() {
-        assertEquals("[1, 2]", $.take($.list(1, 2, 3, 4), 2).toString());
+        assertEquals("[1, 2]", $.take($.listOf(1, 2, 3, 4), 2).toString());
     }
 
     @Test
     void orderBy() {
-        assertEquals("[1, 2, 3, 4, 5]", $.orderBy($.list(1, 3, 5, 2, 4), Function.identity(), Direction.ASC).toString());
-        assertEquals("[5, 4, 3, 2, 1]", $.orderBy($.list(1, 3, 5, 2, 4), Function.identity(), Direction.DESC).toString());
+        assertEquals("[1, 2, 3, 4, 5]", $.orderBy($.listOf(1, 3, 5, 2, 4), Function.identity(), Direction.ASC).toString());
+        assertEquals("[5, 4, 3, 2, 1]", $.orderBy($.listOf(1, 3, 5, 2, 4), Function.identity(), Direction.DESC).toString());
 
         assertEquals("[]", $.orderBy((List<Integer>) null, Function.identity(), Direction.DESC).toString());
     }
 
     @Test
     void reverse() {
-        assertEquals("[3, 2, 1]", $.reverse($.list(1, 2, 3)).toString());
-        assertEquals("[4, 3, 2, 1]", $.reverse($.list(1, 2, 3, 4)).toString());
+        assertEquals("[3, 2, 1]", $.reverse($.listOf(1, 2, 3)).toString());
+        assertEquals("[4, 3, 2, 1]", $.reverse($.listOf(1, 2, 3, 4)).toString());
     }
 
     @Test
     void reduce() {
-        assertEquals(20, $.reduce($.list(1, 2, 3, 4), 10, Integer::sum));
+        assertEquals(20, $.reduce($.listOf(1, 2, 3, 4), 10, Integer::sum));
     }
 
     @Test
     void map1() {
-        assertEquals("[2, 4, 6]", $.map($.list(1, 2, 3), i -> i * 2).toString());
+        assertEquals("[2, 4, 6]", $.map($.listOf(1, 2, 3), i -> i * 2).toString());
     }
 
     @Test
@@ -77,7 +77,7 @@ class DollarTests {
 
     @Test
     void keyBy() {
-        Map<Integer, Integer> map = $.keyBy($.list(1, 4, 7, 2, 5, 3), i -> i % 3);
+        Map<Integer, Integer> map = $.keyBy($.listOf(1, 4, 7, 2, 5, 3), i -> i % 3);
         assertEquals(3, map.size());
         assertEquals(1, map.get(1));
         assertEquals(2, map.get(2));
@@ -86,7 +86,7 @@ class DollarTests {
 
     @Test
     void groupBy() {
-        Map<Integer, List<Integer>> map = $.groupBy($.list(1, 4, 7, 2, 5, 3), i -> i % 3);
+        Map<Integer, List<Integer>> map = $.groupBy($.listOf(1, 4, 7, 2, 5, 3), i -> i % 3);
         assertEquals(3, map.size());
         assertEquals("[1, 4, 7]", map.get(1).toString());
         assertEquals("[2, 5]", map.get(2).toString());
@@ -96,7 +96,7 @@ class DollarTests {
     @Test
     void forEach1() {
         List<Integer> t = new ArrayList<>();
-        $.forEach($.list(1, 2, 3), i -> t.add(i));
+        $.forEach($.listOf(1, 2, 3), i -> t.add(i));
         assertEquals("[1, 2, 3]", t.toString());
 
     }
@@ -104,7 +104,7 @@ class DollarTests {
     @Test
     void forEach2() {
         List<Integer> t = new ArrayList<>();
-        $.forEach($.list(1, 2, 3), (it, index) -> t.add(it + (index + 1) * 10));
+        $.forEach($.listOf(1, 2, 3), (it, index) -> t.add(it + (index + 1) * 10));
         assertEquals("[11, 22, 33]", t.toString());
     }
 
@@ -112,52 +112,52 @@ class DollarTests {
     void flatMap() {
         assertEquals(
                 "[11, 12, 21, 22]",
-                $.flatMap($.list(1, 2), i -> $.just(i * 10 + 1, i * 10 + 2)).toString()
+                $.flatMap($.listOf(1, 2), i -> $.just(i * 10 + 1, i * 10 + 2)).toString()
         );
     }
 
     @Test
     void first() {
-        assertEquals(Optional.of(1), $.first($.list(1, 2)));
-        assertEquals(Optional.empty(), $.first($.list(null, 2)));
-        assertEquals(Optional.empty(), $.head($.list()));
+        assertEquals(Optional.of(1), $.first($.listOf(1, 2)));
+        assertEquals(Optional.empty(), $.first($.listOf(null, 2)));
+        assertEquals(Optional.empty(), $.head($.listOf()));
     }
 
     @Test
     void filter1() {
-        assertEquals("[a,  ]", $.filter($.list("a", " ", null), Objects::nonNull).toString());
-        assertEquals("[2, 4]", $.filter($.list(1, 2, 3, 4, 5), i -> i % 2 == 0).toString());
+        assertEquals("[a,  ]", $.filter($.listOf("a", " ", null), Objects::nonNull).toString());
+        assertEquals("[2, 4]", $.filter($.listOf(1, 2, 3, 4, 5), i -> i % 2 == 0).toString());
         assertEquals("[]", $.filter((List<Integer>) null, i -> i % 2 == 0).toString());
-        assertThrows(NullPointerException.class, () -> $.filter($.list(1, 2, 3, 4, 5), (Predicate<Integer>) null).toString());
+        assertThrows(NullPointerException.class, () -> $.filter($.listOf(1, 2, 3, 4, 5), (Predicate<Integer>) null).toString());
     }
 
     @Test
     void filter2() {
-        assertEquals("[1, 3, 5]", $.filter($.list(1, 2, 3, 4, 5), (it, i) -> i % 2 == 0).toString());
+        assertEquals("[1, 3, 5]", $.filter($.listOf(1, 2, 3, 4, 5), (it, i) -> i % 2 == 0).toString());
         assertEquals("[]", $.filter(null, (e, i) -> i % 2 == 0).toString());
-        assertThrows(NullPointerException.class, () -> $.filter($.list(1, 2, 3, 4, 5), (BiPredicate<Integer, Integer>) null).toString());
+        assertThrows(NullPointerException.class, () -> $.filter($.listOf(1, 2, 3, 4, 5), (BiPredicate<Integer, Integer>) null).toString());
     }
 
     @Test
     void concat() {
         assertEquals("[a, , null, 1, 2, null, b]", $.concat(
-                        $.list("a", "", null),
+                        $.listOf("a", "", null),
                         null,
-                        $.list("1", "2"),
-                        $.list(),
-                        $.list(null, "b"))
+                        $.listOf("1", "2"),
+                        $.listOf(),
+                        $.listOf(null, "b"))
                 .toString());
         assertEquals("[]", $.concat().toString());
         assertEquals("[]", $.concat(null, null).toString());
-        assertEquals("[1, 2, 3, 4]", $.concat($.list(1, 2), $.list(3, 4)).toString());
-        assertEquals("[1, 2, 3, 4]", $.concat($.list(1, 2), null, $.list(3, 4)).toString());
+        assertEquals("[1, 2, 3, 4]", $.concat($.listOf(1, 2), $.listOf(3, 4)).toString());
+        assertEquals("[1, 2, 3, 4]", $.concat($.listOf(1, 2), null, $.listOf(3, 4)).toString());
     }
 
     @Test
     void compact() {
-        assertEquals("[a]", $.compact($.list("a", "", null)).toString());
-        assertEquals("[]", $.compact($.list(null, "", false, 0)).toString());
-        assertEquals("[6, 哈哈]", $.compact($.list(null, 6, "", "哈哈", false, 0)).toString());
+        assertEquals("[a]", $.compact($.listOf("a", "", null)).toString());
+        assertEquals("[]", $.compact($.listOf(null, "", false, 0)).toString());
+        assertEquals("[6, 哈哈]", $.compact($.listOf(null, 6, "", "哈哈", false, 0)).toString());
         assertEquals("[]", $.compact(null).toString());
     }
 
@@ -173,7 +173,7 @@ class DollarTests {
                 "[[1, 2, 3, 4, 5, 6]]",
                 "[[1, 2, 3, 4, 5, 6]]"
         };
-        List<Integer> list = $.list(1, 2, 3, 4, 5, 6);
+        List<Integer> list = $.listOf(1, 2, 3, 4, 5, 6);
         for (int i = 1; i < cases.length; i++) {
             assertEquals(cases[i], $.chunk(list, i).toString());
         }
@@ -190,41 +190,41 @@ class DollarTests {
     }
 
     @Test
-    void list() {
-        assertEquals("[]", Dollar.$.list().toString());
-        assertEquals("[1]", Dollar.$.list(1).toString());
-        assertEquals("[1, 2]", Dollar.$.list(1, 2).toString());
-        assertEquals("[1, 2, 3]", Dollar.$.list(1, 2, 3).toString());
-        assertEquals("[1, 2, 3, 4]", Dollar.$.list(1, 2, 3, 4).toString());
-        assertEquals("[1, 2, 3, 4, 5]", Dollar.$.list(1, 2, 3, 4, 5).toString());
-        assertEquals("[1, 2, 3, 4, 5, 6]", Dollar.$.list(1, 2, 3, 4, 5, 6).toString());
-        assertEquals("[1, 2, 3, 4, 5, 6, 7]", Dollar.$.list(1, 2, 3, 4, 5, 6, 7).toString());
-        assertEquals("[1, 2, 3, 4, 5, 6, 7, 8]", Dollar.$.list(1, 2, 3, 4, 5, 6, 7, 8).toString());
-        assertEquals("[1, 2, 3, 4, 5, 6, 7, 8, 9]", Dollar.$.list(1, 2, 3, 4, 5, 6, 7, 8, 9).toString());
-        assertEquals("[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]", Dollar.$.list(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).toString());
+    void listOf() {
+        assertEquals("[]", Dollar.$.listOf().toString());
+        assertEquals("[1]", Dollar.$.listOf(1).toString());
+        assertEquals("[1, 2]", Dollar.$.listOf(1, 2).toString());
+        assertEquals("[1, 2, 3]", Dollar.$.listOf(1, 2, 3).toString());
+        assertEquals("[1, 2, 3, 4]", Dollar.$.listOf(1, 2, 3, 4).toString());
+        assertEquals("[1, 2, 3, 4, 5]", Dollar.$.listOf(1, 2, 3, 4, 5).toString());
+        assertEquals("[1, 2, 3, 4, 5, 6]", Dollar.$.listOf(1, 2, 3, 4, 5, 6).toString());
+        assertEquals("[1, 2, 3, 4, 5, 6, 7]", Dollar.$.listOf(1, 2, 3, 4, 5, 6, 7).toString());
+        assertEquals("[1, 2, 3, 4, 5, 6, 7, 8]", Dollar.$.listOf(1, 2, 3, 4, 5, 6, 7, 8).toString());
+        assertEquals("[1, 2, 3, 4, 5, 6, 7, 8, 9]", Dollar.$.listOf(1, 2, 3, 4, 5, 6, 7, 8, 9).toString());
+        assertEquals("[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]", Dollar.$.listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).toString());
     }
 
     @Test
-    void hashMap() {
+    void mapOf() {
         {
-            Map<Integer, Integer> map = Dollar.$.hashMap();
+            Map<Integer, Integer> map = Dollar.$.mapOf();
             assertEquals(0, map.size());
         }
         {
-            Map<Integer, Integer> map = Dollar.$.hashMap(1, 1);
+            Map<Integer, Integer> map = Dollar.$.mapOf(1, 1);
             assertEquals(1, map.size());
 
             assertEquals(1, map.get(1));
         }
         {
-            Map<Integer, Integer> map = Dollar.$.hashMap(1, 1, 2, 2);
+            Map<Integer, Integer> map = Dollar.$.mapOf(1, 1, 2, 2);
             assertEquals(2, map.size());
 
             assertEquals(1, map.get(1));
             assertEquals(2, map.get(2));
         }
         {
-            Map<Integer, Integer> map = Dollar.$.hashMap(1, 1, 2, 2, 3, 3);
+            Map<Integer, Integer> map = Dollar.$.mapOf(1, 1, 2, 2, 3, 3);
             assertEquals(3, map.size());
 
             assertEquals(1, map.get(1));
@@ -232,7 +232,7 @@ class DollarTests {
             assertEquals(3, map.get(3));
         }
         {
-            Map<Integer, Integer> map = Dollar.$.hashMap(1, 1, 2, 2, 3, 3, 4, 4);
+            Map<Integer, Integer> map = Dollar.$.mapOf(1, 1, 2, 2, 3, 3, 4, 4);
             assertEquals(4, map.size());
 
             assertEquals(1, map.get(1));
@@ -241,7 +241,7 @@ class DollarTests {
             assertEquals(4, map.get(4));
         }
         {
-            Map<Integer, Integer> map = Dollar.$.hashMap(1, 1, 2, 2, 3, 3, 4, 4, 5, 5);
+            Map<Integer, Integer> map = Dollar.$.mapOf(1, 1, 2, 2, 3, 3, 4, 4, 5, 5);
             assertEquals(5, map.size());
 
             assertEquals(1, map.get(1));
@@ -251,7 +251,7 @@ class DollarTests {
             assertEquals(5, map.get(5));
         }
         {
-            Map<Integer, Integer> map = Dollar.$.hashMap(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6);
+            Map<Integer, Integer> map = Dollar.$.mapOf(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6);
             assertEquals(6, map.size());
 
             assertEquals(1, map.get(1));
@@ -262,7 +262,7 @@ class DollarTests {
             assertEquals(6, map.get(6));
         }
         {
-            Map<Integer, Integer> map = Dollar.$.hashMap(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7);
+            Map<Integer, Integer> map = Dollar.$.mapOf(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7);
             assertEquals(7, map.size());
 
             assertEquals(1, map.get(1));
@@ -274,7 +274,7 @@ class DollarTests {
             assertEquals(7, map.get(7));
         }
         {
-            Map<Integer, Integer> map = Dollar.$.hashMap(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8);
+            Map<Integer, Integer> map = Dollar.$.mapOf(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8);
             assertEquals(8, map.size());
 
             assertEquals(1, map.get(1));
@@ -287,7 +287,7 @@ class DollarTests {
             assertEquals(8, map.get(8));
         }
         {
-            Map<Integer, Integer> map = Dollar.$.hashMap(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9);
+            Map<Integer, Integer> map = Dollar.$.mapOf(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9);
             assertEquals(9, map.size());
 
             assertEquals(1, map.get(1));
@@ -301,7 +301,7 @@ class DollarTests {
             assertEquals(9, map.get(9));
         }
         {
-            Map<Integer, Integer> map = Dollar.$.hashMap(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10);
+            Map<Integer, Integer> map = Dollar.$.mapOf(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10);
             assertEquals(10, map.size());
 
             assertEquals(1, map.get(1));
@@ -315,6 +315,61 @@ class DollarTests {
             assertEquals(9, map.get(9));
             assertEquals(10, map.get(10));
         }
+    }
+
+    @Test
+    void mapKeys1() {
+        TreeMap<Integer, Integer> treeMap = new TreeMap<>();
+        treeMap.put(1, 1);
+        treeMap.put(2, 2);
+        treeMap.put(3, 3);
+        treeMap.put(4, 4);
+        treeMap.put(5, 5);
+        treeMap.put(6, 6);
+        Map<Integer, Integer> map = $.mapKeys(treeMap, i -> i % 3);
+        assertEquals(1, map.get(1));
+        assertEquals(2, map.get(2));
+        assertEquals(3, map.get(0));
+    }
+
+    @Test
+    void mapKeys2() {
+        TreeMap<Integer, Integer> treeMap = new TreeMap<>();
+        treeMap.put(1, 1);
+        treeMap.put(2, 2);
+        treeMap.put(3, 3);
+        treeMap.put(4, 4);
+        treeMap.put(5, 5);
+        treeMap.put(6, 6);
+        Map<Integer, Integer> map = $.mapKeys(treeMap, (key, value) -> (key + value) % 5);
+        assertEquals(5, map.size());
+        assertEquals(1, map.get(2));
+        assertEquals(2, map.get(4));
+        assertEquals(3, map.get(1));
+        assertEquals(4, map.get(3));
+        assertEquals(5, map.get(0));
+    }
+
+    @Test
+    void mapValues1() {
+        Map<Integer, Integer> map = $.mapValues($.mapOf(0, "", 1, "1", 2, "11", 3, "111"), String::length);
+        assertEquals(4, map.size());
+        assertEquals(0, map.get(0));
+        assertEquals(1, map.get(1));
+        assertEquals(2, map.get(2));
+        assertEquals(3, map.get(3));
+    }
+
+    @Test
+    void mapValues2() {
+        Map<Integer, String> map = $.mapValues(
+                $.mapOf(0, "", 1, "1", 2, "11", 3, "111"),
+                (value, key) -> String.format("%d: %s", key, value));
+        assertEquals(4, map.size());
+        assertEquals("0: ", map.get(0));
+        assertEquals("1: 1", map.get(1));
+        assertEquals("2: 11", map.get(2));
+        assertEquals("3: 111", map.get(3));
     }
 
     @Test

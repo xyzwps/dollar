@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SuppressWarnings("ConstantValue")
 class UniqueByIteratorTest {
 
-    private static final List<Integer> list = $.list(1, 2, 2, 3, 3, 3, 4);
+    private static final List<Integer> list = $.listOf(1, 2, 2, 3, 3, 3, 4);
 
     @Test
     void cornerCases() {

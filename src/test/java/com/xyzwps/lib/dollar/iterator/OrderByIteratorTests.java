@@ -14,7 +14,7 @@ import static com.xyzwps.lib.dollar.Dollar.*;
 @SuppressWarnings("ConstantValue")
 class OrderByIteratorTests {
 
-    private static final List<Integer> list = $.list(1, 3, 5, 2, 4, 6);
+    private static final List<Integer> list = $.listOf(1, 3, 5, 2, 4, 6);
 
     @Test
     void cornerCases() {

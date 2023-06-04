@@ -23,14 +23,14 @@ class KeyByIteratorTests {
 
         // null toKey function
         {
-            List<Integer> list = $.list(1, 2, 3);
+            List<Integer> list = $.listOf(1, 2, 3);
             assertThrows(NullPointerException.class, () -> new KeyByIterator<>(list.iterator(), null));
         }
     }
 
     @Test
     void commonCase() {
-        List<Integer> list = $.list(1, 1, 1111, 2, 2222, 3, 11, 12, 21);
+        List<Integer> list = $.listOf(1, 1, 1111, 2, 2222, 3, 11, 12, 21);
 
         // common
         {

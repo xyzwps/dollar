@@ -19,7 +19,7 @@ class ArrayListReverseIteratorTests {
 
     @Test
     void commonCases() {
-        ArrayList<String> strs = (ArrayList<String>) $.list("1", "2", "3");
+        ArrayList<String> strs = (ArrayList<String>) $.listOf("1", "2", "3");
 
         // common
         {

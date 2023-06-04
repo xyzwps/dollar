@@ -12,7 +12,7 @@ import static com.xyzwps.lib.dollar.Dollar.*;
 @SuppressWarnings("ConstantValue")
 class ReverseIteratorTests {
 
-    private static final List<Integer> list = $.list(1, 2, 3, 4, 5, 6);
+    private static final List<Integer> list = $.listOf(1, 2, 3, 4, 5, 6);
 
     @Test
     void cornerCases() {

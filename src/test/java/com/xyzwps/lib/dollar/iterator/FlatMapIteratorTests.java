@@ -14,11 +14,11 @@ class FlatMapIteratorTests {
 
     static final Function<Integer, Iterable<Integer>> fn = (i) -> {
         if (i == null) return null;
-        if (i == 1) return $.list(100, 101);
-        if (i == 2) return $.list(200, 201);
+        if (i == 1) return $.listOf(100, 101);
+        if (i == 2) return $.listOf(200, 201);
         if (i % 3 == 0) return null;
-        if (i % 4 == 0) return $.list();
-        return $.list(i);
+        if (i % 4 == 0) return $.listOf();
+        return $.listOf(i);
     };
 
     @Test
@@ -32,14 +32,14 @@ class FlatMapIteratorTests {
 
         // null flatmap function
         {
-            List<Integer> list = $.list(1, 2, 3);
+            List<Integer> list = $.listOf(1, 2, 3);
             assertThrows(NullPointerException.class, () -> new FlatMapIterator<>(list.iterator(), null));
         }
     }
 
     @Test
     void commonCases() {
-        List<Integer> list = $.list(1, 2, 3, 4, 5);
+        List<Integer> list = $.listOf(1, 2, 3, 4, 5);
 
         // common
         {
@@ -88,15 +88,15 @@ class FlatMapIteratorTests {
 
     static final Function<Integer, Iterable<Integer>> fn2 = (i) -> {
         if (i == null) return null;
-        if (i == 1) return $.list(1);
-        if (i == 2) return $.list(1, 2);
-        if (i == 3) return $.list(1, 2, 3);
-        return $.list(i, i, i);
+        if (i == 1) return $.listOf(1);
+        if (i == 2) return $.listOf(1, 2);
+        if (i == 3) return $.listOf(1, 2, 3);
+        return $.listOf(i, i, i);
     };
 
     @Test
     void commonCases2() {
-        List<Integer> list = $.list(1, 2, 3);
+        List<Integer> list = $.listOf(1, 2, 3);
 
         // common
         {

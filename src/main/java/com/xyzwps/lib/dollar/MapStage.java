@@ -16,7 +16,7 @@ import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 
-// TODO: 写 doc
+// TODO: write docs
 public class MapStage<K, V> implements Iterable<Pair<K, V>> {
 
     private final Iterable<Pair<K, V>> entryIterable;

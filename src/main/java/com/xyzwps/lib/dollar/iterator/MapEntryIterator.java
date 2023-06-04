@@ -19,7 +19,7 @@ public final class MapEntryIterator<K, V> implements Iterator<Pair<K, V>> {
     private final Iterator<K> keyItr;
 
     public MapEntryIterator(Map<K, V> map) {
-        this.map = map == null ? $.hashMap() : map;
+        this.map = map == null ? $.mapOf() : map;
         this.keyItr = this.map.keySet().iterator();
     }
 

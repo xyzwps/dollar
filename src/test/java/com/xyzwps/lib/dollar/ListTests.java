@@ -15,14 +15,14 @@ class ListTests {
 
     @Test
     void zip2() {
-        assertEquals("[(1, 1), (2, 2), (3, null)]", $.just(1, 2, 3).zip($.list(1, 2)).value().toString());
-        assertEquals("[(1, 1), (2, 2), (3, 3)]", $.just(1, 2, 3).zip($.list(1, 2, 3)).value().toString());
-        assertEquals("[(1, 1), (2, 2), (3, 3), (null, 4), (null, 5)]", $.just(1, 2, 3).zip($.list(1, 2, 3, 4, 5)).value().toString());
+        assertEquals("[(1, 1), (2, 2), (3, null)]", $.just(1, 2, 3).zip($.listOf(1, 2)).value().toString());
+        assertEquals("[(1, 1), (2, 2), (3, 3)]", $.just(1, 2, 3).zip($.listOf(1, 2, 3)).value().toString());
+        assertEquals("[(1, 1), (2, 2), (3, 3), (null, 4), (null, 5)]", $.just(1, 2, 3).zip($.listOf(1, 2, 3, 4, 5)).value().toString());
 
-        assertEquals("[(1, null), (2, null), (3, null)]", $.just(1, 2, 3).zip($.list()).value().toString());
+        assertEquals("[(1, null), (2, null), (3, null)]", $.just(1, 2, 3).zip($.listOf()).value().toString());
         assertEquals("[(1, null), (2, null), (3, null)]", $.just(1, 2, 3).zip(null).value().toString());
 
-        assertThrows(NullPointerException.class, () -> $($.list(1)).zip($.list(2), null));
+        assertThrows(NullPointerException.class, () -> $($.listOf(1)).zip($.listOf(2), null));
 
         assertEquals($((List<Integer>) null).zip(null).value().size(), 0);
     }
@@ -141,12 +141,12 @@ class ListTests {
         assertEquals("[a, , null, 1, 2, null, b]", $
                 .just("a", "", null)
                 .concat(null)
-                .concat($.list("1", "2"))
-                .concat($.list())
-                .concat($.list(null, "b"))
+                .concat($.listOf("1", "2"))
+                .concat($.listOf())
+                .concat($.listOf(null, "b"))
                 .value().toString());
-        assertEquals("[1, 2, 3, 4]", $.just(1, 2).concat($.list(3, 4)).value().toString());
-        assertEquals("[1, 2, 3, 4]", $.just(1, 2).concat(null).concat($.list(3, 4)).value().toString());
+        assertEquals("[1, 2, 3, 4]", $.just(1, 2).concat($.listOf(3, 4)).value().toString());
+        assertEquals("[1, 2, 3, 4]", $.just(1, 2).concat(null).concat($.listOf(3, 4)).value().toString());
     }
 
     @Test
@@ -169,7 +169,7 @@ class ListTests {
                 "[[1, 2, 3, 4, 5, 6]]",
                 "[[1, 2, 3, 4, 5, 6]]"
         };
-        List<Integer> list = $.list(1, 2, 3, 4, 5, 6);
+        List<Integer> list = $.listOf(1, 2, 3, 4, 5, 6);
         for (int i = 1; i < cases.length; i++) {
             assertEquals(cases[i], $(list).chunk(i).value().toString());
         }

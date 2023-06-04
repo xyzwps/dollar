@@ -11,10 +11,11 @@ import java.util.*;
 import java.util.function.*;
 
 /**
- * Apis for you.
+ * Where to start.
  * <p>
  * TODO: 专门为 Random Access 优化
  * TODO: 写中文文档
+ * TODO: 添加示例
  */
 public final class Dollar {
 
@@ -251,7 +252,7 @@ public final class Dollar {
          * @return new list
          */
         @SafeVarargs
-        public static <T> List<T> list(T... args) {
+        public static <T> List<T> listOf(T... args) {
             List<T> list = Arrays.asList(args);
             return list instanceof ArrayList ? (ArrayList<T>) list : new ArrayList<>(list);
         }
@@ -339,7 +340,7 @@ public final class Dollar {
          * @param <V> value type
          * @return new HashMap
          */
-        public static <K, V> Map<K, V> hashMap() {
+        public static <K, V> Map<K, V> mapOf() {
             return new HashMap<>();
         }
 
@@ -353,7 +354,7 @@ public final class Dollar {
          * @param <V> value type
          * @return new HashMap
          */
-        public static <K, V> Map<K, V> hashMap(K k1, V v1) {
+        public static <K, V> Map<K, V> mapOf(K k1, V v1) {
             Map<K, V> map = new HashMap<>();
             map.put(k1, v1);
             return map;
@@ -371,7 +372,7 @@ public final class Dollar {
          * @param <V> value type
          * @return new HashMap
          */
-        public static <K, V> Map<K, V> hashMap(K k1, V v1, K k2, V v2) {
+        public static <K, V> Map<K, V> mapOf(K k1, V v1, K k2, V v2) {
             Map<K, V> map = new HashMap<>();
             map.put(k1, v1);
             map.put(k2, v2);
@@ -392,7 +393,7 @@ public final class Dollar {
          * @param <V> value type
          * @return new HashMap
          */
-        public static <K, V> Map<K, V> hashMap(K k1, V v1, K k2, V v2, K k3, V v3) {
+        public static <K, V> Map<K, V> mapOf(K k1, V v1, K k2, V v2, K k3, V v3) {
             Map<K, V> map = new HashMap<>();
             map.put(k1, v1);
             map.put(k2, v2);
@@ -416,7 +417,7 @@ public final class Dollar {
          * @param <V> value type
          * @return new HashMap
          */
-        public static <K, V> Map<K, V> hashMap(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4) {
+        public static <K, V> Map<K, V> mapOf(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4) {
             Map<K, V> map = new HashMap<>();
             map.put(k1, v1);
             map.put(k2, v2);
@@ -443,7 +444,7 @@ public final class Dollar {
          * @param <V> value type
          * @return new HashMap
          */
-        public static <K, V> Map<K, V> hashMap(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5) {
+        public static <K, V> Map<K, V> mapOf(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5) {
             Map<K, V> map = new HashMap<>();
             map.put(k1, v1);
             map.put(k2, v2);
@@ -473,7 +474,7 @@ public final class Dollar {
          * @param <V> value type
          * @return new HashMap
          */
-        public static <K, V> Map<K, V> hashMap(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6) {
+        public static <K, V> Map<K, V> mapOf(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6) {
             Map<K, V> map = new HashMap<>();
             map.put(k1, v1);
             map.put(k2, v2);
@@ -506,7 +507,7 @@ public final class Dollar {
          * @param <V> value type
          * @return new HashMap
          */
-        public static <K, V> Map<K, V> hashMap(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6, K k7, V v7) {
+        public static <K, V> Map<K, V> mapOf(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6, K k7, V v7) {
             Map<K, V> map = new HashMap<>();
             map.put(k1, v1);
             map.put(k2, v2);
@@ -542,7 +543,7 @@ public final class Dollar {
          * @param <V> value type
          * @return new HashMap
          */
-        public static <K, V> Map<K, V> hashMap(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6, K k7, V v7, K k8, V v8) {
+        public static <K, V> Map<K, V> mapOf(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6, K k7, V v7, K k8, V v8) {
             Map<K, V> map = new HashMap<>();
             map.put(k1, v1);
             map.put(k2, v2);
@@ -581,7 +582,7 @@ public final class Dollar {
          * @param <V> value type
          * @return new HashMap
          */
-        public static <K, V> Map<K, V> hashMap(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6, K k7, V v7, K k8, V v8, K k9, V v9) {
+        public static <K, V> Map<K, V> mapOf(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6, K k7, V v7, K k8, V v8, K k9, V v9) {
             Map<K, V> map = new HashMap<>();
             map.put(k1, v1);
             map.put(k2, v2);
@@ -623,7 +624,7 @@ public final class Dollar {
          * @param <V> value type
          * @return new HashMap
          */
-        public static <K, V> Map<K, V> hashMap(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6, K k7, V v7, K k8, V v8, K k9, V v9, K k10, V v10) {
+        public static <K, V> Map<K, V> mapOf(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6, K k7, V v7, K k8, V v8, K k9, V v9, K k10, V v10) {
             Map<K, V> map = new HashMap<>();
             map.put(k1, v1);
             map.put(k2, v2);
@@ -785,13 +786,13 @@ public final class Dollar {
         /**
          * Create a stage from elements.
          *
-         * @param args TODO: 添加描述
-         * @param <T>  element type
+         * @param args elements to be handled
+         * @param <T>  type of elements
          * @return list stage
          */
         @SafeVarargs
         public static <T> ListStage<T> just(T... args) {
-            return new ListStage<T>(new ArrayIterable<>(args));
+            return new ListStage<>(new ArrayIterable<>(args));
         }
 
 
@@ -840,10 +841,10 @@ public final class Dollar {
         }
 
         /**
-         * TODO: 写 doc
+         * Map elements to {@link Iterable}s in order and flat them into next stage.
          *
          * @param flatMapFn which map an element to an {@link Iterable}
-         * @param <R>       flatted elements type
+         * @param <R>       flatten elements type
          * @return next stage
          */
         public static <T, R> List<R> flatMap(Iterable<T> iterable, Function<T, Iterable<R>> flatMapFn) {
@@ -863,7 +864,16 @@ public final class Dollar {
             return result;
         }
 
-        // TODO: 写 doc
+        /**
+         * Mapping {@link Map} values to another.
+         *
+         * @param map   {@link Map} to be handled.
+         * @param mapFn mapping function
+         * @param <K>   type of {@link Map} key
+         * @param <V>   type of {@link Map} value
+         * @param <V2>  type of mapping result
+         * @return a new map
+         */
         public static <K, V, V2> Map<K, V2> mapValues(Map<K, V> map, Function<V, V2> mapFn) {
             Objects.requireNonNull(mapFn);
 
@@ -876,7 +886,16 @@ public final class Dollar {
             return result;
         }
 
-        // TODO: 写 doc
+        /**
+         * Mapping {@link Map} values to another.
+         *
+         * @param map   {@link Map} to be handled.
+         * @param mapFn mapping function which accept key as the second argument
+         * @param <K>   type of {@link Map} key
+         * @param <V>   type of {@link Map} value
+         * @param <V2>  type of mapping result
+         * @return a new map
+         */
         public static <K, V, V2> Map<K, V2> mapValues(Map<K, V> map, BiFunction<V, K, V2> mapFn) {
             Objects.requireNonNull(mapFn);
 
@@ -889,7 +908,17 @@ public final class Dollar {
             return result;
         }
 
-        // TODO: 写 doc
+        /**
+         * Create a new {@link Map} with new keys, which are mapped from the old keys.
+         * If two new keys of old keys are the same, the last reached entry would be discarded.
+         *
+         * @param map   to be handled
+         * @param mapFn mapping function
+         * @param <K>   type of keys
+         * @param <V>   type of values
+         * @param <K2>  type of mapped keys
+         * @return new {@link Map}
+         */
         public static <K, V, K2> Map<K2, V> mapKeys(Map<K, V> map, Function<K, K2> mapFn) {
             Objects.requireNonNull(mapFn);
 
@@ -898,11 +927,26 @@ public final class Dollar {
             }
 
             Map<K2, V> result = new HashMap<>();
-            map.forEach((k, v) -> result.put(mapFn.apply(k), v));
+            map.forEach((k, v) -> {
+                K2 k2 = mapFn.apply(k);
+                if (!result.containsKey(k2)) {
+                    result.put(k2, v);
+                }
+            });
             return result;
         }
 
-        // TODO: 写 doc
+        /**
+         * Create a new {@link Map} with new keys, which are mapped from the old keys.
+         * If two new keys of different entries are equal, the last reached entry would be discarded.
+         *
+         * @param map   to be handled
+         * @param mapFn mapping function
+         * @param <K>   type of keys
+         * @param <V>   type of values
+         * @param <K2>  type of mapped keys
+         * @return new {@link Map}
+         */
         public static <K, V, K2> Map<K2, V> mapKeys(Map<K, V> map, BiFunction<K, V, K2> mapFn) {
             Objects.requireNonNull(mapFn);
 
@@ -911,12 +955,27 @@ public final class Dollar {
             }
 
             Map<K2, V> result = new HashMap<>();
-            map.forEach((k, v) -> result.put(mapFn.apply(k, v), v));
+            map.forEach((k, v) -> {
+                K2 k2 = mapFn.apply(k, v);
+                if (!result.containsKey(k2)) {
+                    result.put(k2, v);
+                }
+            });
             return result;
         }
 
-        // TODO: 写 doc
-        // 如果 key 冲突，取最先遇到的那个
+        /**
+         * Create a new {@link Map} from {@link Iterable}.
+         * The values are {@link Iterable} elements,
+         * and the keys are computed from corresponding elements.
+         * If two keys of different elements are equal, the first entry would be covered.
+         *
+         * @param iterable to be handled
+         * @param toKey    function mapping an element to it's key
+         * @param <T>      type of iterable elements
+         * @param <K>      type of key
+         * @return new {@link Map}
+         */
         public static <T, K> Map<K, T> keyBy(Iterable<T> iterable, Function<T, K> toKey) {
             Objects.requireNonNull(toKey);
 
@@ -929,7 +988,18 @@ public final class Dollar {
             return result;
         }
 
-        // TODO: 写 doc
+
+        /**
+         * Create a new {@link Map} from {@link Iterable}.
+         * The values are {@link List} of elements with the same key,
+         * and the keys are computed from corresponding elements.
+         *
+         * @param iterable to be handled
+         * @param toKey    function mapping an element to it's key
+         * @param <T>      type of iterable elements
+         * @param <K>      type of key
+         * @return new {@link Map}
+         */
         public static <T, K> Map<K, List<T>> groupBy(Iterable<T> iterable, Function<T, K> toKey) {
             Objects.requireNonNull(toKey);
 
@@ -942,7 +1012,16 @@ public final class Dollar {
             return result;
         }
 
-        // TODO: 写 doc
+        /**
+         * Order iterable into a list by element keys with specified direction.
+         *
+         * @param iterable  to be ordered
+         * @param toKey     a function to get element key
+         * @param direction order direction
+         * @param <T>       type of elements
+         * @param <K>       type of element keys
+         * @return a list with sorted elements
+         */
         public static <T, K extends Comparable<K>> List<T> orderBy(Iterable<T> iterable, Function<T, K> toKey, Direction direction) {
             Objects.requireNonNull(toKey);
             Objects.requireNonNull(direction);
@@ -957,7 +1036,17 @@ public final class Dollar {
             return list;
         }
 
-        // TODO: 写 doc
+        /**
+         * Reducing {@link Iterable} to a value which is the accumulated result of running each element in
+         * {@link Iterable} through reducer.
+         *
+         * @param iterable to be handled
+         * @param identity the init value
+         * @param reducer  reducer
+         * @param <T>      type of elements
+         * @param <R>      type of result
+         * @return reducing result
+         */
         public static <T, R> R reduce(Iterable<T> iterable, R identity, BiFunction<R, T, R> reducer) {
             Objects.requireNonNull(reducer);
 
@@ -972,7 +1061,13 @@ public final class Dollar {
             return result;
         }
 
-        // TODO: 写 doc
+        /**
+         * Reverse elements from an iterable into a list.
+         *
+         * @param iterable to be reversed
+         * @param <T>      type of elements
+         * @return a list of elements in reversed order
+         */
         public static <T> List<T> reverse(Iterable<T> iterable) {
             ArrayList<T> list = reduce(iterable, new ArrayList<>(), (li, it) -> {
                 li.add(it);
@@ -990,7 +1085,14 @@ public final class Dollar {
             return list;
         }
 
-        // TODO: 写 doc
+        /**
+         * Take the first <code>n</code> elements.
+         *
+         * @param iterable to be handled.
+         * @param n        count of element to be taken which should be greater than 0
+         * @param <T>      type of elements
+         * @return a list of elements to be taken
+         */
         public static <T> List<T> take(Iterable<T> iterable, int n) {
             if (n < 1) {
                 throw new IllegalArgumentException("You should take at least one element.");
@@ -1013,7 +1115,14 @@ public final class Dollar {
             return list;
         }
 
-        // TODO: 写 doc
+        /**
+         * Take elements from iterable until the first element predicated to be false is found.
+         *
+         * @param iterable  to be handled.
+         * @param predicate a function to test elements
+         * @param <T>       type of elements
+         * @return a list of elements to be taken
+         */
         public static <T> List<T> takeWhile(Iterable<T> iterable, Predicate<T> predicate) {
             Objects.requireNonNull(predicate);
 
@@ -1032,7 +1141,13 @@ public final class Dollar {
             return list;
         }
 
-        // TODO: 写 doc
+        /**
+         * Add all elements from iterable into a {@link Set}.
+         *
+         * @param iterable to be handled
+         * @param <T>      type of elements
+         * @return a set of elements from iterable
+         */
         public static <T> Set<T> toSet(Iterable<T> iterable) {
             if (iterable == null) {
                 return new HashSet<>();
@@ -1043,16 +1158,29 @@ public final class Dollar {
             return set;
         }
 
-        // TODO: 写 doc
+        /**
+         * Iterates over elements of {@link Iterable} and each element will be consumed by handler in order.
+         *
+         * @param iterable to be handled
+         * @param handler  element handler
+         * @param <T>      type of elements
+         */
         public static <T> void forEach(Iterable<T> iterable, Consumer<T> handler) {
             if (iterable == null) {
                 return;
             }
 
-            iterable.forEach(handler::accept);
+            iterable.forEach(handler);
         }
 
-        // TODO: 写 doc
+        /**
+         * Iterates over elements of {@link Iterable} and each element will be consumed by handler in order.
+         * The second argument of consumer is the index of correponding element.
+         *
+         * @param iterable to be handled
+         * @param handler  element handler
+         * @param <T>      type of elements
+         */
         public static <T> void forEach(Iterable<T> iterable, ObjIntConsumer<T> handler) {
             if (iterable == null) {
                 return;
@@ -1064,7 +1192,13 @@ public final class Dollar {
             }
         }
 
-        // TODO: 写 doc
+        /**
+         * Iterates over elements of {@link Iterable} and remove the duplicated.
+         *
+         * @param iterable to be handled
+         * @param <T>      type of elements
+         * @return new {@link List} with unique elements
+         */
         public static <T> List<T> unique(Iterable<T> iterable) {
             if (iterable == null) {
                 return new ArrayList<>();
@@ -1081,7 +1215,13 @@ public final class Dollar {
             return result;
         }
 
-        // TODO: 写 doc
+        /**
+         * Iterates over elements of {@link Iterable} and remove the duplicated by keys.
+         *
+         * @param iterable to be handled
+         * @param <T>      type of elements
+         * @return new {@link List} with unique elements
+         */
         public static <T, K> List<T> uniqueBy(Iterable<T> iterable, Function<T, K> toKey) {
             Objects.requireNonNull(toKey);
 
@@ -1101,7 +1241,14 @@ public final class Dollar {
             return result;
         }
 
-        // TODO: 写 doc
+        /**
+         * Iterates over elements of {@link Iterable} and remove the duplicated by keys.
+         * The second argument of toKey function is the index of corresponding element.
+         *
+         * @param iterable to be handled
+         * @param <T>      type of elements
+         * @return new {@link List} with unique elements
+         */
         public static <T, K> List<T> uniqueBy(Iterable<T> iterable, ObjIntFunction<T, K> toKey) {
             Objects.requireNonNull(toKey);
 
