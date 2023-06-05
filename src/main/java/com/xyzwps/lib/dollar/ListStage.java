@@ -1,8 +1,5 @@
 package com.xyzwps.lib.dollar;
 
-import com.xyzwps.lib.dollar.collector.Collector;
-import com.xyzwps.lib.dollar.collector.JoinCollector;
-import com.xyzwps.lib.dollar.collector.ReduceCollector;
 import com.xyzwps.lib.dollar.function.ObjIntFunction;
 import com.xyzwps.lib.dollar.function.ObjIntPredicate;
 import com.xyzwps.lib.dollar.iterable.ChainIterable;
@@ -295,22 +292,6 @@ public class ListStage<T> implements Iterable<T> {
         return iterable.iterator();
     }
 
-    /**
-     * Collect elements from a stage.
-     *
-     * @param collector element collector
-     * @param <R>       result element type
-     * @return the collected
-     */
-    public <R> R collect(Collector<T, R> collector) {
-        for (T t : this) {
-            if (!collector.needMore()) {
-                return collector.result();
-            }
-            collector.onRequest(t);
-        }
-        return collector.result();
-    }
 
     /**
      * Collect the first element.
@@ -358,7 +339,15 @@ public class ListStage<T> implements Iterable<T> {
      * @return joined string
      */
     public String join(String sep) {
-        return this.collect(new JoinCollector<>(sep));
+        StringBuilder sb = new StringBuilder();
+        Iterator<T> itr = this.iterator();
+        if (itr.hasNext()) {
+            sb.append(itr.next());
+        }
+        while (itr.hasNext()) {
+            sb.append(sep).append(itr.next());
+        }
+        return sb.toString();
     }
 
     /**
@@ -373,13 +362,17 @@ public class ListStage<T> implements Iterable<T> {
      * $.just(1, 2, 3).reduce(new ArrayList&lt;Integer&gt;(), accelerator) => [1, 2, 3]
      * </pre>
      *
-     * @param identity    the identity element of accelerator
-     * @param accelerator accelerate function
-     * @param <R>         identity type
+     * @param initValue  the initial value
+     * @param callbackFn the function invoked every iteration
+     * @param <R>        result type
      * @return the result of the reduction
      */
-    public <R> R reduce(R identity, BiFunction<R, T, R> accelerator) {
-        return this.collect(new ReduceCollector<>(identity, Objects.requireNonNull(accelerator)));
+    public <R> R reduce(R initValue, BiFunction<R, T, R> callbackFn) {
+        R result = initValue;
+        for (T it : this) {
+            result = callbackFn.apply(result, it);
+        }
+        return result;
     }
 
     /**
@@ -387,8 +380,8 @@ public class ListStage<T> implements Iterable<T> {
      *
      * @return collected set
      */
-    public HashSet<T> toSet() {
-        return this.reduce(new HashSet<T>(), (set, i) -> {
+    public Set<T> toSet() {
+        return this.reduce(new HashSet<>(), (set, i) -> {
             set.add(i);
             return set;
         });
