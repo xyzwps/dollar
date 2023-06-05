@@ -1,5 +1,6 @@
 package com.xyzwps.lib.dollar;
 
+import com.xyzwps.lib.dollar.function.Function3;
 import com.xyzwps.lib.dollar.function.ObjIntFunction;
 import com.xyzwps.lib.dollar.iterable.ChainIterable;
 import com.xyzwps.lib.dollar.iterable.MapEntryIterable;
@@ -112,6 +113,17 @@ public class MapStage<K, V> implements Iterable<Pair<K, V>> {
         return new MapStage<>(this, up -> new FilterIterator<>(up, (p, i) -> predicateFn.test(p.key(), p.value())));
     }
 
+    // TODO: 测试
+    // TODO: 函数版
+    public <R> R reduce(R initValue, Function3<R, K, V, R> callbackFn) {
+        Objects.requireNonNull(callbackFn);
+        R result = initValue;
+        for (Pair<K, V> p : this) {
+            result = callbackFn.apply(result, p.left(), p.right());
+        }
+        return result;
+    }
+
     /**
      * Collect entries into a {@link Map}.
      *
@@ -151,7 +163,6 @@ public class MapStage<K, V> implements Iterable<Pair<K, V>> {
         return new ListStage<>(this, up -> new MapIterator<>(up, (p, i) -> p.key()));
     }
 
-    // TODO: reduce
 
     /**
      * The stage is an {@link Iterable}.

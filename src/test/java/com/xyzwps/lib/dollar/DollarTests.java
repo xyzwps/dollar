@@ -61,8 +61,22 @@ class DollarTests {
     }
 
     @Test
-    void reduce() {
+    void reduceIterable() {
         assertEquals(20, $.reduce($.listOf(1, 2, 3, 4), 10, Integer::sum));
+    }
+
+    @Test
+    void reduceMap() {
+        TreeMap<Integer, Integer> treeMap = new TreeMap<>();
+        treeMap.put(1, 1);
+        treeMap.put(2, 2);
+        treeMap.put(3, 3);
+        Integer result = $.reduce(treeMap, 100, (sum, k, v) -> sum + k * 10 + v);
+        assertEquals(166, result);
+
+        assertEquals(100, $.reduce((Map<Integer, Integer>) null, 100, (sum, k, v) -> sum + k * 10 + v));
+
+        assertThrows(NullPointerException.class, () -> $.reduce(treeMap, 100, null));
     }
 
     @Test

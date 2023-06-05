@@ -1,5 +1,6 @@
 package com.xyzwps.lib.dollar;
 
+import com.xyzwps.lib.dollar.function.Function3;
 import com.xyzwps.lib.dollar.function.ObjIntFunction;
 import com.xyzwps.lib.dollar.iterable.ArrayIterable;
 import com.xyzwps.lib.dollar.iterable.EmptyIterable;
@@ -1040,25 +1041,54 @@ public final class Dollar {
          * Reducing {@link Iterable} to a value which is the accumulated result of running each element in
          * {@link Iterable} through reducer.
          *
-         * @param iterable to be handled
-         * @param identity the init value
-         * @param reducer  reducer
-         * @param <T>      type of elements
-         * @param <R>      type of result
+         * @param iterable  to be handled
+         * @param initValue the init value
+         * @param reducer   reducer
+         * @param <T>       type of elements
+         * @param <R>       type of result
          * @return reducing result
          */
-        public static <T, R> R reduce(Iterable<T> iterable, R identity, BiFunction<R, T, R> reducer) {
+        public static <T, R> R reduce(Iterable<T> iterable, R initValue, BiFunction<R, T, R> reducer) {
             Objects.requireNonNull(reducer);
 
             if (iterable == null) {
-                return identity;
+                return initValue;
             }
 
-            R result = identity;
+            R result = initValue;
             for (T t : iterable) {
                 result = reducer.apply(result, t);
             }
             return result;
+        }
+
+        /**
+         * Reducing {@link Iterable} to a value which is the accumulated result of running each element in
+         * {@link Iterable} through reducer.
+         *
+         * @param map       to be handled
+         * @param initValue the init value
+         * @param reducer   reducer
+         * @param <K>       type of map keys
+         * @param <V>       type of map values
+         * @param <R>       type of result
+         * @return reducing result
+         */
+        public static <K, V, R> R reduce(Map<K, V> map, R initValue, Function3<R, K, V, R> reducer) {
+            Objects.requireNonNull(reducer);
+
+            if (map == null) {
+                return initValue;
+            }
+
+            final Env1<R> env = new Env1<>();
+            env.t = initValue;
+            map.forEach((k, v) -> env.t = reducer.apply(env.t, k, v));
+            return env.t;
+        }
+
+        private static class Env1<T> {
+            T t;
         }
 
         /**

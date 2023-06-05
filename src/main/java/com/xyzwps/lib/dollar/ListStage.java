@@ -368,6 +368,8 @@ public class ListStage<T> implements Iterable<T> {
      * @return the result of the reduction
      */
     public <R> R reduce(R initValue, BiFunction<R, T, R> callbackFn) {
+        Objects.requireNonNull(callbackFn);
+
         R result = initValue;
         for (T it : this) {
             result = callbackFn.apply(result, it);

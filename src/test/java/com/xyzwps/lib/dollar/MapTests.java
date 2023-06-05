@@ -112,6 +112,20 @@ class MapTests {
     }
 
     @Test
+    void reduce() {
+        TreeMap<Integer, Integer> treeMap = new TreeMap<>();
+        treeMap.put(1, 1);
+        treeMap.put(2, 2);
+        treeMap.put(3, 3);
+        Integer result = $(treeMap).reduce(100, (sum, k, v) -> sum + k * 10 + v);
+        assertEquals(166, result);
+
+        assertEquals(100, $((Map<Integer, Integer>) null).reduce(100, (sum, k, v) -> sum + k * 10 + v));
+
+        assertThrows(NullPointerException.class, () -> $(treeMap).reduce(100, null));
+    }
+
+    @Test
     void keys() {
         TreeMap<Integer, Integer> treeMap = new TreeMap<>();
         treeMap.put(1, 1);

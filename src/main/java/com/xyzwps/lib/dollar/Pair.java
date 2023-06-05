@@ -44,6 +44,28 @@ public final class Pair<F, S> {
     }
 
     /**
+     * Get the left element of the tuple.
+     * <p>
+     * Alias for {@link #first()}
+     *
+     * @return first element
+     */
+    public F left() {
+        return first;
+    }
+
+    /**
+     * Get the right element of the tuple.
+     * <p>
+     * Alias for {@link #second()}
+     *
+     * @return second element
+     */
+    public S right() {
+        return second;
+    }
+
+    /**
      * Get the key of pair.
      * <p>
      * Alias for {@link #first()}
