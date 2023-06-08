@@ -113,8 +113,6 @@ public class MapStage<K, V> implements Iterable<Pair<K, V>> {
         return new MapStage<>(this, up -> new FilterIterator<>(up, (p, i) -> predicateFn.test(p.key(), p.value())));
     }
 
-    // TODO: 测试
-    // TODO: 函数版
     public <R> R reduce(R initValue, Function3<R, K, V, R> callbackFn) {
         Objects.requireNonNull(callbackFn);
         R result = initValue;

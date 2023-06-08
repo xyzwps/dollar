@@ -210,10 +210,7 @@ public class ListStage<T> implements Iterable<T> {
      * @return next stage
      */
     public ListStage<T> take(int n) {
-        if (n <= 0) {
-            throw new IllegalArgumentException("You should take at least one element.");
-        }
-        return filter((it, index) -> index < n);
+        return new ListStage<>(this, up -> new TakeIterator<>(up, n));
     }
 
     /**
