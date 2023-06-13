@@ -99,6 +99,24 @@ class DollarTests {
     }
 
     @Test
+    void toSet() {
+        {
+            Set<Integer> set = $.toSet(null);
+            assertTrue(set instanceof HashSet); // Hashset preferred
+            assertEquals(0, set.size());
+        }
+        {
+            Set<Integer> set = $.toSet($.listOf(1, 2, 1, 3, 4));
+            assertTrue(set instanceof HashSet); // Hashset preferred
+            assertEquals(4, set.size());
+            assertTrue(set.contains(1));
+            assertTrue(set.contains(2));
+            assertTrue(set.contains(3));
+            assertTrue(set.contains(4));
+        }
+    }
+
+    @Test
     void takeWhile() {
         assertThrows(NullPointerException.class, () -> $.takeWhile($.listOf(1, 2, 3, 4, 5), null));
 
@@ -227,6 +245,20 @@ class DollarTests {
         {
             List<Integer> list = $.map($.just(1, 2, 3), (it, i) -> it + 10 * (i + 1));
             assertEquals("[11, 22, 33]", list.toString());
+            assertTrue(list instanceof ArrayList); // ArrayList preferred
+        }
+    }
+
+    @Test
+    void listFromIterator() {
+        {
+            List<Integer> list = $.listFrom(null);
+            assertEquals(0, list.size());
+            assertTrue(list instanceof ArrayList); // ArrayList preferred
+        }
+        {
+            List<Integer> list = $.listFrom($.listOf(1, 2, 3).iterator());
+            assertEquals("[1, 2, 3]", list.toString());
             assertTrue(list instanceof ArrayList); // ArrayList preferred
         }
     }

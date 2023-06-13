@@ -13,8 +13,7 @@ import java.util.function.Function;
 import static com.xyzwps.lib.dollar.Dollar.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-// TODO: 先放一边
-class ExampleTests {
+class DeprecatedTests {
 
     @Test
     void filter() {

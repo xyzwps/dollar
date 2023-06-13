@@ -14,9 +14,9 @@ import java.util.function.*;
 /**
  * Where to start.
  * <p>
- * TODO: 专门为 Random Access 优化
+ * TODO: optimize for RandomAccess
  * TODO: 写中文文档
- * TODO: 添加示例
+ * TODO: add examples
  */
 public final class Dollar {
 
@@ -259,7 +259,6 @@ public final class Dollar {
          * @return new list
          */
         public static <T> List<T> listFrom(Iterator<T> itr) {
-            // TODO: 优化
             List<T> list = new ArrayList<>();
             if (itr != null) {
                 while (itr.hasNext()) list.add(itr.next());
@@ -1187,7 +1186,6 @@ public final class Dollar {
 
         /**
          * Add all elements from iterable into a {@link Set}.
-         * TODO: 测试
          *
          * @param iterable to be handled
          * @param <T>      type of elements
