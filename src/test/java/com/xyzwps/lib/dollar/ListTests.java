@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -15,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ListTests {
 
     @Test
-    void zip2() {
+    void zip() {
         assertEquals("[(1, 1), (2, 2), (3, null)]", $.just(1, 2, 3).zip($.listOf(1, 2)).value().toString());
         assertEquals("[(1, 1), (2, 2), (3, 3)]", $.just(1, 2, 3).zip($.listOf(1, 2, 3)).value().toString());
         assertEquals("[(1, 1), (2, 2), (3, 3), (null, 4), (null, 5)]", $.just(1, 2, 3).zip($.listOf(1, 2, 3, 4, 5)).value().toString());
@@ -23,9 +24,18 @@ class ListTests {
         assertEquals("[(1, null), (2, null), (3, null)]", $.just(1, 2, 3).zip($.listOf()).value().toString());
         assertEquals("[(1, null), (2, null), (3, null)]", $.just(1, 2, 3).zip(null).value().toString());
 
+        assertEquals("[2, 4, 3]", $.just(1, 2, 3).zip($.listOf(1, 2), (l, r) -> (l == null ? 0 : l) + (r == null ? 0 : r)).value().toString());
+
         assertThrows(NullPointerException.class, () -> $($.listOf(1)).zip($.listOf(2), null));
 
         assertEquals($((List<Integer>) null).zip(null).value().size(), 0);
+    }
+
+    @Test
+    void value() {
+        List<Integer> list = $.just(1, 2, 1, 3, 4).value();
+        assertTrue(list instanceof ArrayList); // ArrayList preferred
+        assertEquals("[1, 2, 1, 3, 4]", list.toString());
     }
 
     @Test
@@ -38,6 +48,17 @@ class ListTests {
     void uniqueBy() {
         assertEquals("[1, 2, 3]", $.just(1, 2, 1, 3, 4).uniqueBy(i -> i % 3).value().toString());
         assertEquals("[1.2, 2.3]", $.just(1.2, 2.3, 1.4).uniqueBy(Double::intValue).value().toString());
+    }
+
+    @Test
+    void toSet() {
+        Set<Integer> set = $.just(1, 2, 1, 3, 4).toSet();
+        assertTrue(set instanceof HashSet); // Hashset preferred
+        assertEquals(4, set.size());
+        assertTrue(set.contains(1));
+        assertTrue(set.contains(2));
+        assertTrue(set.contains(3));
+        assertTrue(set.contains(4));
     }
 
     @Test
@@ -84,7 +105,16 @@ class ListTests {
 
     @Test
     void reduce() {
+        assertEquals(16, $.just(1, 2, 3).reduce(10, Integer::sum));
         assertEquals(20, $.just(1, 2, 3, 4).reduce(10, Integer::sum));
+
+        {
+            BiFunction<List<Integer>, Integer, List<Integer>> reducer = (list, it) -> {
+                list.add(it);
+                return list;
+            };
+            assertEquals("[1, 2, 3]", $.just(1, 2, 3).reduce(new ArrayList<>(), reducer).toString());
+        }
     }
 
     @Test
@@ -122,6 +152,13 @@ class ListTests {
             assertEquals(1, map.get("odd"));
             assertEquals(2, map.get("even"));
         }
+    }
+
+    @Test
+    void join() {
+        assertEquals("hello, world", $.just("hello", "world").join(", "));
+        assertEquals("hello, null, world", $.just("hello", null, "world").join(", "));
+        assertEquals("1 - 2 - 3 - 4 - 5", $.just(1, 2, 3, 4, 5).join(" - "));
     }
 
     @Test

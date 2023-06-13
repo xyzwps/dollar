@@ -207,6 +207,7 @@ public class ListStage<T> implements Iterable<T> {
      * 例：
      * <pre>
      * $.just("C1", "A2", "B3").orderBy(it -> Integer.parseInt(it.substring(1)), ASC).value() => [C1, A2, B3]
+     *
      * $.just("C1", "A2", "B3").orderBy(Function.identity(), ASC).value() => [A2, B3, C1]
      * </pre>
      *
@@ -296,37 +297,50 @@ public class ListStage<T> implements Iterable<T> {
     }
 
     /**
-     * Zip to a list of pairs.
+     * 把两列元素按索引对应组合成 {@link Pair} 序列。
+     * <p>
+     * 例：
+     * <pre>
+     * $.just(1, 2, 3).zip($.listOf(1, 2)).value() => [(1, 1), (2, 2), (3, null)]
+     * </pre>
      *
-     * TODO: 改成 Iterable
-     *
-     * @param list zipped list
-     * @param <R>  type of elements in zipped list
-     * @return zipped pairs stage
+     * @param iterable 右边的序列
+     * @param <R>      右边序列中元素的类型
+     * @return 已经经过的阶段
      */
-    public <R> ListStage<Pair<T, R>> zip(List<R> list) {
-        return this.zip(list, Pair::of);
+    public <R> ListStage<Pair<T, R>> zip(Iterable<R> iterable) {
+        return this.zip(iterable, Pair::of);
     }
 
 
     /**
-     * Zip to a list of pairs.
+     * 把两列元素按索引对应组合成指定序列。
+     * <p>
+     * 例：
+     * <pre>
+     * $.just(1, 2, 3).zip($.listOf(1, 2), (l, r) -> (l == null ? 0 : l) + (r == null ? 0 : r)).value() => [2, 4, 3]
      *
-     * @param list      zipped list
-     * @param combineFn zip combine function
-     * @param <R>       type of elements in zipped list
-     * @param <S>       zip result type
-     * @return zipped pairs stage
+     * $.just(1, 2, 3).zip($.listOf(1, 2), Pair::of).value() => [(1, 1), (2, 2), (3, null)]
+     * </pre>
+     *
+     * @param iterable  右边的序列
+     * @param combineFn 组合左右两边元素的函数
+     * @param <R>       右边序列中元素的类型
+     * @param <S>       组合结果类型
+     * @return 已经经过的阶段
      */
-    public <R, S> ListStage<S> zip(List<R> list, BiFunction<T, R, S> combineFn) {
+    public <R, S> ListStage<S> zip(Iterable<R> iterable, BiFunction<T, R, S> combineFn) {
         Objects.requireNonNull(combineFn);
-        if ($.isEmpty(list)) {
+        if (iterable == null) {
             return this.map(it -> combineFn.apply(it, null));
         } else {
-            return new ListStage<>(this, up -> new ZipIterator<>(up, list.iterator(), combineFn));
+            return new ListStage<>(this, up -> new ZipIterator<>(up, iterable.iterator(), combineFn));
         }
     }
 
+    /**
+     * @see Iterable#iterator()
+     */
     @Override
     public Iterator<T> iterator() {
         return iterable.iterator();
@@ -334,22 +348,27 @@ public class ListStage<T> implements Iterable<T> {
 
 
     /**
-     * Collect the first element.
+     * 获取第一个元素。
      * <p>
-     * Examples:
+     * 例:
      * <pre>
      * $.just(1, 2).first()          => Optional.of(1)
      * $.just((Object) null).first() => Optional.empty()
      * $.just().first()              => Optional.empty()
      * </pre>
      *
-     * @return first element
+     * @return 第一个元素
      */
     public Optional<T> first() {
         Iterator<T> itr = this.take(1).iterator();
         return itr.hasNext() ? Optional.ofNullable(itr.next()) : Optional.empty();
     }
 
+    /**
+     * 带有索引的遍历。
+     *
+     * @param handler 第二个参数是元素的索引
+     */
     public void forEach(ObjIntConsumer<T> handler) {
         Iterator<T> itr = this.iterator();
         for (int i = 0; itr.hasNext(); i++) {
@@ -358,9 +377,9 @@ public class ListStage<T> implements Iterable<T> {
     }
 
     /**
-     * Alias for {@link #first()}
+     * {@link #first()} 的别名。
      *
-     * @return first element
+     * @return 第一个元素
      * @see #first()
      */
     public Optional<T> head() {
@@ -368,15 +387,15 @@ public class ListStage<T> implements Iterable<T> {
     }
 
     /**
-     * Join the string representation(<code>toString()</code>) of all elements
-     * with specified <code>sep</code>arator.
+     * 用指定的 <code>seq</code> 把所有元素的字符串表示连接在一起。
      * <pre>
-     * $.just("hello", "world").join(", ") => "hello, world"
-     * $.just(1, 2, 3, 4, 5).join(" - ")   => "1 - 2 - 3 - 4 - 5"
+     * $.just("hello", "world").join(", ")       => "hello, world"
+     * $.just("hello", null, "world").join(", ") => "hello, null, world"
+     * $.just(1, 2, 3, 4, 5).join(" - ")         => "1 - 2 - 3 - 4 - 5"
      * </pre>
      *
-     * @param sep joining separator string
-     * @return joined string
+     * @param sep 分隔字符串
+     * @return 连接后的新字符串
      */
     public String join(String sep) {
         StringBuilder sb = new StringBuilder();
@@ -391,36 +410,39 @@ public class ListStage<T> implements Iterable<T> {
     }
 
     /**
-     * Examples:
+     * 对序列中的每个元素按序执行一个提供的 reducer 函数。
+     * 每一次运行 reducer 会将先前元素的计算结果作为参数传入，最后将其结果汇总为单个返回值。
+     * <p>
+     * 例:
      * <pre>
      * $.just(1, 2, 3).reduce(10, Integer::sum) => 16
      *
-     * BiFunction&lt;ArrayList&lt;Integer&gt;, Integer, ArrayList&lt;Integer&gt;&gt; accelerator = (list, it) -> {
+     * BiFunction&lt;List&lt;Integer&gt;, Integer, List&lt;Integer&gt;&gt; reducer = (list, it) -> {
      *       list.add(it);
      *       return list;
      * };
-     * $.just(1, 2, 3).reduce(new ArrayList&lt;Integer&gt;(), accelerator) => [1, 2, 3]
+     * $.just(1, 2, 3).reduce(new ArrayList&lt;Integer&gt;(), reducer) => [1, 2, 3]
      * </pre>
      *
-     * @param initValue  the initial value
-     * @param callbackFn the function invoked every iteration
-     * @param <R>        result type
-     * @return the result of the reduction
+     * @param initValue 结果的初值
+     * @param reducer   对每个元素进行计算的函数
+     * @param <R>       结果的类型
+     * @return 使用 reducer 函数遍历整个序列后的结果
      */
-    public <R> R reduce(R initValue, BiFunction<R, T, R> callbackFn) {
-        Objects.requireNonNull(callbackFn);
+    public <R> R reduce(R initValue, BiFunction<R, T, R> reducer) {
+        Objects.requireNonNull(reducer);
 
         R result = initValue;
         for (T it : this) {
-            result = callbackFn.apply(result, it);
+            result = reducer.apply(result, it);
         }
         return result;
     }
 
     /**
-     * Collect element into a hash set.
+     * 把元素装入 {@link Set}。
      *
-     * @return collected set
+     * @return 新创建的 {@link Set}
      */
     public Set<T> toSet() {
         return this.reduce(new HashSet<>(), (set, i) -> {
@@ -430,9 +452,9 @@ public class ListStage<T> implements Iterable<T> {
     }
 
     /**
-     * Collect element into a list.
+     * 把元素按顺序装入 {@link List}。
      *
-     * @return collected list
+     * @return 新创建的 {@link List}
      */
     public List<T> value() {
         return $.listFrom(this.iterator());

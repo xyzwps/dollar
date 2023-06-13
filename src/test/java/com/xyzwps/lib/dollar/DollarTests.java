@@ -14,13 +14,15 @@ import static com.xyzwps.lib.dollar.Direction.*;
 class DollarTests {
 
     @Test
-    void zip2() {
+    void zip() {
         assertEquals("[(1, 1), (2, 2), (3, null)]", $.zip($.listOf(1, 2, 3), $.listOf(1, 2)).toString());
         assertEquals("[(1, 1), (2, 2), (3, 3)]", $.zip($.listOf(1, 2, 3), $.listOf(1, 2, 3)).toString());
         assertEquals("[(1, 1), (2, 2), (3, 3), (null, 4), (null, 5)]", $.zip($.listOf(1, 2, 3), $.listOf(1, 2, 3, 4, 5)).toString());
 
         assertEquals("[(1, null), (2, null), (3, null)]", $.zip($.listOf(1, 2, 3), $.listOf()).toString());
         assertEquals("[(1, null), (2, null), (3, null)]", $.zip($.listOf(1, 2, 3), null).toString());
+
+        assertEquals("[2, 4, 3]", $.zip($.listOf(1, 2, 3), $.listOf(1, 2), (l, r) -> (l == null ? 0 : l) + (r == null ? 0 : r)).toString());
 
         assertThrows(NullPointerException.class, () -> $.zip($.listOf(1), $.listOf(2), null));
 
