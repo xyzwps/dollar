@@ -15,11 +15,10 @@ import java.util.function.Predicate;
 import static com.xyzwps.lib.dollar.Dollar.*;
 
 /**
- * TODO: 测试 HashMap and ArrayList preferred
- * <p>
  * {@link ListStage} 表示连续处理 {@link Iterable} 到了某个阶段。
  * <p>
- * 注意：{@link ListStage} 本身就是 {@link Iterable}，所以原则上，你可以直接对其使用 for-each 循环语句。
+ * 注意：{@link ListStage} 本身就是 {@link Iterable}，所以，
+ * 你可以直接对其使用 for-each 循环语句。
  *
  * @param <T> {@link Iterable} 中的元素类型。
  */
@@ -39,12 +38,12 @@ public class ListStage<T> implements Iterable<T> {
     /**
      * 从一个阶段迈向下一个阶段。
      *
-     * @param up      上一个阶段
-     * @param chainFn 从上一阶段迈向下一阶段的秘密
-     * @param <S>     下一阶段元素类型
+     * @param prev    上一个阶段
+     * @param chainFn 从上一阶段迈向下一阶段的秘密。
+     * @param <P>     上一阶段元素类型
      */
-    <S> ListStage(Iterable<S> up, Function<Iterator<S>, Iterator<T>> chainFn) {
-        this(ChainIterable.create(up, chainFn));
+    <P> ListStage(Iterable<P> prev, Function<Iterator<P>, Iterator<T>> chainFn) {
+        this(ChainIterable.create(prev, chainFn));
     }
 
     /**
@@ -442,7 +441,7 @@ public class ListStage<T> implements Iterable<T> {
     /**
      * 把元素装入 {@link Set}。
      *
-     * @return 新创建的 {@link Set}
+     * @return 包含不重复元素的新 Set
      */
     public Set<T> toSet() {
         return this.reduce(new HashSet<>(), (set, i) -> {
@@ -454,7 +453,7 @@ public class ListStage<T> implements Iterable<T> {
     /**
      * 把元素按顺序装入 {@link List}。
      *
-     * @return 新创建的 {@link List}
+     * @return 包含全部元素的新 List
      */
     public List<T> value() {
         return $.listFrom(this.iterator());

@@ -46,39 +46,31 @@ public final class Dollar {
 
 
     public static class $ {
-        /**
-         * Check if the collection is empty or not.
-         *
-         * @param collection to be checked
-         * @param <T>        type of elements
-         * @return true if collection is null or has no elements
-         */
-        public static <T> boolean isEmpty(Collection<T> collection) {
-            return collection == null || collection.isEmpty();
-        }
 
 
         /**
-         * Check if the collection is not empty.
-         *
-         * @param collection to be checked
-         * @param <T>        type of elements
-         * @return true if collection {@link #isEmpty(Collection)} is false
-         */
-        public static <T> boolean isNotEmpty(Collection<T> collection) {
-            return !isEmpty(collection);
-        }
-
-        /**
-         * Count the element of a <code>collection</code>.
+         * Count the elements of a <code>collection</code>.
          * Return 0 if <code>collection</code> is <code>null</code>.
          *
          * @param collection which to handle
          * @param <E>        collection element type
          * @return count of elements in collection
          */
-        public static <E> int length(Collection<E> collection) {
+        public static <E> int size(Collection<E> collection) {
             return collection == null ? 0 : collection.size();
+        }
+
+        /**
+         * Count the entries of a <code>map</code>.
+         * Return 0 if <code>map</code> is <code>null</code>.
+         *
+         * @param map which to handle
+         * @param <K> type of keys
+         * @param <V> type of values
+         * @return count of entries in map
+         */
+        public static <K, V> int size(Map<K, V> map) {
+            return map == null ? 0 : map.size();
         }
 
 
@@ -267,6 +259,7 @@ public final class Dollar {
          * @return new list
          */
         public static <T> List<T> listFrom(Iterator<T> itr) {
+            // TODO: 优化
             List<T> list = new ArrayList<>();
             if (itr != null) {
                 while (itr.hasNext()) list.add(itr.next());
@@ -658,6 +651,27 @@ public final class Dollar {
          */
         public static boolean isEmpty(Map<?, ?> map) {
             return map == null || map.isEmpty();
+        }
+
+        /**
+         * Check if the collection is not empty.
+         *
+         * @param collection to be checked
+         * @param <T>        type of elements
+         * @return true if collection {@link #isEmpty(Collection)} is false
+         */
+        public static <T> boolean isNotEmpty(Collection<T> collection) {
+            return !isEmpty(collection);
+        }
+
+        /**
+         * Check if a {@link Collection} is empty of not.
+         *
+         * @param c to be checked
+         * @return true if map is null, or it has no any entries.
+         */
+        public static boolean isEmpty(Collection<?> c) {
+            return c == null || c.isEmpty();
         }
 
         /**
@@ -1173,6 +1187,7 @@ public final class Dollar {
 
         /**
          * Add all elements from iterable into a {@link Set}.
+         * TODO: 测试
          *
          * @param iterable to be handled
          * @param <T>      type of elements

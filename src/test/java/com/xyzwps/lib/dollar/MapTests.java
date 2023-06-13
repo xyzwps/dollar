@@ -2,9 +2,13 @@ package com.xyzwps.lib.dollar;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import static com.xyzwps.lib.dollar.Dollar.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,6 +32,8 @@ class MapTests {
         assertEquals(1, map.get(1));
         assertEquals(2, map.get(2));
         assertEquals(3, map.get(3));
+
+        assertThrows(NullPointerException.class, () -> $($.mapOf()).mapValues((Function<Object, Object>) null));
     }
 
     @Test
@@ -40,6 +46,8 @@ class MapTests {
         assertEquals("1: 1", map.get(1));
         assertEquals("2: 11", map.get(2));
         assertEquals("3: 111", map.get(3));
+
+        assertThrows(NullPointerException.class, () -> $($.mapOf()).mapValues((BiFunction<Object, Object, Object>) null));
     }
 
     @Test
@@ -57,6 +65,8 @@ class MapTests {
         assertEquals(1, map.get(1));
         assertEquals(2, map.get(2));
         assertEquals(3, map.get(0));
+
+        assertThrows(NullPointerException.class, () -> $($.mapOf()).mapKeys((Function<Object, Object>) null));
     }
 
     @Test
@@ -77,6 +87,8 @@ class MapTests {
         assertEquals(3, map.get(1));
         assertEquals(4, map.get(3));
         assertEquals(5, map.get(0));
+
+        assertThrows(NullPointerException.class, () -> $($.mapOf()).mapKeys((BiFunction<Object, Object, Object>) null));
     }
 
 
@@ -96,6 +108,8 @@ class MapTests {
         assertEquals(4, map.get(4));
         assertEquals(6, map.get(6));
         assertEquals(3, map.size());
+
+        assertThrows(NullPointerException.class, () -> $($.mapOf()).filter(null));
     }
 
     @Test
@@ -109,6 +123,12 @@ class MapTests {
         treeMap.put(6, 6);
         List<Integer> list = $(treeMap).values().value();
         assertIterableEquals($.listOf(1, 2, 3, 4, 5, 6), list);
+    }
+
+    @Test
+    void value() {
+        Map<Integer, Integer> map = $($.mapOf(1, 1, 2, 2, 3, 3)).value();
+        assertTrue(map instanceof HashMap); // HashMap preferred
     }
 
     @Test
@@ -164,5 +184,7 @@ class MapTests {
             }
         });
         assertIterableEquals($.listOf(false, true, true, true, true, true, true), list);
+
+        assertThrows(NullPointerException.class, () -> $(treeMap).forEach((BiConsumer<Integer, Integer>) null));
     }
 }

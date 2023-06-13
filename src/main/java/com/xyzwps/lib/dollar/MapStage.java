@@ -18,19 +18,23 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 
 /**
- * Map handling stage.
+ * {@link MapStage} 表示连续处理 {@link Map#entrySet()} 到了某个阶段。
+ * <p>
+ * 注意：{@link MapStage} 本身就是 {@link Iterable}，所以，你可以直接对其使用 for-each 循环语句来遍历所有的 entry。
+ * <p>
+ * 注意：{@link Map.Entry} 是可以被修改的。为避免处理过程中出现意外情况，本类用用 {@link Pair} 表示 entry。
  *
- * @param <K> type of keys
- * @param <V> type of values
+ * @param <K> key 的类型
+ * @param <V> value 的类型
  */
 public class MapStage<K, V> implements Iterable<Pair<K, V>> {
 
     private final Iterable<Pair<K, V>> entryIterable;
 
     /**
-     * Create a stage from {@link Map}.
+     * 连续处理的开始阶段。
      *
-     * @param map source
+     * @param map 要处理的 {@link Map}
      */
     public MapStage(Map<K, V> map) {
         this(new MapEntryIterable<>(map));
@@ -45,11 +49,19 @@ public class MapStage<K, V> implements Iterable<Pair<K, V>> {
     }
 
     /**
-     * Map values to another type of values from just origin values.
+     * 把 entry 的 value 映射为一个新值来作为下一阶段 entry 的 value。
+     * <p>
+     * 例:
+     * <pre>
+     * $($.mapOf(0, "", 1, "1", 2, "11", 3, "111"))
+     *   .mapValues(String::length)
+     *   .value()
+     * => {0=0, 1=1, 2=2, 3=3}
+     * </pre>
      *
-     * @param mapValueFn value mapping function
-     * @param <V2>       type of mapped values
-     * @return chained stage
+     * @param mapValueFn 映射函数
+     * @param <V2>       新 value 的类型
+     * @return 已经经过的阶段
      */
     public <V2> MapStage<K, V2> mapValues(Function<V, V2> mapValueFn) {
         Objects.requireNonNull(mapValueFn);
@@ -58,11 +70,19 @@ public class MapStage<K, V> implements Iterable<Pair<K, V>> {
     }
 
     /**
-     * Map values to another type of values from origin keys and values.
+     * 把 entry 的 value 和 key 映射为一个新值来作为下一阶段 entry 的 value。
+     * <p>
+     * 例:
+     * <pre>
+     * $($.mapOf(0, "", 1, "1", 2, "11", 3, "111"))
+     *   .mapValues((value, key) -> String.format("%d:%s", key, value))
+     *   .value()
+     * => {0=0:, 1=1:1, 2=2:11, 3=3:111}
+     * </pre>
      *
-     * @param mapValueFn value mapping function
-     * @param <V2>       type of mapped values
-     * @return chained stage
+     * @param mapValueFn 映射函数
+     * @param <V2>       新 value 的类型
+     * @return 已经经过的阶段
      */
     public <V2> MapStage<K, V2> mapValues(BiFunction<V, K, V2> mapValueFn) {
         Objects.requireNonNull(mapValueFn);
@@ -71,12 +91,20 @@ public class MapStage<K, V> implements Iterable<Pair<K, V>> {
     }
 
     /**
-     * Map keys to another type of keys from just origin keys.
-     * The corresponding entries of duplicated keys would be discarded.
+     * 把 entry 的 key 映射为一个新值来作为下一阶段 entry 的 key。
+     * 如果 key 出现重复，则保留先出现的 entry，丢弃后来的。
+     * <p>
+     * 例：
+     * <pre>
+     * $($.mapOf(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6))
+     *   .mapKeys(i -> i % 3)
+     *   .value();
+     * => {1=1, 2=2, 0=3}
+     * </pre>
      *
-     * @param mapKeyFn key mapping function
-     * @param <K2>     type of mapped keys
-     * @return chained stage
+     * @param mapKeyFn 映射函数
+     * @param <K2>     新 key 的类型
+     * @return 已经经过的阶段
      */
     public <K2> MapStage<K2, V> mapKeys(Function<K, K2> mapKeyFn) {
         Objects.requireNonNull(mapKeyFn);
@@ -86,12 +114,20 @@ public class MapStage<K, V> implements Iterable<Pair<K, V>> {
     }
 
     /**
-     * Map keys to another type of keys from origin keys and values.
-     * The corresponding entries of duplicated keys would be discarded.
+     * 把 entry 的 key 和 value 映射为一个新值来作为下一阶段 entry 的 key。
+     * 如果 key 出现重复，则保留先出现的 entry，丢弃后来的。
+     * <p>
+     * 例：
+     * <pre>
+     * $($.mapOf(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6))
+     *   .mapKeys((key, value) -> (key + value) % 5)
+     *   .value();
+     * => {2=1, 4=2, 1=3, 3=4, 0=5}
+     * </pre>
      *
-     * @param mapKeyFn key mapping function
-     * @param <K2>     type of mapped keys
-     * @return chained stage
+     * @param mapKeyFn 映射函数
+     * @param <K2>     新 key 的类型
+     * @return 已经经过的阶段
      */
     public <K2> MapStage<K2, V> mapKeys(BiFunction<K, V, K2> mapKeyFn) {
         Objects.requireNonNull(mapKeyFn);
@@ -102,11 +138,18 @@ public class MapStage<K, V> implements Iterable<Pair<K, V>> {
 
 
     /**
-     * The entries would be retained if they were predicated to true.
-     * Otherwise, the entries would be discarded.
+     * 筛选满足条件的 entry.
+     * <p>
+     * 例：
+     * <pre>
+     * $($.mapOf(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6))
+     *   .filter((key, value) -> value % 2 == 0)
+     *   .value();
+     * => {2=2, 4=4, 6=6}
+     * </pre>
      *
-     * @param predicateFn predicate function
-     * @return chained stage
+     * @param predicateFn entry 应满足的条件
+     * @return 已经经过的阶段
      */
     public MapStage<K, V> filter(BiPredicate<K, V> predicateFn) {
         Objects.requireNonNull(predicateFn);
@@ -123,9 +166,9 @@ public class MapStage<K, V> implements Iterable<Pair<K, V>> {
     }
 
     /**
-     * Collect entries into a {@link Map}.
+     * 把全部 entry 装入 {@link Map}。
      *
-     * @return new map containing all collected entries
+     * @return 包含全部 entry 的新 Map
      */
     public Map<K, V> value() {
         Map<K, V> result = new HashMap<>();
@@ -134,9 +177,9 @@ public class MapStage<K, V> implements Iterable<Pair<K, V>> {
     }
 
     /**
-     * Iterate over all entries, and handling them by a specific action.
+     * 遍历全部的 entry。
      *
-     * @param action is a handler to handle each entry
+     * @param action 处理每个 entry 的动作
      */
     public void forEach(BiConsumer<K, V> action) {
         Objects.requireNonNull(action);
@@ -144,18 +187,18 @@ public class MapStage<K, V> implements Iterable<Pair<K, V>> {
     }
 
     /**
-     * Just chaining values to another stage.
+     * 获取每个 entry 的 value。
      *
-     * @return chained stage
+     * @return 已经经过的阶段
      */
     public ListStage<V> values() {
         return new ListStage<>(this, up -> new MapIterator<>(up, (p, i) -> p.value()));
     }
 
     /**
-     * Just chaining keys to another stage.
+     * 获取每个 entry 的 key。
      *
-     * @return chained stage
+     * @return 已经经过的阶段
      */
     public ListStage<K> keys() {
         return new ListStage<>(this, up -> new MapIterator<>(up, (p, i) -> p.key()));
@@ -163,9 +206,9 @@ public class MapStage<K, V> implements Iterable<Pair<K, V>> {
 
 
     /**
-     * The stage is an {@link Iterable}.
+     * 遍历所有 entry。
      *
-     * @return an {@link Iterator} to iterate over the entries
+     * @return 一个新的可遍历所有 entry 的 {@link Iterator}
      */
     @Override
     public Iterator<Pair<K, V>> iterator() {
