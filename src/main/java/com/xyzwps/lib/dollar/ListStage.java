@@ -14,52 +14,79 @@ import java.util.function.Predicate;
 
 import static com.xyzwps.lib.dollar.Dollar.*;
 
+/**
+ * TODO: 测试 HashMap and ArrayList preferred
+ * <p>
+ * {@link ListStage} 表示连续处理 {@link Iterable} 到了某个阶段。
+ * <p>
+ * 注意：{@link ListStage} 本身就是 {@link Iterable}，所以原则上，你可以直接对其使用 for-each 循环语句。
+ *
+ * @param <T> {@link Iterable} 中的元素类型。
+ */
 public class ListStage<T> implements Iterable<T> {
 
     private final Iterable<T> iterable;
 
+    /**
+     * 连续处理的开始处。
+     *
+     * @param iterable 要处理的 {@link Iterable}。
+     */
     public ListStage(Iterable<T> iterable) {
         this.iterable = iterable == null ? EmptyIterable.create() : iterable;
     }
 
+    /**
+     * 从一个阶段迈向下一个阶段。
+     *
+     * @param up      上一个阶段
+     * @param chainFn 从上一阶段迈向下一阶段的秘密
+     * @param <S>     下一阶段元素类型
+     */
     <S> ListStage(Iterable<S> up, Function<Iterator<S>, Iterator<T>> chainFn) {
         this(ChainIterable.create(up, chainFn));
     }
 
     /**
-     * Examples:
+     * 从头开始，把相邻的 n 个元素撮合成一组。如果最后剩下的不足 n 个元素，那么也把它们放入一组。
+     * <p>
+     * 例：
      * <pre>
      * $.just(1, 2, 3, 4, 5).chunk(2).value() => [[1,2], [3,4], [5]]
      * </pre>
      *
-     * @param size The length of each chunk, should be greater than 0.
-     * @return next stage
+     * @param n 每组元素的数量。至少应该是 1。
+     * @return 已经经过的阶段
      */
-    public ListStage<List<T>> chunk(int size) {
-        return new ListStage<>(this, up -> new ChunkIterator<>(up, size));
+    public ListStage<List<T>> chunk(int n) {
+        return new ListStage<>(this, up -> new ChunkIterator<>(up, n));
     }
 
     /**
-     * Exclude all falsey values. The values <code>null</code>, <code>false</code>,
-     * <code>0(.0)</code> and <code>""</code> are falsey.
+     * 排除所有的 {@link $#isFalsey falsey} 值。
      * <p>
-     * Examples:
+     * 例:
      * <pre>
-     * $.just(null, 1, 0, true, false, "a", "").compact().value() => [1, true, ""]
+     * $.just(null, 1, 0, true, false, "a", "").compact().value() => [1, true, "a"]
      * </pre>
      *
-     * @return next stage
-     * @see Dollar#$#isFalsey(Object)
+     * @return 已经经过的阶段
+     * @see $#isFalsey(Object)
      */
     public ListStage<T> compact() {
         return this.filter(it -> !$.isFalsey(it));
     }
 
     /**
-     * Concatenating with an {@link Iterable}.
+     * 把一个 {@link Iterable} 接到后面。
+     * <p>
+     * 例:
+     * <pre>
+     * $.just(1, 2).concat($.listOf(3, 4)).value() => [1, 2, 3, 4]
+     * </pre>
      *
-     * @param tail concatenated iterable. Null is allowed.
-     * @return next stage
+     * @param tail 被接到尾巴上的 {@link Iterable}
+     * @return 已经经过的阶段
      */
     public ListStage<T> concat(Iterable<T> tail) {
         return new ListStage<>(this, up -> {
@@ -69,16 +96,16 @@ public class ListStage<T> implements Iterable<T> {
     }
 
     /**
-     * Iterates over elements, and exclude those which being predicated with <code>false</code>.
+     * 按顺序筛选满足条件（<i>predicate</i>）的元素。
      * <p>
-     * Examples:
+     * 例:
      * <pre>
      * $.just(1, 2, 3, 4, 5).filter(i -> i % 2 == 1).value() => [1, 3, 5]
      * $.just(1, 2, 3, 4, 5).filter(i -> i % 2 == 0).value() => [2, 4]
      * </pre>
      *
-     * @param predicate determine which element should be retained. Not null.
-     * @return next stage
+     * @param predicate 被保留的元素应该满足的条件。不可以是 null。
+     * @return 已经经过的阶段
      */
     public ListStage<T> filter(Predicate<T> predicate) {
         Objects.requireNonNull(predicate);
@@ -86,72 +113,77 @@ public class ListStage<T> implements Iterable<T> {
     }
 
     /**
-     * Indexed version of {@link #filter(Predicate)}.
+     * 相比于 {@link #filter(Predicate)}，本方法在筛选时可以把元素的索引作为条件。
      *
-     * @param predicateFn determine which element should be retained. Not null.
-     * @return next stage
+     * @param predicateFn 被保留的元素应该满足的条件，第二个参数是元素索引。不可以是 null。
+     * @return 已经经过的阶段
      */
     public ListStage<T> filter(ObjIntPredicate<T> predicateFn) {
         return new ListStage<>(this, up -> new FilterIterator<>(up, predicateFn));
     }
 
     /**
-     * Examples:
+     * 把一个元素映射为一个 {@link Iterable} 之后，再对 {@link Iterable} 中的元素进行遍历。
+     * <p>
+     * 例:
      * <pre>
      * $.just(1, 2, 3).flatMap(i -> $.just(i*2, i*3)).value() => [2, 3, 4, 6, 6, 9]
      * </pre>
      *
-     * @param flatMapFn which map an element to an {@link Iterable}
-     * @param <R>       flatted elements type
-     * @return next stage
+     * @param flatMapFn 把元素映射为 {@link Iterable} 的函数
+     * @param <R>       {@link Iterable} 中元素的类型
+     * @return 已经经过的阶段
      */
     public <R> ListStage<R> flatMap(Function<T, Iterable<R>> flatMapFn) {
         return new ListStage<>(this, up -> new FlatMapIterator<>(up, flatMapFn));
     }
 
     /**
-     * Group elements by key.
+     * 按 key 对元素进行分组，得到一个 {@link Map} 处理流程。
+     * 如果有两个元素对应相同的 key，则先出现的元素排在所在组的前面。
      * <p>
-     * Examples:
+     * 例:
      * <pre>
      * $.just(1, 2, 3, 4, 5).groupBy(i -> i % 2 == 0 ? "even" : "odd").value() => { "odd": [1, 3, 5], "even": [2, 4] }
      * </pre>
      *
-     * @param toKey to calculate element key
-     * @param <K>   element key type
-     * @return next stage
+     * @param toKey 用于计算/获取元素的 key
+     * @param <K>   key 的类型
+     * @return 已经经过的阶段
      */
     public <K> MapStage<K, List<T>> groupBy(Function<T, K> toKey) {
         return new MapStage<>(() -> new GroupByIterator<>(this.iterator(), toKey));
     }
 
     /**
-     * Aggregate all elements into a map with a specified key.
-     * If two elements produce the same key, the first consumed element will be selected.
+     * 按 key 对元素处理，得到一个 {@link Map} 处理流程。
+     * 如果有两个元素对应相同的 key，则后来的元素会被舍弃。
      * <p>
-     * Examples:
+     * 例:
      * <pre>
      * $.just(1, 2, 3, 4, 5).keyBy(i -> i % 2 == 0 ? "even" : "odd").value() => { "odd": 1, "even": 2 }
      * </pre>
      *
-     * @param toKey to calculate element key
-     * @param <K>   element key type
-     * @return next stage
+     * @param toKey 用于计算/获取元素的 key
+     * @param <K>   key 的类型
+     * @return 已经经过的阶段
      */
     public <K> MapStage<K, T> keyBy(Function<T, K> toKey) {
-        return new MapStage<K, T>(() -> new KeyByIterator<>(this.iterator(), toKey));
+        return new MapStage<>(() -> new KeyByIterator<>(this.iterator(), toKey));
     }
 
     /**
-     * Examples:
+     * 把一个元素映射为另一个元素。
+     * <p>
+     * 例:
      * <pre>
      * $.just(1, 2, 3).map(i -> i * 2).value() => [2, 4, 6]
      * $.just(1, 2, 3).map(i -> i % 2).value() => [1, 0, 1]
      * </pre>
      *
-     * @param mapFn mapper function
-     * @param <R>   element type of map result
-     * @return next stage
+     * @param mapFn 映射函数
+     * @param <R>   映射结果的类型
+     * @return 已经经过的阶段
      */
     public <R> ListStage<R> map(Function<T, R> mapFn) {
         Objects.requireNonNull(mapFn);
@@ -159,96 +191,105 @@ public class ListStage<T> implements Iterable<T> {
     }
 
     /**
-     * Indexed version of {@link #map(Function)}.
+     * 是 {@link #map(Function)} 带索引的版本。
      *
-     * @param mapFn mapper function
-     * @param <R>   element type of map result
-     * @return next stage
+     * @param mapFn 映射函数，第二个被映射参数是元素的索引
+     * @param <R>   映射结果的类型
+     * @return 已经经过的阶段
      */
     public <R> ListStage<R> map(ObjIntFunction<T, R> mapFn) {
         return new ListStage<>(this, up -> new MapIterator<>(up, mapFn));
     }
 
     /**
-     * Sort all elements with specified key and direction.
+     * 按指定 key 和顺序对所有元素排序。
+     * <p>
+     * 例：
      * <pre>
      * $.just("C1", "A2", "B3").orderBy(it -> Integer.parseInt(it.substring(1)), ASC).value() => [C1, A2, B3]
      * $.just("C1", "A2", "B3").orderBy(Function.identity(), ASC).value() => [A2, B3, C1]
      * </pre>
      *
-     * @param toKey     to calculate element key
-     * @param direction order by derection
-     * @param <K>       element key type
-     * @return next stage
+     * @param toKey     用于计算/获取元素的 key
+     * @param direction 排序方向
+     * @param <K>       元素 key 的类型
+     * @return 已经经过的阶段
      */
     public <K extends Comparable<K>> ListStage<T> orderBy(Function<T, K> toKey, Direction direction) {
         return new ListStage<>(this, up -> new OrderByIterator<>(up, toKey, direction));
     }
 
     /**
-     * Examples:
+     * 逆序遍历所有元素。
+     * <p>
+     * 例:
      * <pre>
      * $.just(1, 2, 3).reverse().value() => [3, 2, 1]
      * </pre>
      *
-     * @return next stage
+     * @return 已经经过的阶段
      */
     public ListStage<T> reverse() {
         return new ListStage<>(this.iterable, ReverseIterator::new);
     }
 
     /**
-     * Take the first <code>n</code> elements.
+     * 按遍历顺序获取前 n(≥1) 个元素。后面未被获取到的元素不会被计算。
      * <p>
-     * Examples:
+     * 例:
      * <pre>
      * $.just(1, 2, 3, 4, 5).take(6).value() => [1, 2, 3, 4, 5]
      * $.just(1, 2, 3, 4, 5).take(3).value() => [1, 2, 3]
      * </pre>
      *
-     * @param n elements count to take, which should be greater than 0
-     * @return next stage
+     * @param n 要获取的元素个数，n≥1
+     * @return 已经经过的阶段
      */
     public ListStage<T> take(int n) {
         return new ListStage<>(this, up -> new TakeIterator<>(up, n));
     }
 
     /**
-     * Take elements from the beginning, until <code>predicate</code> returns <code>false</code>.
+     * 按遍历顺序，从前往后按条件筛选元素，直到遇到第一个不满足条件的为止。
+     * 第一个不满足条件的元素之后的元素不会被计算。
      * <p>
-     * Examples:
+     * 例:
      * <pre>
      * $.just(1, 2, 3, 4, 5).takeWhile(i -> i &lt; 3).value() => [1, 2]
      * </pre>
      *
-     * @param predicate to determine which elements should be taken
-     * @return next stage
+     * @param predicate 元素应满足的条件
+     * @return 已经经过的阶段
      */
     public ListStage<T> takeWhile(Predicate<T> predicate) {
         return new ListStage<>(this, up -> new TakeWhileIterator<>(up, predicate));
     }
 
     /**
-     * Examples:
+     * 对元素进行去重。先遇到的保留，后遇到的扔掉。
+     * <p>
+     * 例:
      * <pre>
      * $.just(1, 2, 1).unique().value() => [1, 2]
      * </pre>
      *
-     * @return next stage
+     * @return 已经经过的阶段
      */
     public ListStage<T> unique() {
         return this.uniqueBy(Function.identity());
     }
 
     /**
-     * Examples:
+     * 按元素的 key 对元素进行去重。先遇到的保留，后遇到的扔掉。
+     * <p>
+     * 例:
      * <pre>
      * $.just(1.2, 2.3, 1.4).uniqueBy(Double::intValue).value() => [1.2, 2.3]
      * </pre>
      *
-     * @param toKey to calculate element key
-     * @param <K>   element key type
-     * @return next stage
+     * @param toKey 用于计算/获取元素的 key
+     * @param <K>   key 的类型
+     * @return 已经经过的阶段
      */
     public <K> ListStage<T> uniqueBy(Function<T, K> toKey) {
         return new ListStage<>(this, up -> new UniqueByIterator<>(up, toKey));
@@ -256,6 +297,8 @@ public class ListStage<T> implements Iterable<T> {
 
     /**
      * Zip to a list of pairs.
+     *
+     * TODO: 改成 Iterable
      *
      * @param list zipped list
      * @param <R>  type of elements in zipped list

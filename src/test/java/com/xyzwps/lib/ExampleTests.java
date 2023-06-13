@@ -17,18 +17,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class ExampleTests {
 
     @Test
-    void chunk() {
-        assertEquals("[[1, 2], [3, 4], [5]]",
-                $.just(1, 2, 3, 4, 5).chunk(2).value().toString());
-    }
-
-    @Test
-    void compact() {
-        assertEquals("[1, true, a]",
-                $.just(null, 1, 0, true, false, "a", "").compact().value().toString());
-    }
-
-    @Test
     void filter() {
         assertEquals("[1, 3, 5]",
                 $.just(1, 2, 3, 4, 5).filter(i -> i % 2 == 1).value().toString());

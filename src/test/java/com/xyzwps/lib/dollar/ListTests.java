@@ -8,6 +8,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static com.xyzwps.lib.dollar.Direction.*;
 import static com.xyzwps.lib.dollar.Dollar.$;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -30,21 +31,49 @@ class ListTests {
     @Test
     void unique() {
         assertEquals("[1, 2, 3]", $.just(1, 2, 1, 3).unique().value().toString());
+        assertEquals("[1, 2]", $.just(1, 2, 1).unique().value().toString());
     }
 
     @Test
     void uniqueBy() {
         assertEquals("[1, 2, 3]", $.just(1, 2, 1, 3, 4).uniqueBy(i -> i % 3).value().toString());
+        assertEquals("[1.2, 2.3]", $.just(1.2, 2.3, 1.4).uniqueBy(Double::intValue).value().toString());
     }
 
     @Test
     void takeWhile() {
-        assertEquals("[1, 2]", $.just(1, 2, 3, 4).takeWhile(i -> i < 3).value().toString());
+        assertEquals("[1, 2]", $.just(1, 2, 3, 4, 5).takeWhile(i -> i < 3).value().toString());
+
+        // short circuit
+        {
+            Counter counter = new Counter();
+            assertEquals("[1, 2]", $.just(1, 2, 3, 4, 5).map(it -> {
+                counter.count++;
+                return it;
+            }).takeWhile(i -> i < 3).value().toString());
+            assertEquals(3, counter.count);
+        }
     }
 
     @Test
     void take() {
         assertEquals("[1, 2]", $.just(1, 2, 3, 4).take(2).value().toString());
+        assertEquals("[1, 2, 3, 4, 5]", $.just(1, 2, 3, 4, 5).take(6).value().toString());
+        assertEquals("[1, 2, 3]", $.just(1, 2, 3, 4, 5).take(3).value().toString());
+
+        // short circuit
+        {
+            Counter counter = new Counter();
+            assertEquals("[1, 2, 3]", $.just(1, 2, 3, 4, 5).map(it -> {
+                counter.count++;
+                return it;
+            }).take(3).value().toString());
+            assertEquals(3, counter.count);
+        }
+    }
+
+    static class Counter {
+        int count = 0;
     }
 
     @Test
@@ -60,13 +89,17 @@ class ListTests {
 
     @Test
     void orderBy() {
-        assertEquals("[1, 2, 3, 4, 5]", $.just(1, 3, 5, 2, 4).orderBy(Function.identity(), Direction.ASC).value().toString());
-        assertEquals("[5, 4, 3, 2, 1]", $.just(1, 3, 5, 2, 4).orderBy(Function.identity(), Direction.DESC).value().toString());
+        assertEquals("[1, 2, 3, 4, 5]", $.just(1, 3, 5, 2, 4).orderBy(Function.identity(), ASC).value().toString());
+        assertEquals("[5, 4, 3, 2, 1]", $.just(1, 3, 5, 2, 4).orderBy(Function.identity(), DESC).value().toString());
+
+        assertEquals("[C1, A2, B3]", $.just("C1", "A2", "B3").orderBy(it -> Integer.parseInt(it.substring(1)), ASC).value().toString());
+        assertEquals("[A2, B3, C1]", $.just("C1", "A2", "B3").orderBy(Function.identity(), ASC).value().toString());
     }
 
     @Test
     void map1() {
         assertEquals("[2, 4, 6]", $.just(1, 2, 3).map(i -> i * 2).value().toString());
+        assertEquals("[1, 0, 1]", $.just(1, 2, 3).map(i -> i % 2).value().toString());
     }
 
     @Test
@@ -76,21 +109,37 @@ class ListTests {
 
     @Test
     void keyBy() {
-        Map<Integer, Integer> map = $.just(1, 4, 7, 2, 5, 3).keyBy(i -> i % 3).value();
-        assertEquals(3, map.size());
-        assertEquals(1, map.get(1));
-        assertEquals(2, map.get(2));
-        assertEquals(3, map.get(0));
+        {
+            Map<Integer, Integer> map = $.just(1, 4, 7, 2, 5, 3).keyBy(i -> i % 3).value();
+            assertEquals(3, map.size());
+            assertEquals(1, map.get(1));
+            assertEquals(2, map.get(2));
+            assertEquals(3, map.get(0));
+        }
+        {
+            Map<String, Integer> map = $.just(1, 2, 3, 4, 5).keyBy(i -> i % 2 == 0 ? "even" : "odd").value();
+            assertEquals(2, map.size());
+            assertEquals(1, map.get("odd"));
+            assertEquals(2, map.get("even"));
+        }
     }
 
     @Test
     void groupBy() {
-        // TODO: 改用 HashMap 和 ArrayList。如何理解 HashMap and ArrayList preferred
-        Map<Integer, List<Integer>> map = $.just(1, 4, 7, 2, 5, 3).groupBy(i -> i % 3).value();
-        assertEquals(3, map.size());
-        assertEquals("[1, 4, 7]", map.get(1).toString());
-        assertEquals("[2, 5]", map.get(2).toString());
-        assertEquals("[3]", map.get(0).toString());
+        {
+            Map<Integer, List<Integer>> map = $.just(1, 4, 7, 2, 5, 3).groupBy(i -> i % 3).value();
+            assertEquals(3, map.size());
+            assertEquals("[1, 4, 7]", map.get(1).toString());
+            assertEquals("[2, 5]", map.get(2).toString());
+            assertEquals("[3]", map.get(0).toString());
+        }
+
+        {
+            Map<String, List<Integer>> map = $.just(1, 2, 3, 4, 5).groupBy(i -> i % 2 == 0 ? "even" : "odd").value();
+            assertEquals(2, map.size());
+            assertEquals("[1, 3, 5]", map.get("odd").toString());
+            assertEquals("[2, 4]", map.get("even").toString());
+        }
     }
 
     @Test
@@ -114,6 +163,10 @@ class ListTests {
                 "[11, 12, 21, 22]",
                 $.just(1, 2).flatMap(i -> $.just(i * 10 + 1, i * 10 + 2)).value().toString()
         );
+        assertEquals(
+                "[2, 3, 4, 6, 6, 9]",
+                $.just(1, 2, 3).flatMap(i -> $.just(i * 2, i * 3)).value().toString()
+        );
     }
 
     @Test
@@ -127,6 +180,8 @@ class ListTests {
     void filter1() {
         assertEquals("[a,  ]", $.just("a", " ", null).filter(Objects::nonNull).value().toString());
         assertEquals("[2, 4]", $.just(1, 2, 3, 4, 5).filter(i -> i % 2 == 0).value().toString());
+        assertEquals("[1, 3, 5]", $.just(1, 2, 3, 4, 5).filter(i -> i % 2 == 1).value().toString());
+
         assertThrows(NullPointerException.class, () -> $.just(1, 2, 3, 4, 5).filter((Predicate<Integer>) null).value());
     }
 
@@ -155,6 +210,8 @@ class ListTests {
         assertEquals("[]", $.just(null, "", false, 0).compact().value().toString());
         assertEquals("[6, 哈哈]", $.just(null, 6, "", "哈哈", false, 0).compact().value().toString());
         assertEquals("[]", $.just((Object) null).compact().value().toString());
+
+        assertEquals("[1, true, a]", $.just(null, 1, 0, true, false, "a", "").compact().value().toString());
     }
 
     @Test
@@ -175,6 +232,8 @@ class ListTests {
         }
 
         assertThrows(IllegalArgumentException.class, () -> $(list).chunk(0).value());
+
+        assertEquals("[[1, 2], [3, 4], [5]]", $.just(1, 2, 3, 4, 5).chunk(2).value().toString());
     }
 
     @Nested

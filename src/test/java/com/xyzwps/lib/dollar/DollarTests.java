@@ -9,6 +9,7 @@ import java.util.function.Predicate;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static com.xyzwps.lib.dollar.Dollar.*;
+import static com.xyzwps.lib.dollar.Direction.*;
 
 class DollarTests {
 
@@ -29,29 +30,36 @@ class DollarTests {
     @Test
     void unique() {
         assertEquals("[1, 2, 3]", $.unique($.listOf(1, 2, 1, 3)).toString());
+        assertEquals("[1, 2]", $.unique($.listOf(1, 2, 1)).toString());
     }
 
     @Test
     void uniqueBy() {
         assertEquals("[1, 2, 3]", $.uniqueBy($.listOf(1, 2, 1, 3, 4), i -> i % 3).toString());
+        assertEquals("[1.2, 2.3]", $.just(1.2, 2.3, 1.4).uniqueBy(Double::intValue).value().toString());
     }
 
     @Test
     void takeWhile() {
-        assertEquals("[1, 2]", $.takeWhile($.listOf(1, 2, 3, 4), i -> i < 3).toString());
+        assertEquals("[1, 2]", $.takeWhile($.listOf(1, 2, 3, 4, 5), i -> i < 3).toString());
     }
 
     @Test
     void take() {
         assertEquals("[1, 2]", $.take($.listOf(1, 2, 3, 4), 2).toString());
+        assertEquals("[1, 2, 3, 4, 5]", $.take($.listOf(1, 2, 3, 4, 5), 6).toString());
+        assertEquals("[1, 2, 3]", $.take($.listOf(1, 2, 3, 4, 5), 3).toString());
     }
 
     @Test
     void orderBy() {
-        assertEquals("[1, 2, 3, 4, 5]", $.orderBy($.listOf(1, 3, 5, 2, 4), Function.identity(), Direction.ASC).toString());
-        assertEquals("[5, 4, 3, 2, 1]", $.orderBy($.listOf(1, 3, 5, 2, 4), Function.identity(), Direction.DESC).toString());
+        assertEquals("[1, 2, 3, 4, 5]", $.orderBy($.listOf(1, 3, 5, 2, 4), Function.identity(), ASC).toString());
+        assertEquals("[5, 4, 3, 2, 1]", $.orderBy($.listOf(1, 3, 5, 2, 4), Function.identity(), DESC).toString());
 
-        assertEquals("[]", $.orderBy((List<Integer>) null, Function.identity(), Direction.DESC).toString());
+        assertEquals("[]", $.orderBy((List<Integer>) null, Function.identity(), DESC).toString());
+
+        assertEquals("[C1, A2, B3]", $.orderBy($.listOf("C1", "A2", "B3"), it -> Integer.parseInt(it.substring(1)), ASC).toString());
+        assertEquals("[A2, B3, C1]", $.orderBy($.listOf("C1", "A2", "B3"), Function.identity(), ASC).toString());
     }
 
     @Test
@@ -82,6 +90,7 @@ class DollarTests {
     @Test
     void map1() {
         assertEquals("[2, 4, 6]", $.map($.listOf(1, 2, 3), i -> i * 2).toString());
+        assertEquals("[1, 0, 1]", $.map($.listOf(1, 2, 3), i -> i % 2).toString());
     }
 
     @Test
@@ -91,20 +100,37 @@ class DollarTests {
 
     @Test
     void keyBy() {
-        Map<Integer, Integer> map = $.keyBy($.listOf(1, 4, 7, 2, 5, 3), i -> i % 3);
-        assertEquals(3, map.size());
-        assertEquals(1, map.get(1));
-        assertEquals(2, map.get(2));
-        assertEquals(3, map.get(0));
+        {
+            Map<Integer, Integer> map = $.keyBy($.listOf(1, 4, 7, 2, 5, 3), i -> i % 3);
+            assertEquals(3, map.size());
+            assertEquals(1, map.get(1));
+            assertEquals(2, map.get(2));
+            assertEquals(3, map.get(0));
+        }
+        {
+            Map<String, Integer> map = $.keyBy($.listOf(1, 2, 3, 4, 5), i -> i % 2 == 0 ? "even" : "odd");
+            assertEquals(2, map.size());
+            assertEquals(1, map.get("odd"));
+            assertEquals(2, map.get("even"));
+        }
     }
 
     @Test
     void groupBy() {
-        Map<Integer, List<Integer>> map = $.groupBy($.listOf(1, 4, 7, 2, 5, 3), i -> i % 3);
-        assertEquals(3, map.size());
-        assertEquals("[1, 4, 7]", map.get(1).toString());
-        assertEquals("[2, 5]", map.get(2).toString());
-        assertEquals("[3]", map.get(0).toString());
+        {
+            Map<Integer, List<Integer>> map = $.groupBy($.listOf(1, 4, 7, 2, 5, 3), i -> i % 3);
+            assertEquals(3, map.size());
+            assertEquals("[1, 4, 7]", map.get(1).toString());
+            assertEquals("[2, 5]", map.get(2).toString());
+            assertEquals("[3]", map.get(0).toString());
+        }
+
+        {
+            Map<String, List<Integer>> map = $.groupBy($.listOf(1, 2, 3, 4, 5), i -> i % 2 == 0 ? "even" : "odd");
+            assertEquals(2, map.size());
+            assertEquals("[1, 3, 5]", map.get("odd").toString());
+            assertEquals("[2, 4]", map.get("even").toString());
+        }
     }
 
     @Test
@@ -112,7 +138,6 @@ class DollarTests {
         List<Integer> t = new ArrayList<>();
         $.forEach($.listOf(1, 2, 3), i -> t.add(i));
         assertEquals("[1, 2, 3]", t.toString());
-
     }
 
     @Test
@@ -128,6 +153,10 @@ class DollarTests {
                 "[11, 12, 21, 22]",
                 $.flatMap($.listOf(1, 2), i -> $.just(i * 10 + 1, i * 10 + 2)).toString()
         );
+        assertEquals(
+                "[2, 3, 4, 6, 6, 9]",
+                $.flatMap($.listOf(1, 2, 3), i -> $.just(i * 2, i * 3)).toString()
+        );
     }
 
     @Test
@@ -141,6 +170,7 @@ class DollarTests {
     void filter1() {
         assertEquals("[a,  ]", $.filter($.listOf("a", " ", null), Objects::nonNull).toString());
         assertEquals("[2, 4]", $.filter($.listOf(1, 2, 3, 4, 5), i -> i % 2 == 0).toString());
+        assertEquals("[1, 3, 5]", $.filter($.listOf(1, 2, 3, 4, 5), i -> i % 2 == 1).toString());
         assertEquals("[]", $.filter((List<Integer>) null, i -> i % 2 == 0).toString());
         assertThrows(NullPointerException.class, () -> $.filter($.listOf(1, 2, 3, 4, 5), (Predicate<Integer>) null).toString());
     }
@@ -173,6 +203,9 @@ class DollarTests {
         assertEquals("[]", $.compact($.listOf(null, "", false, 0)).toString());
         assertEquals("[6, 哈哈]", $.compact($.listOf(null, 6, "", "哈哈", false, 0)).toString());
         assertEquals("[]", $.compact(null).toString());
+
+        assertEquals("[1, true, a]", $.compact($.listOf(null, 1, 0, true, false, "a", "")).toString());
+
     }
 
     @Test
@@ -193,6 +226,8 @@ class DollarTests {
         }
 
         assertThrows(IllegalArgumentException.class, () -> $.chunk(list, 0));
+
+        assertEquals("[[1, 2], [3, 4], [5]]", $.chunk($.listOf(1, 2, 3, 4, 5), 2).toString());
     }
 
     @Test
