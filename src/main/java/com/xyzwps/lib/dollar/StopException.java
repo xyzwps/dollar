@@ -1,7 +1,7 @@
-package com.xyzwps.lib.dollar.seq;
+package com.xyzwps.lib.dollar;
 
 
-public class StopException extends RuntimeException {
+class StopException extends RuntimeException {
     // TODO: 单例异常
     static <T> Seq<T> stop(Seq<T> seq) {
         return tConsumer -> {

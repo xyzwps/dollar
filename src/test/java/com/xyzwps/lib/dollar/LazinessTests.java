@@ -13,7 +13,7 @@ class LazinessTests {
     void test() {
         List<String> trace = $.listOf();
 
-        ListStage<Integer> stages = $.just(1, 2, 3, 4, 5, 6, 7)
+        Seq<Integer> stages = $.just(1, 2, 3, 4, 5, 6, 7)
                 .map(i -> {
                     trace.add(String.format("map %d to %d", i, i + 2));
                     return i + 2;

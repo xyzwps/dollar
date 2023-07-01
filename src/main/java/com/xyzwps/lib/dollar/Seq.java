@@ -1,20 +1,14 @@
-package com.xyzwps.lib.dollar.seq;
+package com.xyzwps.lib.dollar;
 
 
-import com.xyzwps.lib.dollar.Direction;
-import com.xyzwps.lib.dollar.Pair;
 import com.xyzwps.lib.dollar.function.ObjIntFunction;
 import com.xyzwps.lib.dollar.function.ObjIntPredicate;
-import com.xyzwps.lib.dollar.iterator.ArrayListReverseIterator;
 
 import java.util.*;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.*;
 
 import static com.xyzwps.lib.dollar.Dollar.*;
-import static com.xyzwps.lib.dollar.iterator.OrderByIterator.*;
+import static com.xyzwps.lib.dollar.Helper.*;
 
 /**
  * 操作符应该分 3 类
@@ -29,6 +23,12 @@ import static com.xyzwps.lib.dollar.iterator.OrderByIterator.*;
 public interface Seq<T> extends Iterable<T> {
 
     void forEach(Consumer<? super T> consumer);
+
+    default void forEach(ObjIntConsumer<? super T> consumer) {
+        Objects.requireNonNull(consumer);
+        Counter counter = new Counter(0);
+        this.forEach(t -> consumer.accept(t, counter.getAndIncr()));
+    }
 
     default <R> Seq<R> map(Function<T, R> mapFn) {
         Objects.requireNonNull(mapFn);
@@ -110,7 +110,7 @@ public interface Seq<T> extends Iterable<T> {
         return this.filter(t -> !$.isFalsey(t));
     }
 
-    default Seq<T> concat(Seq<T> seq2) {
+    default Seq<T> concat(Iterable<T> seq2) {
         if (seq2 == null) return this;
 
         return tConsumer -> {
@@ -126,12 +126,13 @@ public interface Seq<T> extends Iterable<T> {
         }
 
         return StopException.stop(tConsumer -> {
-            int[] counter = {0};
+            Counter counter = new Counter(0);
             this.forEach(t -> {
-                if (counter[0] < n) {
+                if (counter.getAndIncr() < n) {
                     tConsumer.accept(t);
-                    counter[0]++;
-                } else {
+                }
+
+                if (counter.get() >= n) {
                     throw new StopException();
                 }
             });
@@ -303,43 +304,13 @@ public interface Seq<T> extends Iterable<T> {
         });
     }
 
-    default List<T> value() {
-        return this.toList();
+    static <T> Seq<T> empty() {
+        return tConsumer -> {
+        };
     }
 
-    static void main(String[] args) {
-        Seq<Integer> seq = consumer -> $.listOf(1, 2, 3, 4, 5, 6, 7).forEach(consumer);
-        seq.chunk(3).forEach(System.out::println);
-        seq.chunk(5).forEach(System.out::println);
-
-        System.out.println(seq.map(i -> {
-            System.out.println(i + " mapped.");
-            return i;
-        }).take(3).toList());
-
-        System.out.println("=== take while ===");
-
-        System.out.println(seq.map(i -> {
-            System.out.println(i + " mapped.");
-            return i;
-        }).takeWhile(i -> i < 5).toList());
-
-        System.out.println("=== skip ===");
-
-        System.out.println(seq.skip(3).toList());
-
-        System.out.println("=== skip while ===");
-
-        System.out.println(seq.skipWhile(i -> i % 2 == 1).toList());
-        System.out.println(seq.skipWhile(i -> i % 2 == 0).toList());
-
-        System.out.println("=== first ===");
-
-        System.out.println(seq.first());
-
-        System.out.println("=== reverse ===");
-
-        System.out.println(seq.reverse().toList());
+    default List<T> value() {
+        return this.toList();
     }
 
 }

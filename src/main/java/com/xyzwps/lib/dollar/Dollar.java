@@ -2,14 +2,12 @@ package com.xyzwps.lib.dollar;
 
 import com.xyzwps.lib.dollar.function.Function3;
 import com.xyzwps.lib.dollar.function.ObjIntFunction;
-import com.xyzwps.lib.dollar.iterable.ArrayIterable;
-import com.xyzwps.lib.dollar.iterable.EmptyIterable;
 import com.xyzwps.lib.dollar.iterable.Range;
-import com.xyzwps.lib.dollar.iterator.EmptyIterator;
-import com.xyzwps.lib.dollar.iterator.OrderByIterator;
 
 import java.util.*;
 import java.util.function.*;
+
+import static com.xyzwps.lib.dollar.Helper.*;
 
 /**
  * Where to start.
@@ -27,8 +25,8 @@ public final class Dollar {
      * @param <T>  list element type
      * @return a list stage
      */
-    public static <T> ListStage<T> $(List<T> list) {
-        return new ListStage<>(list);
+    public static <T> Seq<T> $(List<T> list) {
+        return $.isEmpty(list) ? Seq.empty() : list::forEach;
     }
 
 
@@ -40,8 +38,8 @@ public final class Dollar {
      * @param <V> map value type
      * @return a map stage
      */
-    public static <K, V> MapStage<K, V> $(Map<K, V> map) {
-        return new MapStage<>(map);
+    public static <K, V> MESeq<K, V> $(Map<K, V> map) {
+        return $.isEmpty(map) ? MESeq.empty() : map::forEach;
     }
 
 
@@ -792,8 +790,8 @@ public final class Dollar {
          * @param <T> element type
          * @return list stage
          */
-        public static <T> ListStage<T> empty() {
-            return new ListStage<T>(EmptyIterable.create());
+        public static <T> Seq<T> empty() {
+            return Seq.empty();
         }
 
 
@@ -805,8 +803,12 @@ public final class Dollar {
          * @return list stage
          */
         @SafeVarargs
-        public static <T> ListStage<T> just(T... args) {
-            return new ListStage<>(new ArrayIterable<>(args));
+        public static <T> Seq<T> just(T... args) {
+            return tConsumer -> {
+                for (T t : args) {
+                    tConsumer.accept(t);
+                }
+            };
         }
 
 
@@ -817,8 +819,8 @@ public final class Dollar {
          * @param end   range end - excluded
          * @return list stage
          */
-        public static ListStage<Integer> range(int start, int end) {
-            return new ListStage<>(new Range(start, end));
+        public static Seq<Integer> range(int start, int end) {
+            return new Range(start, end)::forEach;
         }
 
         /**
@@ -1045,7 +1047,7 @@ public final class Dollar {
             }
 
             List<T> list = $.listFrom(iterable.iterator());
-            Comparator<T> comparator = direction == Direction.DESC ? OrderByIterator.descComparator(toKey) : OrderByIterator.ascComparator(toKey);
+            Comparator<T> comparator = direction == Direction.DESC ? descComparator(toKey) : ascComparator(toKey);
             list.sort(comparator);
             return list;
         }

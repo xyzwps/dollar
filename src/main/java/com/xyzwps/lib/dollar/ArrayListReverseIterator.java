@@ -1,4 +1,4 @@
-package com.xyzwps.lib.dollar.iterator;
+package com.xyzwps.lib.dollar;
 
 import java.util.ArrayList;
 import java.util.Iterator;

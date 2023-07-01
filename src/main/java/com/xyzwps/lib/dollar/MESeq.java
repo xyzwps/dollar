@@ -1,15 +1,16 @@
-package com.xyzwps.lib.dollar.seq;
+package com.xyzwps.lib.dollar;
 
 import com.xyzwps.lib.dollar.function.Function3;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
+
+import static com.xyzwps.lib.dollar.Helper.*;
 
 public interface MESeq<K, V> {
 
@@ -82,11 +83,6 @@ public interface MESeq<K, V> {
     static <K, V> MESeq<K, V> empty() {
         return kvConsumer -> {
         };
-    }
-
-    static <K, V> MESeq<K, V> fromMap(Map<K, V> map) {
-        if (map == null || map.isEmpty()) return empty();
-        return map::forEach;
     }
 
 }

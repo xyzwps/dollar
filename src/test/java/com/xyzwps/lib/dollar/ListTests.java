@@ -184,7 +184,6 @@ class ListTests {
         List<Integer> t = new ArrayList<>();
         $.just(1, 2, 3).forEach(i -> t.add(i));
         assertEquals("[1, 2, 3]", t.toString());
-
     }
 
     @Test
