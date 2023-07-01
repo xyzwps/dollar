@@ -1,8 +1,6 @@
 package com.xyzwps.lib.dollar.iterator;
 
 import java.util.Iterator;
-import java.util.Objects;
-import java.util.function.Predicate;
 
 /**
  * Used by take method.

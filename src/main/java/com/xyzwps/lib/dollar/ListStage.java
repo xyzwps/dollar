@@ -397,15 +397,11 @@ public class ListStage<T> implements Iterable<T> {
      * @return 连接后的新字符串
      */
     public String join(String sep) {
-        StringBuilder sb = new StringBuilder();
-        Iterator<T> itr = this.iterator();
-        if (itr.hasNext()) {
-            sb.append(itr.next());
+        StringJoiner joiner = new StringJoiner(sep); // TODO: 对 sep 检查
+        for (T t : this) {
+            joiner.add(t.toString()); // TODO: 做 null 检查
         }
-        while (itr.hasNext()) {
-            sb.append(sep).append(itr.next());
-        }
-        return sb.toString();
+        return joiner.toString();
     }
 
     /**
