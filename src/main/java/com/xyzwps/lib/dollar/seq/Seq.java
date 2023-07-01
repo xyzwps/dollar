@@ -2,6 +2,9 @@ package com.xyzwps.lib.dollar.seq;
 
 
 import com.xyzwps.lib.dollar.Direction;
+import com.xyzwps.lib.dollar.Pair;
+import com.xyzwps.lib.dollar.function.ObjIntFunction;
+import com.xyzwps.lib.dollar.function.ObjIntPredicate;
 import com.xyzwps.lib.dollar.iterator.ArrayListReverseIterator;
 
 import java.util.*;
@@ -23,19 +26,35 @@ import static com.xyzwps.lib.dollar.iterator.OrderByIterator.*;
  *
  * @param <T>
  */
-public interface Seq<T> {
+public interface Seq<T> extends Iterable<T> {
 
-    void forEach(Consumer<T> consumer);
+    void forEach(Consumer<? super T> consumer);
 
     default <R> Seq<R> map(Function<T, R> mapFn) {
         Objects.requireNonNull(mapFn);
         return rConsumer -> this.forEach(t -> rConsumer.accept(mapFn.apply(t)));
     }
 
+    default <R> Seq<R> map(ObjIntFunction<T, R> mapFn) {
+        Objects.requireNonNull(mapFn);
+        Counter counter = new Counter(0);
+        return rConsumer -> this.forEach(t -> rConsumer.accept(mapFn.apply(t, counter.getAndIncr())));
+    }
+
     default Seq<T> filter(Predicate<T> predicate) {
         Objects.requireNonNull(predicate);
         return tConsumer -> this.forEach(t -> {
             if (predicate.test(t)) {
+                tConsumer.accept(t);
+            }
+        });
+    }
+
+    default Seq<T> filter(ObjIntPredicate<T> predicate) {
+        Objects.requireNonNull(predicate);
+        Counter counter = new Counter(0);
+        return tConsumer -> this.forEach(t -> {
+            if (predicate.test(t, counter.getAndIncr())) {
                 tConsumer.accept(t);
             }
         });
@@ -55,6 +74,7 @@ public interface Seq<T> {
             throw new IllegalArgumentException("Each chunk should have at least one element.");
         }
 
+        // TODO: 优化
         class ChunkEnv {
             List<T> list = new ArrayList<>(chunkSize);
             int count = 0;
@@ -90,7 +110,6 @@ public interface Seq<T> {
         return this.filter(t -> !$.isFalsey(t));
     }
 
-    // TODO: 多版本
     default Seq<T> concat(Seq<T> seq2) {
         if (seq2 == null) return this;
 
@@ -184,20 +203,10 @@ public interface Seq<T> {
         };
     }
 
-    // TODO: implement Iterable
+    @Override
     default Iterator<T> iterator() {
-        // TODO: 有点难搞，怎么把一个回调拆开成两部分
-        return new Iterator<T>() {
-            @Override
-            public boolean hasNext() {
-                return false;
-            }
-
-            @Override
-            public T next() {
-                return null;
-            }
-        };
+        List<T> list = this.toList();
+        return list.iterator();
     }
 
     default <K extends Comparable<K>> Seq<T> orderBy(Function<T, K> toKey, Direction direction) {
@@ -209,14 +218,13 @@ public interface Seq<T> {
         return list::forEach;
     }
 
-    // TODO: 多版本
-    default <R, T2> Seq<R> zip(Seq<T2> seq2, BiFunction<T, T2, R> zipper) {
+    default <R, T2> Seq<R> zip(Iterable<T2> iterable, BiFunction<T, T2, R> zipper) {
         Objects.requireNonNull(zipper);
-        if (seq2 == null) {
+        if (iterable == null) {
             return this.map(t -> zipper.apply(t, null));
         }
 
-        Iterator<T2> itr = seq2.iterator();
+        Iterator<T2> itr = iterable.iterator();
         return rConsumer -> {
             this.forEach(t -> rConsumer.accept(zipper.apply(t, itr.hasNext() ? itr.next() : null)));
             while (itr.hasNext()) {
@@ -225,8 +233,23 @@ public interface Seq<T> {
         };
     }
 
-    // TODO: groupBy
-    // TODO: keyBy
+    default <T2> Seq<Pair<T, T2>> zip(Iterable<T2> iterable) {
+        return this.zip(iterable, Pair::of);
+    }
+
+    default <K> MESeq<K, List<T>> groupBy(Function<T, K> toKey) {
+        Objects.requireNonNull(toKey);
+        Map<K, List<T>> map = new HashMap<>();
+        this.forEach(t -> map.computeIfAbsent(toKey.apply(t), k -> new ArrayList<>()).add(t));
+        return map::forEach;
+    }
+
+    default <K> MESeq<K, T> keyBy(Function<T, K> toKey) {
+        Objects.requireNonNull(toKey);
+        Map<K, T> map = new HashMap<>();
+        this.forEach(t -> map.computeIfAbsent(toKey.apply(t), k -> t));
+        return map::forEach;
+    }
 
     default <K> Seq<T> uniqueBy(Function<T, K> toKey) {
         Objects.requireNonNull(toKey);
