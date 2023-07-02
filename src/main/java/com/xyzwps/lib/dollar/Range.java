@@ -1,4 +1,4 @@
-package com.xyzwps.lib.dollar.iterable;
+package com.xyzwps.lib.dollar;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;

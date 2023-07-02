@@ -14,7 +14,7 @@ import static com.xyzwps.lib.dollar.Dollar.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-class MapTests {
+class MESeqTests {
 
     @Test
     void nullMap() {

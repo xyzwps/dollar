@@ -8,17 +8,27 @@ import java.util.function.Function;
 class Helper {
     static final class Counter {
         private int count = 0;
+        private final int init;
 
         Counter(int init) {
             this.count = init;
+            this.init = init;
         }
 
         int getAndIncr() {
             return count++;
         }
 
+        int incrAndGet() {
+            return ++count;
+        }
+
         int get() {
             return count;
+        }
+
+        void reset() {
+            this.count = this.init;
         }
     }
 

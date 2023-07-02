@@ -20,7 +20,7 @@ class DollarTests {
         {
             List<Pair<Integer, Integer>> list = $.zip($.listOf(1, 2, 3), $.listOf(1, 2));
             assertEquals("[(1, 1), (2, 2), (3, null)]", list.toString());
-            assertTrue(list instanceof ArrayList); // ArrayList preferred
+            assertTrue(list instanceof ArrayList); // ArrayList preferred TODO: 要不要直接返回 ArrayList 得了？
         }
         {
             List<Pair<Integer, Integer>> list = $.zip($.listOf(1, 2, 3), $.listOf(1, 2, 3));

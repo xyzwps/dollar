@@ -1,4 +1,4 @@
-package com.xyzwps.lib.dollar.iterable;
+package com.xyzwps.lib.dollar;
 
 
 import org.junit.jupiter.api.Test;

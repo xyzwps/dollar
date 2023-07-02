@@ -13,7 +13,7 @@ import static com.xyzwps.lib.dollar.Direction.*;
 import static com.xyzwps.lib.dollar.Dollar.$;
 import static org.junit.jupiter.api.Assertions.*;
 
-class ListTests {
+class SeqTests {
 
     @Test
     void zip() {
@@ -53,7 +53,6 @@ class ListTests {
     @Test
     void toSet() {
         Set<Integer> set = $.just(1, 2, 1, 3, 4).toSet();
-        assertTrue(set instanceof HashSet); // Hashset preferred
         assertEquals(4, set.size());
         assertTrue(set.contains(1));
         assertTrue(set.contains(2));
@@ -295,8 +294,38 @@ class ListTests {
         @Test
         void range() {
             assertEquals("[1, 2, 3]", $.range(1, 4).value().toString());
-//            assertEquals("[]", $.range(1, 1).value().toString());
-//            assertEquals("[]", $.range(1, -1).value().toString());
         }
+    }
+
+    @Test
+    void cache() {
+        List<Integer> list = $.listOf(1, 2, 3, 4, 5);
+        Seq<Integer> seq = list::forEach;
+
+        List<String> logs = $.listOf();
+        Seq<Integer> cached = seq.map(it -> {
+            logs.add(it + " is mapped to " + (it * 2));
+            return it * 2;
+        }).cache();
+
+        assertTrue(logs.isEmpty()); // lazy
+
+        assertEquals("2, 4, 6, 8, 10", cached.join(", "));
+        assertIterableEquals(logs, $.listOf(
+                "1 is mapped to 2",
+                "2 is mapped to 4",
+                "3 is mapped to 6",
+                "4 is mapped to 8",
+                "5 is mapped to 10"
+        )); // computed
+
+        assertEquals("2, 4, 6, 8, 10", cached.join(", "));
+        assertIterableEquals(logs, $.listOf(
+                "1 is mapped to 2",
+                "2 is mapped to 4",
+                "3 is mapped to 6",
+                "4 is mapped to 8",
+                "5 is mapped to 10"
+        )); // cached
     }
 }

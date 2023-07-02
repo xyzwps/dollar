@@ -16,7 +16,6 @@ import static com.xyzwps.lib.dollar.Helper.*;
  * 2. 收集一些才能干活，比如 chunk
  * 3. 收集全部才能干活，比如 groupBy、orderBy、reverse
  * <p>
- * TODO: 实现 index 版本
  *
  * @param <T>
  */
@@ -74,34 +73,19 @@ public interface Seq<T> extends Iterable<T> {
             throw new IllegalArgumentException("Each chunk should have at least one element.");
         }
 
-        // TODO: 优化
-        class ChunkEnv {
-            List<T> list = new ArrayList<>(chunkSize);
-            int count = 0;
-
-            boolean add(T t) {
-                this.list.add(t);
-                this.count++;
-                return this.count == chunkSize;
-            }
-
-            List<T> getAndClean() {
-                List<T> result = this.list;
-                this.list = new ArrayList<>(chunkSize);
-                this.count = 0;
-                return result;
-            }
-        }
-
+        Holder<List<T>> listHolder = new Holder<>(new ArrayList<>());
+        Counter counter = new Counter(0);
         return listConsumer -> {
-            ChunkEnv env = new ChunkEnv();
             this.forEach(t -> {
-                if (env.add(t)) {
-                    listConsumer.accept(env.getAndClean());
+                listHolder.value.add(t);
+                if (counter.incrAndGet() >= chunkSize) {
+                    listConsumer.accept(listHolder.value);
+                    listHolder.value = new ArrayList<>();
+                    counter.reset();
                 }
             });
-            if (env.count > 0) {
-                listConsumer.accept(env.getAndClean());
+            if (counter.get() > 0) {
+                listConsumer.accept(listHolder.value);
             }
         };
     }
@@ -133,7 +117,7 @@ public interface Seq<T> extends Iterable<T> {
                 }
 
                 if (counter.get() >= n) {
-                    throw new StopException();
+                    throw StopException.INSTANCE;
                 }
             });
         });
@@ -146,7 +130,7 @@ public interface Seq<T> extends Iterable<T> {
                 if (predicate.test(t)) {
                     tConsumer.accept(t);
                 } else {
-                    throw new StopException();
+                    throw StopException.INSTANCE;
                 }
             });
         });
@@ -181,7 +165,7 @@ public interface Seq<T> extends Iterable<T> {
         Holder<T> holder = new Holder<>(null);
         StopException.stop(() -> this.forEach(t -> {
             holder.value = t;
-            throw new StopException();
+            throw StopException.INSTANCE;
         }));
         return Optional.ofNullable(holder.value);
     }
@@ -313,4 +297,24 @@ public interface Seq<T> extends Iterable<T> {
         return this.toList();
     }
 
+    default Seq<T> cache() {
+        final Seq<T> that = this;
+        return new Seq<T>() {
+            private final List<T> cache = new ArrayList<>();
+            private boolean cached = false;
+
+            @Override
+            public void forEach(Consumer<? super T> consumer) {
+                if (cached) {
+                    cache.forEach(consumer);
+                } else {
+                    that.forEach(t -> {
+                        cache.add(t);
+                        consumer.accept(t);
+                    });
+                    this.cached = true;
+                }
+            }
+        };
+    }
 }

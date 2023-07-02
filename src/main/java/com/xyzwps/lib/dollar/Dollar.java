@@ -2,7 +2,6 @@ package com.xyzwps.lib.dollar;
 
 import com.xyzwps.lib.dollar.function.Function3;
 import com.xyzwps.lib.dollar.function.ObjIntFunction;
-import com.xyzwps.lib.dollar.iterable.Range;
 
 import java.util.*;
 import java.util.function.*;

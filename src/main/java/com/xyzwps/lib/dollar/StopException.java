@@ -2,7 +2,13 @@ package com.xyzwps.lib.dollar;
 
 
 class StopException extends RuntimeException {
-    // TODO: 单例异常
+
+    private StopException() {
+        super("", null, false, false);
+    }
+
+    static final StopException INSTANCE = new StopException();
+
     static <T> Seq<T> stop(Seq<T> seq) {
         return tConsumer -> {
             try {
