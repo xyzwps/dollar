@@ -187,4 +187,38 @@ class MESeqTests {
 
         assertThrows(NullPointerException.class, () -> $(treeMap).forEach((BiConsumer<Integer, Integer>) null));
     }
+
+    @Test
+    void cache() {
+        TreeMap<Integer, Integer> map = new TreeMap<>();
+        map.put(1, 1);
+        map.put(2, 2);
+        map.put(3, 3);
+        map.put(4, 4);
+        MESeq<Integer, Integer> seq = map::forEach;
+
+        List<String> logs = $.listOf();
+        MESeq<Integer, Integer> cached = seq.mapValues(it -> {
+            logs.add(it + " is mapped to " + (it * 2));
+            return it * 2;
+        }).cache();
+
+        assertTrue(logs.isEmpty()); // lazy
+
+        assertEquals("2, 4, 6, 8", cached.values().join(", "));
+        assertIterableEquals(logs, $.listOf(
+                "1 is mapped to 2",
+                "2 is mapped to 4",
+                "3 is mapped to 6",
+                "4 is mapped to 8"
+        )); // computed
+
+        assertEquals("2, 4, 6, 8", cached.values().join(", "));
+        assertIterableEquals(logs, $.listOf(
+                "1 is mapped to 2",
+                "2 is mapped to 4",
+                "3 is mapped to 6",
+                "4 is mapped to 8"
+        )); // cached
+    }
 }

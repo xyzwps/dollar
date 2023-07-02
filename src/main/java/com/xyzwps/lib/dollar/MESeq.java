@@ -2,9 +2,7 @@ package com.xyzwps.lib.dollar;
 
 import com.xyzwps.lib.dollar.function.Function3;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
@@ -57,6 +55,27 @@ public interface MESeq<K, V> {
                 kvConsumer.accept(k, v);
             }
         });
+    }
+
+    default MESeq<K, V> cache() {
+        final MESeq<K, V> that = this;
+        return new MESeq<K, V>() {
+            private final List<Pair<K, V>> cache = new ArrayList<>();
+            private boolean cached = false;
+
+            @Override
+            public void forEach(BiConsumer<K, V> consumer) {
+                if (cached) {
+                    cache.forEach(p -> consumer.accept(p.key(), p.value()));
+                } else {
+                    that.forEach((k, v) -> {
+                        cache.add(Pair.of(k, v));
+                        consumer.accept(k, v);
+                    });
+                    cached = true;
+                }
+            }
+        };
     }
 
     default <R> R reduce(R initValue, Function3<R, K, V, R> callbackFn) {
