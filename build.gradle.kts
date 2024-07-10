@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.xyzwps.lib"
-version = "0.2.0"
+version = "0.1.1"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
 repositories {
