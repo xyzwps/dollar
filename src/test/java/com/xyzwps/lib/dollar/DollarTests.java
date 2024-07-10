@@ -8,6 +8,7 @@ import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static com.xyzwps.lib.dollar.Dollar.*;
@@ -96,6 +97,18 @@ class DollarTests {
             assertEquals("[1, 2, 4]", list.toString());
             assertTrue(list instanceof ArrayList); // ArrayList preferred
         }
+    }
+
+    @Test
+    void replaceAll() {
+        var pattern = Pattern.compile("\\{}");
+
+        assertNull($.replaceAll(null, null, null));
+        assertEquals("abc", $.replaceAll("abc", null, null));
+        assertEquals("abc", $.replaceAll("abc", pattern, null));
+
+        assertEquals("a={0} b={1} c={2}", $.replaceAll("a={} b={} c={}", pattern, i -> "{" + i + "}"));
+
     }
 
     @Test
